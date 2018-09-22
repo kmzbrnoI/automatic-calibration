@@ -18,14 +18,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-    main.cpp \
-    main-window.cpp
+	main.cpp \
+	main-window.cpp \
+	lib/wsm/measure-car.cpp
 
 HEADERS += \
-    main-window.h
+	main-window.h \
+	lib/q-str-exception.h \
+	lib/wsm/measure-car.h
 
 FORMS += \
-    main-window.ui
+	main-window.ui
 
 CONFIG += c++14
 QMAKE_CXXFLAGS += -Wall -Wextra -pedantic
@@ -35,8 +38,8 @@ QT += serialport
 VERSION_MAJOR = 0
 VERSION_MINOR = 1
 
-DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
-       "VERSION_MINOR=$$VERSION_MINOR"
+DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
+	"VERSION_MINOR=$$VERSION_MINOR"
 
 #Target version
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}
