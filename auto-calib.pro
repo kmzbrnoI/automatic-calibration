@@ -20,12 +20,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
 	main.cpp \
 	main-window.cpp \
-	lib/wsm/measure-car.cpp
+	lib/wsm/measure-car.cpp \
+	lib/xn/xn.cpp
 
 HEADERS += \
 	main-window.h \
 	lib/q-str-exception.h \
-	lib/wsm/measure-car.h
+	lib/wsm/measure-car.h \
+	lib/xn/xn.h
 
 FORMS += \
 	main-window.ui
