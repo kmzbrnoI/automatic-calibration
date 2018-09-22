@@ -27,7 +27,8 @@ HEADERS += \
 	main-window.h \
 	lib/q-str-exception.h \
 	lib/wsm/measure-car.h \
-	lib/xn/xn.h
+	lib/xn/xn.h \
+	lib/xn/xn-typedefs.h
 
 FORMS += \
 	main-window.ui
