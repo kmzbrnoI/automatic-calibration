@@ -21,14 +21,16 @@ SOURCES += \
 	main.cpp \
 	main-window.cpp \
 	lib/wsm/measure-car.cpp \
-	lib/xn/xn.cpp
+	lib/xn/xn.cpp \
+	settings.cpp
 
 HEADERS += \
 	main-window.h \
 	lib/q-str-exception.h \
 	lib/wsm/measure-car.h \
 	lib/xn/xn.h \
-	lib/xn/xn-typedefs.h
+	lib/xn/xn-typedefs.h \
+	settings.h
 
 FORMS += \
 	main-window.ui
