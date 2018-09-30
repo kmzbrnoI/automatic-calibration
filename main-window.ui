@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>955</width>
+    <height>668</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,648 @@
   <property name="windowTitle">
    <string>Automatic Calibration</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <widget class="QTabWidget" name="tw_main">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="tabPosition">
+       <enum>QTabWidget::North</enum>
+      </property>
+      <property name="tabShape">
+       <enum>QTabWidget::Rounded</enum>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <property name="usesScrollButtons">
+       <bool>true</bool>
+      </property>
+      <property name="tabsClosable">
+       <bool>false</bool>
+      </property>
+      <property name="tabBarAutoHide">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="t_main">
+       <attribute name="title">
+        <string>Main</string>
+       </attribute>
+       <widget class="QGroupBox" name="gb_status">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>10</y>
+          <width>201</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>System Status</string>
+        </property>
+        <widget class="QLabel" name="l_xn">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>21</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>◼</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>30</y>
+           <width>71</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>XpressNET</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_dcc">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>50</y>
+           <width>21</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>◼</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_2">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>50</y>
+           <width>71</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>DCC</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_wsm">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>21</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>◼</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_3">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>70</y>
+           <width>31</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>WSM</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="gb_log">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>260</y>
+          <width>201</width>
+          <height>311</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Main Log</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QListView" name="lv_log">
+           <property name="isWrapping" stdset="0">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QGroupBox" name="gb_speed">
+        <property name="geometry">
+         <rect>
+          <x>710</x>
+          <y>10</y>
+          <width>211</width>
+          <height>421</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Locomotive</string>
+        </property>
+        <widget class="QSpinBox" name="sb_loco">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>340</y>
+           <width>181</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::NoButtons</enum>
+         </property>
+         <property name="maximum">
+          <number>9999</number>
+         </property>
+         <property name="value">
+          <number>1234</number>
+         </property>
+        </widget>
+        <widget class="QSlider" name="vs_speed">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>60</y>
+           <width>16</width>
+           <height>221</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>28</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+         <property name="sliderPosition">
+          <number>0</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="sb_speed">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>80</y>
+           <width>81</width>
+           <height>23</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_speed_set">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>110</y>
+           <width>81</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_addr_set">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>390</y>
+           <width>81</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Set</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_addr_release">
+         <property name="geometry">
+          <rect>
+           <x>110</x>
+           <y>390</y>
+           <width>81</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Release</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_4">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>310</y>
+           <width>91</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Loco address:</string>
+         </property>
+         <property name="wordWrap">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="Line" name="line">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>286</y>
+           <width>181</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_loco_stop">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>140</y>
+           <width>81</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Stop</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chb_f0">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>200</y>
+           <width>41</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>F0</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chb_f1">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>220</y>
+           <width>41</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>F1</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_addr_read">
+         <property name="geometry">
+          <rect>
+           <x>110</x>
+           <y>310</y>
+           <width>81</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Read</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_5">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>59</width>
+           <height>14</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Speed:</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chb_f2">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>240</y>
+           <width>41</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>F2</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_6">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>60</y>
+           <width>81</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Steps [0-28]:</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="gb_calib_graph">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>120</y>
+          <width>481</width>
+          <height>451</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Calibration Graph</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="gb_wsm">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>120</y>
+          <width>201</width>
+          <height>131</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>WSM</string>
+        </property>
+        <widget class="QLabel" name="l_wsm_speed">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>111</width>
+           <height>41</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>??.?</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_8">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>30</y>
+           <width>41</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>km/h</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_wsm_speed_raw">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>60</y>
+           <width>59</width>
+           <height>14</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>(?)</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_9">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>80</y>
+           <width>181</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Battery voltage [3.5 – 4.2 V]:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_wsm_bat_voltage">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>100</y>
+           <width>59</width>
+           <height>14</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>?.? V</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_wsm_alive">
+         <property name="geometry">
+          <rect>
+           <x>160</x>
+           <y>90</y>
+           <width>21</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>●</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QGroupBox" name="gb_calib_settings">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>10</y>
+          <width>481</width>
+          <height>101</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Calibration Settings</string>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="gb_fill">
+        <property name="geometry">
+         <rect>
+          <x>710</x>
+          <y>440</y>
+          <width>211</width>
+          <height>131</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string/>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="t_xn_log">
+       <attribute name="title">
+        <string>XpressNET log</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="1" column="0">
+         <widget class="QGroupBox" name="gb_xn_log_settings">
+          <property name="title">
+           <string>Settings</string>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="label_7">
+             <property name="text">
+              <string>Loglevel:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="cb_xn_loglevel">
+             <item>
+              <property name="text">
+               <string>None</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Error</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Warning</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Info</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Data</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Debug</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QTreeWidget" name="treeWidget">
+          <property name="selectionMode">
+           <enum>QAbstractItemView::MultiSelection</enum>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+          <attribute name="headerVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Time</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Message</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
   <widget class="QMenuBar" name="mb_main">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>955</width>
      <height>19</height>
     </rect>
    </property>
@@ -34,52 +669,65 @@
      <string>XpressNET</string>
     </property>
     <addaction name="separator"/>
-    <addaction name="actionConnect"/>
-    <addaction name="actionDisconnect"/>
+    <addaction name="a_xn_connect"/>
+    <addaction name="a_xn_disconnect"/>
     <addaction name="separator"/>
-    <addaction name="actionSettings"/>
+    <addaction name="a_xn_settings"/>
+    <addaction name="separator"/>
+    <addaction name="a_xn_dcc_go"/>
+    <addaction name="a_xn_stop"/>
    </widget>
    <widget class="QMenu" name="m_wsm">
     <property name="title">
      <string>WSM</string>
     </property>
-    <addaction name="actionConnect_2"/>
-    <addaction name="actionDisconnect_2"/>
+    <addaction name="a_wsm_connect"/>
+    <addaction name="a_wsm_disconnect"/>
     <addaction name="separator"/>
-    <addaction name="actionSettings_2"/>
+    <addaction name="a_wsm_settings"/>
    </widget>
    <addaction name="m_xn"/>
    <addaction name="m_wsm"/>
   </widget>
   <widget class="QStatusBar" name="sb_main"/>
-  <action name="actionConnect">
+  <action name="a_xn_connect">
    <property name="text">
     <string>Connect</string>
    </property>
   </action>
-  <action name="actionDisconnect">
+  <action name="a_xn_disconnect">
    <property name="text">
     <string>Disconnect</string>
    </property>
   </action>
-  <action name="actionSettings">
+  <action name="a_xn_settings">
    <property name="text">
     <string>Settings</string>
    </property>
   </action>
-  <action name="actionConnect_2">
+  <action name="a_wsm_connect">
    <property name="text">
     <string>Connect</string>
    </property>
   </action>
-  <action name="actionDisconnect_2">
+  <action name="a_wsm_disconnect">
    <property name="text">
     <string>Disconnect</string>
    </property>
   </action>
-  <action name="actionSettings_2">
+  <action name="a_wsm_settings">
    <property name="text">
     <string>Settings</string>
+   </property>
+  </action>
+  <action name="a_xn_dcc_go">
+   <property name="text">
+    <string>DCC Go</string>
+   </property>
+  </action>
+  <action name="a_xn_stop">
+   <property name="text">
+    <string>DCC Stop</string>
    </property>
   </action>
  </widget>
