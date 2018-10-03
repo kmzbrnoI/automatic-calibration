@@ -45,10 +45,12 @@ void XnSettings::load(QSettings& s) {
 	portname = s.value("port", "").toString();
 	br = s.value("baudrate", 9600).toInt();
 	fc = static_cast<QSerialPort::FlowControl>(s.value("flowcontrol", 1).toInt());
+	loglevel = s.value("loglevel", 1).toInt();
 }
 
 void XnSettings::save(QSettings& s) {
 	s.setValue("port", portname);
 	s.setValue("baudrate", br);
 	s.setValue("flowcontrol", static_cast<int>(fc));
+	s.setValue("loglevel", loglevel);
 }

@@ -627,9 +627,9 @@
          </widget>
         </item>
         <item row="2" column="0">
-         <widget class="QTreeWidget" name="treeWidget">
+         <widget class="QTreeWidget" name="tw_xn_log">
           <property name="selectionMode">
-           <enum>QAbstractItemView::MultiSelection</enum>
+           <enum>QAbstractItemView::SingleSelection</enum>
           </property>
           <property name="wordWrap">
            <bool>true</bool>
@@ -637,9 +637,17 @@
           <attribute name="headerVisible">
            <bool>false</bool>
           </attribute>
+          <attribute name="headerCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
           <column>
            <property name="text">
             <string>Time</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Loglevel</string>
            </property>
           </column>
           <column>

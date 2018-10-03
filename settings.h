@@ -19,6 +19,7 @@ struct XnSettings {
 	QString portname;
 	uint32_t br;
 	QSerialPort::FlowControl fc;
+	uint32_t loglevel;
 
 	void load(QSettings&);
 	void save(QSettings&);
