@@ -28,6 +28,11 @@ private slots:
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);
+	void a_dcc_go(bool);
+	void a_dcc_stop(bool);
+
+	void a_wsm_connect(bool);
+	void a_wsm_disconnect(bool);
 
 private:
 	Ui::MainWindow ui;

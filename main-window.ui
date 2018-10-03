@@ -683,7 +683,7 @@
     <addaction name="a_xn_settings"/>
     <addaction name="separator"/>
     <addaction name="a_xn_dcc_go"/>
-    <addaction name="a_xn_stop"/>
+    <addaction name="a_xn_dcc_stop"/>
    </widget>
    <widget class="QMenu" name="m_wsm">
     <property name="title">
@@ -733,7 +733,7 @@
     <string>DCC Go</string>
    </property>
   </action>
-  <action name="a_xn_stop">
+  <action name="a_xn_dcc_stop">
    <property name="text">
     <string>DCC Stop</string>
    </property>

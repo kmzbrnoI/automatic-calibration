@@ -27,6 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(ui.a_xn_connect, SIGNAL(triggered(bool)), this, SLOT(a_xn_connect(bool)));
 	QObject::connect(ui.a_xn_disconnect, SIGNAL(triggered(bool)), this, SLOT(a_xn_disconnect(bool)));
+	QObject::connect(ui.a_xn_dcc_go, SIGNAL(triggered(bool)), this, SLOT(a_dcc_go(bool)));
+	QObject::connect(ui.a_xn_dcc_stop, SIGNAL(triggered(bool)), this, SLOT(a_dcc_stop(bool)));
 
 	ui.tw_main->setCurrentIndex(0);
 }
@@ -149,6 +151,22 @@ void MainWindow::a_xn_disconnect(bool) {
 		);
 		m.exec();
 	}
+}
+
+void MainWindow::a_dcc_go(bool) {
+	if (xn.connected())
+		xn.setTrkStatus(XnTrkStatus::On);
+}
+
+void MainWindow::a_dcc_stop(bool) {
+	if (xn.connected())
+		xn.setTrkStatus(XnTrkStatus::Off);
+}
+
+void MainWindow::a_wsm_connect(bool) {
+}
+
+void MainWindow::a_wsm_disconnect(bool) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
