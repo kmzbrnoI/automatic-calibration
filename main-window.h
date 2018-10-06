@@ -38,6 +38,9 @@ private slots:
 	void b_addr_read_handle();
 	void b_speed_set_handle();
 	void b_loco_stop_handle();
+	void vs_speed_slider_moved(int);
+	void rb_direction_toggled(bool);
+	void t_slider_tick();
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);
@@ -53,6 +56,8 @@ private:
 	Settings s;
 	QTimer t_xn_disconnect;
 	QTimer t_wsm_disconnect;
+	QTimer t_slider;
+	bool m_sent_speed;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);

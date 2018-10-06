@@ -21,9 +21,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_addr_read, SIGNAL(released()), this, SLOT(b_addr_read_handle()));
 	QObject::connect(ui.b_speed_set, SIGNAL(released()), this, SLOT(b_speed_set_handle()));
 	QObject::connect(ui.b_loco_stop, SIGNAL(released()), this, SLOT(b_loco_stop_handle()));
+	QObject::connect(ui.vs_speed, SIGNAL(sliderMoved(int)), this, SLOT(vs_speed_slider_moved(int)));
+	QObject::connect(ui.rb_backward, SIGNAL(toggled(bool)), this, SLOT(rb_direction_toggled(bool)));
 
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
+
+	t_slider.start(100);
+	QObject::connect(&t_slider, SIGNAL(timeout()), this, SLOT(t_slider_tick()));
 
 	widget_set_color(*(ui.l_xn), Qt::red);
 	widget_set_color(*(ui.l_dcc), Qt::gray);
@@ -309,5 +314,21 @@ void MainWindow::b_loco_stop_handle() {
 	xn.emergencyStop(LocoAddr(ui.sb_loco->value()));
 }
 
+void MainWindow::vs_speed_slider_moved(int value) {
+	ui.sb_speed->setValue(value);
+}
+
+void MainWindow::rb_direction_toggled(bool backward) {
+	(void)backward;
+	b_speed_set_handle();
+}
+
+void MainWindow::t_slider_tick() {
+	if (ui.vs_speed->value() != m_sent_speed) {
+		m_sent_speed = ui.vs_speed->value();
+		xn.setSpeed(LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
+		            ui.rb_backward->isChecked());
+	}
+}
 
 ///////////////////////////////////////////////////////////////////////////////
