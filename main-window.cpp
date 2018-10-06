@@ -99,11 +99,19 @@ void MainWindow::xn_onLog(QString message, XnLogLevel loglevel) {
 
 void MainWindow::xn_onConnect() {
 	widget_set_color(*(ui.l_xn), Qt::green);
+	ui.a_xn_connect->setEnabled(false);
+	ui.a_xn_disconnect->setEnabled(true);
+	ui.a_xn_dcc_go->setEnabled(true);
+	ui.a_xn_dcc_stop->setEnabled(true);
 }
 
 void MainWindow::xn_onDisconnect() {
 	widget_set_color(*(ui.l_xn), Qt::red);
 	widget_set_color(*(ui.l_dcc), Qt::gray);
+	ui.a_xn_connect->setEnabled(true);
+	ui.a_xn_disconnect->setEnabled(false);
+	ui.a_xn_dcc_go->setEnabled(false);
+	ui.a_xn_dcc_stop->setEnabled(false);
 }
 
 void MainWindow::xn_onTrkStatusChanged(XnTrkStatus status) {

@@ -704,6 +704,9 @@
    </property>
   </action>
   <action name="a_xn_disconnect">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Disconnect</string>
    </property>
@@ -719,6 +722,9 @@
    </property>
   </action>
   <action name="a_wsm_disconnect">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Disconnect</string>
    </property>
@@ -729,11 +735,17 @@
    </property>
   </action>
   <action name="a_xn_dcc_go">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>DCC Go</string>
    </property>
   </action>
   <action name="a_xn_dcc_stop">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>DCC Stop</string>
    </property>
