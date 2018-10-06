@@ -16,8 +16,13 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-	void xn_onDccGoError(void* sender, void* data);
-	void xn_onDccStopError(void* sender, void* data);
+	void xn_onDccGoError(void*, void*);
+	void xn_onDccStopError(void*, void*);
+	void xn_onLIVersionError(void*, void*);
+	void xn_onCSVersionError(void*, void*);
+	void xn_onCSStatusError(void*, void*);
+	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
+	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
 
 private slots:
 	void xn_onError(QString error);
@@ -45,9 +50,16 @@ private:
 	QTimer t_wsm_disconnect;
 
 	void widget_set_color(QWidget&, const QColor);
-	static void xns_onDccGoError(void* sender, void* data);
-	static void xns_onDccStopError(void* sender, void* data);
 	void show_response_error(QString command);
+	void log(QString message);
+
+	static void xns_onDccGoError(void*, void*);
+	static void xns_onDccStopError(void*, void*);
+	static void xns_onLIVersionError(void*, void*);
+	static void xns_onCSVersionError(void*, void*);
+	static void xns_onCSStatusError(void*, void*);
+	static void xns_gotLIVersion(void*, unsigned hw, unsigned sw);
+	static void xns_gotCSVersion(void*, unsigned major, unsigned minor);
 };
 
 #endif // MAINWINDOW_H

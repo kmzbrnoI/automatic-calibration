@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_xn_dcc_stop, SIGNAL(triggered(bool)), this, SLOT(a_dcc_stop(bool)));
 
 	ui.tw_main->setCurrentIndex(0);
+	log("Application launched.");
 }
 
 MainWindow::~MainWindow() {
@@ -106,6 +107,7 @@ void MainWindow::xn_onConnect() {
 	ui.a_xn_disconnect->setEnabled(true);
 	ui.a_xn_dcc_go->setEnabled(true);
 	ui.a_xn_dcc_stop->setEnabled(true);
+	log("Connected to XpressNET.");
 }
 
 void MainWindow::xn_onDisconnect() {
@@ -115,6 +117,8 @@ void MainWindow::xn_onDisconnect() {
 	ui.a_xn_disconnect->setEnabled(false);
 	ui.a_xn_dcc_go->setEnabled(false);
 	ui.a_xn_dcc_stop->setEnabled(false);
+	log("Disconnected from XpressNET");
+	xn.getLIVersion(&xns_gotLIVersion, std::make_unique<XnCb>(&xns_onLIVersionError));
 }
 
 void MainWindow::xn_onTrkStatusChanged(XnTrkStatus status) {
@@ -130,6 +134,11 @@ void MainWindow::xn_onTrkStatusChanged(XnTrkStatus status) {
 
 void MainWindow::xns_onDccGoError(void* s, void* d) { wref->xn_onDccGoError(s, d); }
 void MainWindow::xns_onDccStopError(void* s, void* d) { wref->xn_onDccStopError(s, d); }
+void MainWindow::xns_onLIVersionError(void* s, void* d) { wref->xn_onLIVersionError(s, d); }
+void MainWindow::xns_onCSVersionError(void* s, void* d) { wref->xn_onCSVersionError(s, d); }
+void MainWindow::xns_onCSStatusError(void* s, void* d) { wref->xn_onCSStatusError(s, d); }
+void MainWindow::xns_gotLIVersion(void* s, unsigned hw, unsigned sw) { wref->xn_gotLIVersion(s, hw, sw); }
+void MainWindow::xns_gotCSVersion(void* s, unsigned major, unsigned minor) { wref->xn_gotCSVersion(s, major, minor); }
 
 void MainWindow::xn_onDccGoError(void* sender, void* data) {
 	(void)sender; (void)data;
@@ -148,6 +157,41 @@ void MainWindow::show_response_error(QString command) {
 		"Command station did not respond to " + command + " command!",
 		QMessageBox::Ok
 	);
+}
+
+void MainWindow::xn_onLIVersionError(void* sender, void* data) {
+	(void)sender; (void)data;
+	QMessageBox m(
+		QMessageBox::Icon::Warning,
+		"Error!",
+		"LI not respond to version request, are you really connected to the LI?!",
+		QMessageBox::Ok
+	);
+}
+
+void MainWindow::xn_onCSVersionError(void* sender, void* data) {
+	(void)sender; (void)data;
+	QMessageBox m(
+		QMessageBox::Icon::Warning,
+		"Error!",
+		"Command station did not respond to version request"
+		", is the LI really connected to the command station?!",
+		QMessageBox::Ok
+	);
+}
+
+void MainWindow::xn_onCSStatusError(void* sender, void* data) {
+	(void)sender; (void)data;
+	show_response_error("STATUS");
+}
+
+void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
+	log("Got LI version. HW: " + QString::number(hw) + ", SW: " + QString::number(sw));
+	xn.getCommandStationStatus(nullptr, std::make_unique<XnCb>(xns_onCSStatusError));
+}
+
+void MainWindow::xn_gotCSVersion(void*, unsigned major, unsigned minor) {
+	log("Got command station version:" + QString::number(major) + "." + QString::number(minor));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -202,6 +246,11 @@ void MainWindow::a_wsm_connect(bool) {
 }
 
 void MainWindow::a_wsm_disconnect(bool) {
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::log(QString message) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
