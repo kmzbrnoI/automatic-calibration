@@ -3,9 +3,12 @@
 #include "main-window.h"
 #include "ui_main-window.h"
 
+MainWindow* wref = nullptr;
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent), xn(this), s(_CONFIG_FN) {
 	ui.setupUi(this);
+	wref = this;
 
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
 	QObject::connect(&xn, SIGNAL(onLog(QString, XnLogLevel)), this, SLOT(xn_onLog(QString, XnLogLevel)));
@@ -125,6 +128,15 @@ void MainWindow::xn_onTrkStatusChanged(XnTrkStatus status) {
 		widget_set_color(*(ui.l_dcc), Qt::yellow);
 }
 
+void MainWindow::xns_onDccGoError(void* sender, void* data) { wref->xn_onDccGoError(sender, data); }
+void MainWindow::xns_onDccStopError(void* sender, void* data) { wref->xn_onDccStopError(sender, data); }
+
+void MainWindow::xn_onDccGoError(void* sender, void* data) {
+}
+
+void MainWindow::xn_onDccStopError(void* sender, void* data) {
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::a_xn_connect(bool) {
@@ -163,7 +175,7 @@ void MainWindow::a_xn_disconnect(bool) {
 
 void MainWindow::a_dcc_go(bool) {
 	if (xn.connected())
-		xn.setTrkStatus(XnTrkStatus::On);
+		xn.setTrkStatus(XnTrkStatus::On, nullptr, std::make_unique<XnCb>(&xns_onDccGoError));
 }
 
 void MainWindow::a_dcc_stop(bool) {

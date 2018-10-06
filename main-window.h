@@ -16,6 +16,9 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
+	void xn_onDccGoError(void* sender, void* data);
+	void xn_onDccStopError(void* sender, void* data);
+
 private slots:
 	void xn_onError(QString error);
 	void xn_onLog(QString, XnLogLevel);
@@ -42,6 +45,8 @@ private:
 	QTimer t_wsm_disconnect;
 
 	void widget_set_color(QWidget&, const QColor);
+	static void xns_onDccGoError(void* sender, void* data);
+	static void xns_onDccStopError(void* sender, void* data);
 };
 
 #endif // MAINWINDOW_H
