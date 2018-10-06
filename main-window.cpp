@@ -16,6 +16,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
 	QObject::connect(&xn, SIGNAL(onTrkStatusChanged(XnTrkStatus)), this, SLOT(xn_onTrkStatusChanged(XnTrkStatus)));
 
+	QObject::connect(ui.b_addr_set, SIGNAL(released()), this, SLOT(b_addr_set_handle()));
+	QObject::connect(ui.b_addr_release, SIGNAL(released()), this, SLOT(b_addr_release_handle()));
+	QObject::connect(ui.b_addr_read, SIGNAL(released()), this, SLOT(b_addr_read_handle()));
+	QObject::connect(ui.b_speed_set, SIGNAL(released()), this, SLOT(b_speed_set_handle()));
+	QObject::connect(ui.b_loco_stop, SIGNAL(released()), this, SLOT(b_loco_stop_handle()));
+
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
 
@@ -107,6 +113,16 @@ void MainWindow::xn_onConnect() {
 	ui.a_xn_disconnect->setEnabled(true);
 	ui.a_xn_dcc_go->setEnabled(true);
 	ui.a_xn_dcc_stop->setEnabled(true);
+	ui.gb_speed->setEnabled(true);
+
+	ui.vs_speed->setEnabled(false);
+	ui.sb_speed->setEnabled(false);
+	ui.b_speed_set->setEnabled(false);
+	ui.b_loco_stop->setEnabled(false);
+	ui.chb_f0->setEnabled(false);
+	ui.chb_f1->setEnabled(false);
+	ui.chb_f2->setEnabled(false);
+
 	log("Connected to XpressNET.");
 }
 
@@ -117,6 +133,9 @@ void MainWindow::xn_onDisconnect() {
 	ui.a_xn_disconnect->setEnabled(false);
 	ui.a_xn_dcc_go->setEnabled(false);
 	ui.a_xn_dcc_stop->setEnabled(false);
+	ui.gb_speed->setEnabled(false);
+	ui.b_addr_set->setEnabled(true);
+	ui.b_addr_release->setEnabled(false);
 	log("Disconnected from XpressNET");
 	xn.getLIVersion(&xns_gotLIVersion, std::make_unique<XnCb>(&xns_onLIVersionError));
 }
@@ -252,5 +271,43 @@ void MainWindow::a_wsm_disconnect(bool) {
 
 void MainWindow::log(QString message) {
 }
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::b_addr_set_handle() {
+	ui.b_addr_set->setEnabled(false);
+	ui.b_addr_release->setEnabled(true);
+	ui.sb_loco->setEnabled(false);
+	ui.b_addr_read->setEnabled(false);
+}
+
+void MainWindow::b_addr_release_handle() {
+	ui.b_addr_set->setEnabled(true);
+	ui.b_addr_release->setEnabled(false);
+	ui.sb_loco->setEnabled(true);
+	ui.b_addr_read->setEnabled(true);
+
+	ui.vs_speed->setEnabled(false);
+	ui.sb_speed->setEnabled(false);
+	ui.b_speed_set->setEnabled(false);
+	ui.b_loco_stop->setEnabled(false);
+	ui.chb_f0->setEnabled(false);
+	ui.chb_f1->setEnabled(false);
+	ui.chb_f2->setEnabled(false);
+}
+
+void MainWindow::b_addr_read_handle() {
+}
+
+void MainWindow::b_speed_set_handle() {
+	xn.setSpeed(LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
+	            ui.rb_backward->isChecked());
+	ui.vs_speed->setValue(ui.sb_loco->value());
+}
+
+void MainWindow::b_loco_stop_handle() {
+	xn.emergencyStop(LocoAddr(ui.sb_loco->value()));
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////

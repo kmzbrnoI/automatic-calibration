@@ -33,6 +33,11 @@ private slots:
 
 	void t_xn_disconnect_tick();
 	void cb_xn_ll_index_changed(int index);
+	void b_addr_set_handle();
+	void b_addr_release_handle();
+	void b_addr_read_handle();
+	void b_speed_set_handle();
+	void b_loco_stop_handle();
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);

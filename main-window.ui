@@ -189,6 +189,9 @@
         </layout>
        </widget>
        <widget class="QGroupBox" name="gb_speed">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>710</x>
@@ -205,7 +208,7 @@
           <rect>
            <x>10</x>
            <y>340</y>
-           <width>181</width>
+           <width>191</width>
            <height>41</height>
           </rect>
          </property>
@@ -221,7 +224,7 @@
           <number>9999</number>
          </property>
          <property name="value">
-          <number>1234</number>
+          <number>3</number>
          </property>
         </widget>
         <widget class="QSlider" name="vs_speed">
@@ -229,7 +232,7 @@
           <rect>
            <x>20</x>
            <y>60</y>
-           <width>16</width>
+           <width>51</width>
            <height>221</height>
           </rect>
          </property>
@@ -249,8 +252,8 @@
         <widget class="QSpinBox" name="sb_speed">
          <property name="geometry">
           <rect>
-           <x>70</x>
-           <y>80</y>
+           <x>90</x>
+           <y>50</y>
            <width>81</width>
            <height>23</height>
           </rect>
@@ -259,8 +262,8 @@
         <widget class="QPushButton" name="b_speed_set">
          <property name="geometry">
           <rect>
-           <x>70</x>
-           <y>110</y>
+           <x>90</x>
+           <y>80</y>
            <width>81</width>
            <height>22</height>
           </rect>
@@ -285,7 +288,7 @@
         <widget class="QPushButton" name="b_addr_release">
          <property name="geometry">
           <rect>
-           <x>110</x>
+           <x>120</x>
            <y>390</y>
            <width>81</width>
            <height>22</height>
@@ -322,7 +325,7 @@
           <rect>
            <x>10</x>
            <y>286</y>
-           <width>181</width>
+           <width>191</width>
            <height>20</height>
           </rect>
          </property>
@@ -333,8 +336,8 @@
         <widget class="QPushButton" name="b_loco_stop">
          <property name="geometry">
           <rect>
-           <x>70</x>
-           <y>140</y>
+           <x>90</x>
+           <y>110</y>
            <width>81</width>
            <height>22</height>
           </rect>
@@ -346,8 +349,8 @@
         <widget class="QCheckBox" name="chb_f0">
          <property name="geometry">
           <rect>
-           <x>70</x>
-           <y>200</y>
+           <x>90</x>
+           <y>210</y>
            <width>41</width>
            <height>20</height>
           </rect>
@@ -359,8 +362,8 @@
         <widget class="QCheckBox" name="chb_f1">
          <property name="geometry">
           <rect>
-           <x>70</x>
-           <y>220</y>
+           <x>90</x>
+           <y>230</y>
            <width>41</width>
            <height>20</height>
           </rect>
@@ -372,7 +375,7 @@
         <widget class="QPushButton" name="b_addr_read">
          <property name="geometry">
           <rect>
-           <x>110</x>
+           <x>120</x>
            <y>310</y>
            <width>81</width>
            <height>22</height>
@@ -398,8 +401,8 @@
         <widget class="QCheckBox" name="chb_f2">
          <property name="geometry">
           <rect>
-           <x>70</x>
-           <y>240</y>
+           <x>90</x>
+           <y>250</y>
            <width>41</width>
            <height>20</height>
           </rect>
@@ -411,14 +414,70 @@
         <widget class="QLabel" name="label_6">
          <property name="geometry">
           <rect>
-           <x>70</x>
-           <y>60</y>
+           <x>90</x>
+           <y>30</y>
            <width>81</width>
            <height>16</height>
           </rect>
          </property>
          <property name="text">
           <string>Steps [0-28]:</string>
+         </property>
+        </widget>
+        <widget class="QRadioButton" name="rb_forward">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>150</y>
+           <width>102</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Forward</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QRadioButton" name="rb_backward">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>170</y>
+           <width>102</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Backward</string>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+        </widget>
+        <widget class="QLabel" name="l_speed_status">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>240</y>
+           <width>21</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>20</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>●</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
        </widget>
