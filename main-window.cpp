@@ -128,13 +128,26 @@ void MainWindow::xn_onTrkStatusChanged(XnTrkStatus status) {
 		widget_set_color(*(ui.l_dcc), Qt::yellow);
 }
 
-void MainWindow::xns_onDccGoError(void* sender, void* data) { wref->xn_onDccGoError(sender, data); }
-void MainWindow::xns_onDccStopError(void* sender, void* data) { wref->xn_onDccStopError(sender, data); }
+void MainWindow::xns_onDccGoError(void* s, void* d) { wref->xn_onDccGoError(s, d); }
+void MainWindow::xns_onDccStopError(void* s, void* d) { wref->xn_onDccStopError(s, d); }
 
 void MainWindow::xn_onDccGoError(void* sender, void* data) {
+	(void)sender; (void)data;
+	show_response_error("DCC GO");
 }
 
 void MainWindow::xn_onDccStopError(void* sender, void* data) {
+	(void)sender; (void)data;
+	show_response_error("DCC STOP");
+}
+
+void MainWindow::show_response_error(QString command) {
+	QMessageBox m(
+		QMessageBox::Icon::Warning,
+		"Error!",
+		"Command station did not respond to " + command + " command!",
+		QMessageBox::Ok
+	);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -175,12 +188,14 @@ void MainWindow::a_xn_disconnect(bool) {
 
 void MainWindow::a_dcc_go(bool) {
 	if (xn.connected())
-		xn.setTrkStatus(XnTrkStatus::On, nullptr, std::make_unique<XnCb>(&xns_onDccGoError));
+		xn.setTrkStatus(XnTrkStatus::On, nullptr,
+		                std::make_unique<XnCb>(&xns_onDccGoError));
 }
 
 void MainWindow::a_dcc_stop(bool) {
 	if (xn.connected())
-		xn.setTrkStatus(XnTrkStatus::Off);
+		xn.setTrkStatus(XnTrkStatus::Off, nullptr,
+		                std::make_unique<XnCb>(&xns_onDccStopError));
 }
 
 void MainWindow::a_wsm_connect(bool) {

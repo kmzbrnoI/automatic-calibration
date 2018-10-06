@@ -47,6 +47,7 @@ private:
 	void widget_set_color(QWidget&, const QColor);
 	static void xns_onDccGoError(void* sender, void* data);
 	static void xns_onDccStopError(void* sender, void* data);
+	void show_response_error(QString command);
 };
 
 #endif // MAINWINDOW_H
