@@ -766,8 +766,14 @@
     <addaction name="separator"/>
     <addaction name="a_wsm_settings"/>
    </widget>
+   <widget class="QMenu" name="m_power_graph">
+    <property name="title">
+     <string>Power graph</string>
+    </property>
+   </widget>
    <addaction name="m_xn"/>
    <addaction name="m_wsm"/>
+   <addaction name="m_power_graph"/>
   </widget>
   <widget class="QStatusBar" name="sb_main"/>
   <action name="a_xn_connect">

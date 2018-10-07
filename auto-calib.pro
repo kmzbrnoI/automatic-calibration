@@ -23,7 +23,8 @@ SOURCES += \
 	lib/wsm/measure-car.cpp \
 	lib/xn/xn.cpp \
 	settings.cpp \
-	power-map.cpp
+	power-map.cpp \
+	power-graph-window.cpp
 
 HEADERS += \
 	main-window.h \
@@ -32,10 +33,12 @@ HEADERS += \
 	lib/xn/xn.h \
 	lib/xn/xn-typedefs.h \
 	settings.h \
-	power-map.h
+	power-map.h \
+	power-graph-window.h
 
 FORMS += \
-	main-window.ui
+	main-window.ui \
+	power-graph-window.ui
 
 CONFIG += c++14
 QMAKE_CXXFLAGS += -Wall -Wextra -pedantic

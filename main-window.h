@@ -7,6 +7,7 @@
 #include "lib/xn/xn.h"
 #include "lib/wsm/measure-car.h"
 #include "settings.h"
+#include "power-graph-window.h"
 
 const QString _CONFIG_FN = "config.ini";
 
@@ -56,6 +57,8 @@ private slots:
 	void a_wsm_connect(bool);
 	void a_wsm_disconnect(bool);
 
+	void a_power_graph();
+
 	void mc_speedRead(double speed, uint16_t speed_raw);
 	void mc_onError(QString error);
 	void mc_batteryRead(double voltage, uint16_t voltage_raw);
@@ -74,6 +77,7 @@ private:
 	int m_sent_speed = 0;
 	QDateTime m_canBlink;
 	bool m_starting = false;
+	PowerGraphWindow w_pg;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);

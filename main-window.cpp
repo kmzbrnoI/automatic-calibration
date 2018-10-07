@@ -50,6 +50,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_wsm_connect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_connect(bool)));
 	QObject::connect(ui.a_wsm_disconnect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_disconnect(bool)));
 
+	QObject::connect(ui.m_power_graph, SIGNAL(aboutToShow()), this, SLOT(a_power_graph()));
+
 	ui.tw_main->setCurrentIndex(0);
 	log("Application launched.");
 }
@@ -555,6 +557,12 @@ void MainWindow::mc_batteryCritical() {
 
 void MainWindow::t_mc_disconnect_tick() {
 	wsm->disconnect();
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::a_power_graph() {
+	w_pg.show();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PowerGraphWindow</class>
+ <widget class="QDialog" name="PowerGraphWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>574</width>
+    <height>668</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Power to Speed graph</string>
+  </property>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
