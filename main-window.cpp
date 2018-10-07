@@ -3,6 +3,7 @@
 #include "main-window.h"
 #include "ui_main-window.h"
 
+const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 MainWindow* wref = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -324,9 +325,103 @@ void MainWindow::rb_direction_toggled(bool backward) {
 void MainWindow::t_slider_tick() {
 	if (ui.vs_speed->value() != m_sent_speed) {
 		m_sent_speed = ui.vs_speed->value();
-		xn.setSpeed(LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
+		xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
 		            ui.rb_backward->isChecked());
 	}
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// WSM functions
+
+void MainWindow::wsm_status_blink() {
+	QPalette palette = ui.l_wsm_alive->palette();
+	QColor color = palette.color(QPalette::WindowText);
+	if (color == Qt::gray)
+		widget_set_color(*(ui.l_wsm_alive), palette.color(QPalette::Window));
+	else
+		widget_set_color(*(ui.l_wsm_alive), Qt::gray);
+}
+
+void MainWindow::a_wsm_connect(bool a) {
+	(void)a;
+
+	try {
+		wsm = std::make_unique<Wsm::MeasureCar>(s.wsm.portname, s.wsm.scale, s.wsm.wheelDiameter);
+		QObject::connect(wsm.get(), SIGNAL(speedRead(double, uint16_t)), this, SLOT(mc_speedRead(double, uint16_t)));
+		QObject::connect(wsm.get(), SIGNAL(onError(QString)), this, SLOT(mc_onError(QString)));
+		QObject::connect(wsm.get(), SIGNAL(batteryRead(double, uint16_t)), this, SLOT(mc_batteryRead(double, uint16_t)));
+		QObject::connect(wsm.get(), SIGNAL(batteryCritical()), this, SLOT(mc_batteryCritical()));
+		QObject::connect(wsm.get(), SIGNAL(distanceRead(double, uint32_t)), this, SLOT(mc_distanceRead(double, uint32_t)));
+
+		ui.a_wsm_connect->setEnabled(false);
+		ui.a_wsm_disconnect->setEnabled(false);
+	} catch (const Wsm::EOpenError& e) {
+		QMessageBox m(
+			QMessageBox::Icon::Warning,
+			"Error!",
+			"Error while opening serial port '" + s.wsm.portname + "':\n" + e,
+			QMessageBox::Ok
+		);
+		m.exec();
+	}
+}
+
+void MainWindow::a_wsm_disconnect(bool a) {
+	(void)a;
+}
+
+void MainWindow::mc_speedRead(double speed, uint16_t speed_raw) {
+	(void)speed_raw;
+
+	ui.l_wsm_speed->setText(QString::number(speed, 'f', 1));
+
+	if (m_canBlink < QDateTime::currentDateTime()) {
+		wsm_status_blink();
+		m_canBlink = QDateTime::currentDateTime().addMSecs(WSM_BLINK_TIMEOUT);
+	}
+}
+
+void MainWindow::mc_distanceRead(double distance, uint32_t distance_raw) {}
+
+void MainWindow::mc_onError(QString error) {
+	if (!t_wsm_disconnect.isActive()) {
+		t_wsm_disconnect.start(100);
+		QMessageBox m(
+			QMessageBox::Icon::Warning,
+			"Error!",
+			"WSM serial port error: " + error + "!",
+			QMessageBox::Ok
+		);
+		m.exec();
+	}
+}
+
+void MainWindow::mc_batteryRead(double voltage, uint16_t voltage_raw) {
+	QString text;
+	text.sprintf(
+		"Battery: %4.2f V [3.5 – 4.2 V] (%d, %s)",
+		voltage,
+		voltage_raw,
+		QTime::currentTime().toString().toLatin1().data()
+	);
+	ui.sb_main->showMessage(text);
+}
+
+void MainWindow::mc_batteryCritical() {
+	QMessageBox m(
+		QMessageBox::Icon::Warning,
+		"Warning",
+		"Battery level critical, device is shutting down!",
+		QMessageBox::Ok
+	);
+	m.exec();
+
+	if (!t_wsm_disconnect.isActive())
+		t_wsm_disconnect.start(100);
+}
+
+void MainWindow::t_mc_disconnect_tick() {
+	wsm->disconnect();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

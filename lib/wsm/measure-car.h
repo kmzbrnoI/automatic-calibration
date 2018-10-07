@@ -8,6 +8,8 @@
 
 #include "../q-str-exception.h"
 
+namespace Wsm {
+
 const unsigned int _BUF_IN_TIMEOUT_MS = 300;
 
 class EOpenError : public QStrException {
@@ -49,5 +51,7 @@ private:
 
 	void parseMessage(QByteArray message);
 };
+
+}//end namespace
 
 #endif

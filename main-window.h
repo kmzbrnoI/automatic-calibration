@@ -5,6 +5,7 @@
 
 #include "ui_main-window.h"
 #include "lib/xn/xn.h"
+#include "lib/wsm/measure-car.h"
 #include "settings.h"
 
 const QString _CONFIG_FN = "config.ini";
@@ -50,6 +51,13 @@ private slots:
 	void a_wsm_connect(bool);
 	void a_wsm_disconnect(bool);
 
+	void mc_speedRead(double speed, uint16_t speed_raw);
+	void mc_onError(QString error);
+	void mc_batteryRead(double voltage, uint16_t voltage_raw);
+	void mc_batteryCritical();
+	void mc_distanceRead(double distance, uint32_t distance_raw);
+	void t_mc_disconnect_tick();
+
 private:
 	Ui::MainWindow ui;
 	Xn::XpressNet xn;
@@ -59,10 +67,12 @@ private:
 	QTimer t_wsm_disconnect;
 	QTimer t_slider;
 	bool m_sent_speed;
+	QDateTime m_canBlink;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);
 	void log(QString message);
+	void wsm_status_blink();
 
 	static void xns_onDccGoError(void*, void*);
 	static void xns_onDccStopError(void*, void*);

@@ -4,6 +4,8 @@
 
 #include "measure-car.h"
 
+namespace Wsm {
+
 MeasureCar::MeasureCar(QString portname, unsigned int scale, double wheelDiameter, QObject *parent)
 	: QObject(parent), scale(scale), wheelDiameter(wheelDiameter), m_distStart(0) {
 	m_serialPort.setBaudRate(9600);
@@ -105,3 +107,5 @@ void MeasureCar::parseMessage(QByteArray message) {
 void MeasureCar::distanceReset() {
 	m_distStart = m_dist;
 }
+
+}//end namespace
