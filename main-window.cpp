@@ -84,6 +84,16 @@ void MainWindow::cb_xn_ll_index_changed(int index) {
 	xn.loglevel = static_cast<Xn::XnLogLevel>(index);
 }
 
+void MainWindow::show_error(const QString error) {
+	QMessageBox m(
+		QMessageBox::Icon::Warning,
+		"Error!",
+		error,
+		QMessageBox::Ok
+	);
+	m.exec();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // XN Events
 
@@ -145,7 +155,13 @@ void MainWindow::xn_onDisconnect() {
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_release->setEnabled(false);
 	log("Disconnected from XpressNET");
-	xn.getLIVersion(&xns_gotLIVersion, std::make_unique<Xn::XnCb>(&xns_onLIVersionError));
+
+	try {
+		xn.getLIVersion(&xns_gotLIVersion, std::make_unique<Xn::XnCb>(&xns_onLIVersionError));
+	}
+	catch (const QStrException& e) {
+		show_error(e.str());
+	}
 }
 
 void MainWindow::xn_onTrkStatusChanged(Xn::XnTrkStatus status) {
@@ -214,7 +230,12 @@ void MainWindow::xn_onCSStatusError(void* sender, void* data) {
 
 void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
 	log("Got LI version. HW: " + QString::number(hw) + ", SW: " + QString::number(sw));
-	xn.getCommandStationStatus(nullptr, std::make_unique<Xn::XnCb>(xns_onCSStatusError));
+	try {
+		xn.getCommandStationStatus(nullptr, std::make_unique<Xn::XnCb>(xns_onCSStatusError));
+	}
+	catch (const QStrException& e) {
+		show_error(e.str());
+	}
 }
 
 void MainWindow::xn_gotCSVersion(void*, unsigned major, unsigned minor) {
@@ -231,13 +252,7 @@ void MainWindow::a_xn_connect(bool) {
 	try {
 		xn.connect(s.xn.portname, s.xn.br, s.xn.fc);
 	} catch (const QStrException& e) {
-		QMessageBox m(
-			QMessageBox::Icon::Warning,
-			"Error!",
-			e.str(),
-			QMessageBox::Ok
-		);
-		m.exec();
+		show_error(e.str());
 	}
 }
 
@@ -248,26 +263,28 @@ void MainWindow::a_xn_disconnect(bool) {
 	try {
 		xn.disconnect();
 	} catch (const QStrException& e) {
-		QMessageBox m(
-			QMessageBox::Icon::Warning,
-			"Error!",
-			e.str(),
-			QMessageBox::Ok
-		);
-		m.exec();
+		show_error(e.str());
 	}
 }
 
 void MainWindow::a_dcc_go(bool) {
-	if (xn.connected())
-		xn.setTrkStatus(Xn::XnTrkStatus::On, nullptr,
-		                std::make_unique<Xn::XnCb>(&xns_onDccGoError));
+	try {
+		if (xn.connected())
+			xn.setTrkStatus(Xn::XnTrkStatus::On, nullptr,
+			                std::make_unique<Xn::XnCb>(&xns_onDccGoError));
+	} catch (const QStrException& e) {
+		show_error(e.str());
+	}
 }
 
 void MainWindow::a_dcc_stop(bool) {
-	if (xn.connected())
-		xn.setTrkStatus(Xn::XnTrkStatus::Off, nullptr,
-		                std::make_unique<Xn::XnCb>(&xns_onDccStopError));
+	try {
+		if (xn.connected())
+			xn.setTrkStatus(Xn::XnTrkStatus::Off, nullptr,
+			                std::make_unique<Xn::XnCb>(&xns_onDccStopError));
+	} catch (const QStrException& e) {
+		show_error(e.str());
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -304,13 +321,23 @@ void MainWindow::b_addr_read_handle() {
 }
 
 void MainWindow::b_speed_set_handle() {
-	xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
-	            ui.rb_backward->isChecked());
-	ui.vs_speed->setValue(ui.sb_loco->value());
+	try {
+		xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
+		            ui.rb_backward->isChecked());
+		ui.vs_speed->setValue(ui.sb_loco->value());
+	}
+	catch (const QStrException& e) {
+		show_error(e.str());
+	}
 }
 
 void MainWindow::b_loco_stop_handle() {
-	xn.emergencyStop(Xn::LocoAddr(ui.sb_loco->value()));
+	try {
+		xn.emergencyStop(Xn::LocoAddr(ui.sb_loco->value()));
+	}
+	catch (const QStrException& e) {
+		show_error(e.str());
+	}
 }
 
 void MainWindow::vs_speed_slider_moved(int value) {
@@ -323,10 +350,15 @@ void MainWindow::rb_direction_toggled(bool backward) {
 }
 
 void MainWindow::t_slider_tick() {
-	if (ui.vs_speed->value() != m_sent_speed) {
-		m_sent_speed = ui.vs_speed->value();
-		xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
-		            ui.rb_backward->isChecked());
+	try {
+		if (ui.vs_speed->value() != m_sent_speed) {
+			m_sent_speed = ui.vs_speed->value();
+			xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
+			            ui.rb_backward->isChecked());
+		}
+	}
+	catch (const QStrException& e) {
+		show_error(e.str());
 	}
 }
 
@@ -356,13 +388,7 @@ void MainWindow::a_wsm_connect(bool a) {
 		ui.a_wsm_connect->setEnabled(false);
 		ui.a_wsm_disconnect->setEnabled(true);
 	} catch (const Wsm::EOpenError& e) {
-		QMessageBox m(
-			QMessageBox::Icon::Warning,
-			"Error!",
-			"Error while opening serial port '" + s.wsm.portname + "':\n" + e,
-			QMessageBox::Ok
-		);
-		m.exec();
+		show_error("Error while opening serial port '" + s.wsm.portname + "':\n" + e);
 	}
 }
 
@@ -396,13 +422,7 @@ void MainWindow::mc_distanceRead(double distance, uint32_t distance_raw) {
 void MainWindow::mc_onError(QString error) {
 	if (!t_wsm_disconnect.isActive()) {
 		t_wsm_disconnect.start(100);
-		QMessageBox m(
-			QMessageBox::Icon::Warning,
-			"Error!",
-			"WSM serial port error: " + error + "!",
-			QMessageBox::Ok
-		);
-		m.exec();
+		show_error("WSM serial port error: " + error + "!");
 	}
 }
 

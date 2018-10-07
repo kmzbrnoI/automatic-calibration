@@ -73,6 +73,7 @@ private:
 	void show_response_error(QString command);
 	void log(QString message);
 	void wsm_status_blink();
+	void show_error(const QString error);
 
 	static void xns_onDccGoError(void*, void*);
 	static void xns_onDccStopError(void*, void*);
