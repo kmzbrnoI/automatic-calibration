@@ -44,6 +44,7 @@ CONFIG += c++14
 QMAKE_CXXFLAGS += -Wall -Wextra -pedantic
 
 QT += serialport
+QT += charts
 
 VERSION_MAJOR = 0
 VERSION_MINOR = 1
