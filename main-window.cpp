@@ -11,10 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	wref = this;
 
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
-	QObject::connect(&xn, SIGNAL(onLog(QString, XnLogLevel)), this, SLOT(xn_onLog(QString, XnLogLevel)));
+	QObject::connect(&xn, SIGNAL(onLog(QString, Xn::XnLogLevel)), this, SLOT(xn_onLog(QString, Xn::XnLogLevel)));
 	QObject::connect(&xn, SIGNAL(onConnect()), this, SLOT(xn_onConnect()));
 	QObject::connect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
-	QObject::connect(&xn, SIGNAL(onTrkStatusChanged(XnTrkStatus)), this, SLOT(xn_onTrkStatusChanged(XnTrkStatus)));
+	QObject::connect(&xn, SIGNAL(onTrkStatusChanged(Xn::XnTrkStatus)), this, SLOT(xn_onTrkStatusChanged(Xn::XnTrkStatus)));
 
 	QObject::connect(ui.b_addr_set, SIGNAL(released()), this, SLOT(b_addr_set_handle()));
 	QObject::connect(ui.b_addr_release, SIGNAL(released()), this, SLOT(b_addr_release_handle()));
@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	widget_set_color(*(ui.l_wsm_alive), Qt::gray);
 
 	ui.cb_xn_loglevel->setCurrentIndex(s.xn.loglevel);
-	xn.loglevel = static_cast<XnLogLevel>(s.xn.loglevel);
+	xn.loglevel = static_cast<Xn::XnLogLevel>(s.xn.loglevel);
 	QObject::connect(ui.cb_xn_loglevel, SIGNAL(currentIndexChanged(int)), this, SLOT(cb_xn_ll_index_changed(int)));
 
 	QObject::connect(ui.a_xn_connect, SIGNAL(triggered(bool)), this, SLOT(a_xn_connect(bool)));
@@ -58,6 +58,7 @@ MainWindow::~MainWindow() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// UI general functions
 
 void MainWindow::widget_set_color(QWidget& widget, const QColor color) {
 	QPalette palette = widget.palette();
@@ -79,33 +80,34 @@ void MainWindow::t_xn_disconnect_tick() {
 
 void MainWindow::cb_xn_ll_index_changed(int index) {
 	s.xn.loglevel = index;
-	xn.loglevel = static_cast<XnLogLevel>(index);
+	xn.loglevel = static_cast<Xn::XnLogLevel>(index);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// XN Events
 
 void MainWindow::xn_onError(QString error) {
-	xn_onLog(error, XnLogLevel::Error);
+	xn_onLog(error, Xn::XnLogLevel::Error);
 
 	if (!t_xn_disconnect.isActive())
 		t_xn_disconnect.start(100);
 }
 
-void MainWindow::xn_onLog(QString message, XnLogLevel loglevel) {
+void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
 	QTreeWidgetItem* item = new QTreeWidgetItem(ui.tw_xn_log);
 	item->setText(0, QTime::currentTime().toString("hh:mm:ss"));
 
-	if (loglevel == XnLogLevel::None)
+	if (loglevel == Xn::XnLogLevel::None)
 		item->setText(1, "None");
-	else if (loglevel == XnLogLevel::Error)
+	else if (loglevel == Xn::XnLogLevel::Error)
 		item->setText(1, "Error");
-	else if (loglevel == XnLogLevel::Warning)
+	else if (loglevel == Xn::XnLogLevel::Warning)
 		item->setText(1, "Warning");
-	else if (loglevel == XnLogLevel::Info)
+	else if (loglevel == Xn::XnLogLevel::Info)
 		item->setText(1, "Info");
-	else if (loglevel == XnLogLevel::Data)
+	else if (loglevel == Xn::XnLogLevel::Data)
 		item->setText(1, "Data");
-	else if (loglevel == XnLogLevel::Debug)
+	else if (loglevel == Xn::XnLogLevel::Debug)
 		item->setText(1, "Debug");
 
 	item->setText(2, message);
@@ -142,17 +144,17 @@ void MainWindow::xn_onDisconnect() {
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_release->setEnabled(false);
 	log("Disconnected from XpressNET");
-	xn.getLIVersion(&xns_gotLIVersion, std::make_unique<XnCb>(&xns_onLIVersionError));
+	xn.getLIVersion(&xns_gotLIVersion, std::make_unique<Xn::XnCb>(&xns_onLIVersionError));
 }
 
-void MainWindow::xn_onTrkStatusChanged(XnTrkStatus status) {
-	if (status == XnTrkStatus::Unknown)
+void MainWindow::xn_onTrkStatusChanged(Xn::XnTrkStatus status) {
+	if (status == Xn::XnTrkStatus::Unknown)
 		widget_set_color(*(ui.l_dcc), Qt::gray);
-	else if (status == XnTrkStatus::Off)
+	else if (status == Xn::XnTrkStatus::Off)
 		widget_set_color(*(ui.l_dcc), Qt::red);
-	if (status == XnTrkStatus::On)
+	if (status == Xn::XnTrkStatus::On)
 		widget_set_color(*(ui.l_dcc), Qt::green);
-	if (status == XnTrkStatus::Programming)
+	if (status == Xn::XnTrkStatus::Programming)
 		widget_set_color(*(ui.l_dcc), Qt::yellow);
 }
 
@@ -211,7 +213,7 @@ void MainWindow::xn_onCSStatusError(void* sender, void* data) {
 
 void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
 	log("Got LI version. HW: " + QString::number(hw) + ", SW: " + QString::number(sw));
-	xn.getCommandStationStatus(nullptr, std::make_unique<XnCb>(xns_onCSStatusError));
+	xn.getCommandStationStatus(nullptr, std::make_unique<Xn::XnCb>(xns_onCSStatusError));
 }
 
 void MainWindow::xn_gotCSVersion(void*, unsigned major, unsigned minor) {
@@ -219,6 +221,7 @@ void MainWindow::xn_gotCSVersion(void*, unsigned major, unsigned minor) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// XpressNET connect/disconnect
 
 void MainWindow::a_xn_connect(bool) {
 	if (xn.connected())
@@ -256,20 +259,14 @@ void MainWindow::a_xn_disconnect(bool) {
 
 void MainWindow::a_dcc_go(bool) {
 	if (xn.connected())
-		xn.setTrkStatus(XnTrkStatus::On, nullptr,
-		                std::make_unique<XnCb>(&xns_onDccGoError));
+		xn.setTrkStatus(Xn::XnTrkStatus::On, nullptr,
+		                std::make_unique<Xn::XnCb>(&xns_onDccGoError));
 }
 
 void MainWindow::a_dcc_stop(bool) {
 	if (xn.connected())
-		xn.setTrkStatus(XnTrkStatus::Off, nullptr,
-		                std::make_unique<XnCb>(&xns_onDccStopError));
-}
-
-void MainWindow::a_wsm_connect(bool) {
-}
-
-void MainWindow::a_wsm_disconnect(bool) {
+		xn.setTrkStatus(Xn::XnTrkStatus::Off, nullptr,
+		                std::make_unique<Xn::XnCb>(&xns_onDccStopError));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -278,6 +275,7 @@ void MainWindow::log(QString message) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Speed settings
 
 void MainWindow::b_addr_set_handle() {
 	ui.b_addr_set->setEnabled(false);
@@ -305,13 +303,13 @@ void MainWindow::b_addr_read_handle() {
 }
 
 void MainWindow::b_speed_set_handle() {
-	xn.setSpeed(LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
+	xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
 	            ui.rb_backward->isChecked());
 	ui.vs_speed->setValue(ui.sb_loco->value());
 }
 
 void MainWindow::b_loco_stop_handle() {
-	xn.emergencyStop(LocoAddr(ui.sb_loco->value()));
+	xn.emergencyStop(Xn::LocoAddr(ui.sb_loco->value()));
 }
 
 void MainWindow::vs_speed_slider_moved(int value) {

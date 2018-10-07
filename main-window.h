@@ -26,10 +26,10 @@ public:
 
 private slots:
 	void xn_onError(QString error);
-	void xn_onLog(QString, XnLogLevel);
+	void xn_onLog(QString, Xn::XnLogLevel);
 	void xn_onConnect();
 	void xn_onDisconnect();
-	void xn_onTrkStatusChanged(XnTrkStatus);
+	void xn_onTrkStatusChanged(Xn::XnTrkStatus);
 
 	void t_xn_disconnect_tick();
 	void cb_xn_ll_index_changed(int index);
@@ -52,7 +52,8 @@ private slots:
 
 private:
 	Ui::MainWindow ui;
-	XpressNet xn;
+	Xn::XpressNet xn;
+	std::unique_ptr<Wsm::MeasureCar> wsm;
 	Settings s;
 	QTimer t_xn_disconnect;
 	QTimer t_wsm_disconnect;
