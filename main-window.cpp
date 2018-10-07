@@ -354,7 +354,7 @@ void MainWindow::a_wsm_connect(bool a) {
 		QObject::connect(wsm.get(), SIGNAL(distanceRead(double, uint32_t)), this, SLOT(mc_distanceRead(double, uint32_t)));
 
 		ui.a_wsm_connect->setEnabled(false);
-		ui.a_wsm_disconnect->setEnabled(false);
+		ui.a_wsm_disconnect->setEnabled(true);
 	} catch (const Wsm::EOpenError& e) {
 		QMessageBox m(
 			QMessageBox::Icon::Warning,
@@ -368,6 +368,13 @@ void MainWindow::a_wsm_connect(bool a) {
 
 void MainWindow::a_wsm_disconnect(bool a) {
 	(void)a;
+
+	wsm = nullptr;
+	ui.l_wsm_speed->setText("??.?");
+	ui.sb_main->showMessage("WSM battery: ?.?? V [3.5 – 4.2 V] (?, ?)");
+	widget_set_color(*(ui.l_wsm_alive), ui.l_wsm_speed->palette().color(QPalette::WindowText));
+	ui.a_wsm_connect->setEnabled(true);
+	ui.a_wsm_disconnect->setEnabled(false);
 }
 
 void MainWindow::mc_speedRead(double speed, uint16_t speed_raw) {
@@ -381,7 +388,10 @@ void MainWindow::mc_speedRead(double speed, uint16_t speed_raw) {
 	}
 }
 
-void MainWindow::mc_distanceRead(double distance, uint32_t distance_raw) {}
+void MainWindow::mc_distanceRead(double distance, uint32_t distance_raw) {
+	(void)distance;
+	(void)distance_raw;
+}
 
 void MainWindow::mc_onError(QString error) {
 	if (!t_wsm_disconnect.isActive()) {
@@ -399,7 +409,7 @@ void MainWindow::mc_onError(QString error) {
 void MainWindow::mc_batteryRead(double voltage, uint16_t voltage_raw) {
 	QString text;
 	text.sprintf(
-		"Battery: %4.2f V [3.5 – 4.2 V] (%d, %s)",
+		"WSM battery: %4.2f V [3.5 – 4.2 V] (%d, %s)",
 		voltage,
 		voltage_raw,
 		QTime::currentTime().toString().toLatin1().data()
