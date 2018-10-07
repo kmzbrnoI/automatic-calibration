@@ -22,7 +22,8 @@ SOURCES += \
 	main-window.cpp \
 	lib/wsm/measure-car.cpp \
 	lib/xn/xn.cpp \
-	settings.cpp
+	settings.cpp \
+	power-map.cpp
 
 HEADERS += \
 	main-window.h \
@@ -30,7 +31,8 @@ HEADERS += \
 	lib/wsm/measure-car.h \
 	lib/xn/xn.h \
 	lib/xn/xn-typedefs.h \
-	settings.h
+	settings.h \
+	power-map.h
 
 FORMS += \
 	main-window.ui
