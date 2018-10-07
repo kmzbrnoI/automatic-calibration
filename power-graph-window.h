@@ -17,7 +17,8 @@ public:
 
 private:
 	Ui::PowerGraphWindow ui;
-	QChartView m_chart;
+	QLineSeries series;
+	QChart chart;
 };
 
 #endif // POWERGRAPHWINDOW_H
