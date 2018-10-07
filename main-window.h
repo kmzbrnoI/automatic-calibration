@@ -24,6 +24,9 @@ public:
 	void xn_onCSStatusError(void*, void*);
 	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
 	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
+	void xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
+	                            Xn::XnFA, Xn::XnFB);
+	void xn_onLocoInfoError(void*, void*);
 
 private slots:
 	void xn_onError(QString error);
@@ -42,6 +45,7 @@ private slots:
 	void vs_speed_slider_moved(int);
 	void rb_direction_toggled(bool);
 	void t_slider_tick();
+	void b_start_handle();
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);
@@ -74,6 +78,7 @@ private:
 	void log(QString message);
 	void wsm_status_blink();
 	void show_error(const QString error);
+	void loco_released();
 
 	static void xns_onDccGoError(void*, void*);
 	static void xns_onDccStopError(void*, void*);
@@ -82,6 +87,10 @@ private:
 	static void xns_onCSStatusError(void*, void*);
 	static void xns_gotLIVersion(void*, unsigned hw, unsigned sw);
 	static void xns_gotCSVersion(void*, unsigned major, unsigned minor);
+	static void xns_gotLocoInfo(void*, unsigned major, unsigned minor);
+	static void xns_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
+	                            Xn::XnFA, Xn::XnFB);
+	static void xns_onLocoInfoError(void*, void*);
 };
 
 #endif // MAINWINDOW_H

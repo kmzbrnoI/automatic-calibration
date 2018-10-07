@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
 	QObject::connect(&xn, SIGNAL(onTrkStatusChanged(Xn::XnTrkStatus)), this, SLOT(xn_onTrkStatusChanged(Xn::XnTrkStatus)));
 
+	QObject::connect(ui.b_start, SIGNAL(released()), this, SLOT(b_start_handle()));
+
 	QObject::connect(ui.b_addr_set, SIGNAL(released()), this, SLOT(b_addr_set_handle()));
 	QObject::connect(ui.b_addr_release, SIGNAL(released()), this, SLOT(b_addr_release_handle()));
 	QObject::connect(ui.b_addr_read, SIGNAL(released()), this, SLOT(b_addr_read_handle()));
@@ -94,6 +96,11 @@ void MainWindow::show_error(const QString error) {
 	m.exec();
 }
 
+void MainWindow::b_start_handle() {
+	a_xn_connect(true);
+}
+
+
 ///////////////////////////////////////////////////////////////////////////////
 // XN Events
 
@@ -122,7 +129,7 @@ void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
 		item->setText(1, "Debug");
 
 	item->setText(2, message);
-	ui.tw_xn_log->insertTopLevelItem(0, item);
+	ui.tw_xn_log->addTopLevelItem(item);
 }
 
 void MainWindow::xn_onConnect() {
@@ -140,6 +147,14 @@ void MainWindow::xn_onConnect() {
 	ui.chb_f0->setEnabled(false);
 	ui.chb_f1->setEnabled(false);
 	ui.chb_f2->setEnabled(false);
+	ui.rb_forward->setEnabled(false);
+	ui.rb_backward->setEnabled(false);
+	ui.b_addr_release->setEnabled(false);
+	ui.sb_loco->setEnabled(true);
+	ui.b_addr_set->setEnabled(true);
+	ui.b_addr_read->setEnabled(true);
+	ui.b_loco_stop->setEnabled(false);
+	ui.b_speed_set->setEnabled(false);
 
 	log("Connected to XpressNET.");
 
@@ -161,6 +176,7 @@ void MainWindow::xn_onDisconnect() {
 	ui.gb_speed->setEnabled(false);
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_release->setEnabled(false);
+	loco_released();
 	log("Disconnected from XpressNET");
 }
 
@@ -182,6 +198,10 @@ void MainWindow::xns_onCSVersionError(void* s, void* d) { wref->xn_onCSVersionEr
 void MainWindow::xns_onCSStatusError(void* s, void* d) { wref->xn_onCSStatusError(s, d); }
 void MainWindow::xns_gotLIVersion(void* s, unsigned hw, unsigned sw) { wref->xn_gotLIVersion(s, hw, sw); }
 void MainWindow::xns_gotCSVersion(void* s, unsigned major, unsigned minor) { wref->xn_gotCSVersion(s, major, minor); }
+void MainWindow::xns_gotLocoInfo(void* s, bool used, bool direction, unsigned speed, Xn::XnFA fa, Xn::XnFB fb) {
+	wref->xn_gotLocoInfo(s, used, direction, speed, fa, fb);
+}
+void MainWindow::xns_onLocoInfoError(void* s, void* d) { wref->xn_onLocoInfoError(s, d); }
 
 void MainWindow::xn_onDccGoError(void* sender, void* data) {
 	(void)sender; (void)data;
@@ -242,6 +262,70 @@ void MainWindow::xn_gotCSVersion(void*, unsigned major, unsigned minor) {
 	log("Got command station version:" + QString::number(major) + "." + QString::number(minor));
 }
 
+void MainWindow::xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
+                                Xn::XnFA fa, Xn::XnFB fb) {
+	(void)used;
+	(void)fb;
+
+	ui.b_addr_release->setEnabled(true);
+
+	ui.vs_speed->setValue(speed);
+	ui.vs_speed->setEnabled(true);
+	m_sent_speed = speed;
+
+	ui.sb_speed->setValue(speed);
+	ui.sb_speed->setEnabled(true);
+
+	ui.rb_backward->setChecked(direction);
+	ui.rb_backward->setEnabled(true);
+	ui.rb_forward->setEnabled(true);
+
+	ui.chb_f0->setChecked(fa.sep.f0);
+	ui.chb_f0->setEnabled(true);
+
+	ui.chb_f1->setChecked(fa.sep.f1);
+	ui.chb_f1->setEnabled(true);
+
+	ui.chb_f2->setChecked(fa.sep.f2);
+	ui.chb_f2->setEnabled(true);
+
+	ui.b_loco_stop->setEnabled(true);
+	ui.b_speed_set->setEnabled(true);
+}
+
+void MainWindow::xn_onLocoInfoError(void*, void*) {
+	show_error("Unable to get loco information from Command station!");
+	ui.b_addr_set->setEnabled(true);
+	ui.sb_loco->setEnabled(true);
+	ui.b_addr_read->setEnabled(true);
+}
+
+void MainWindow::loco_released() {
+	ui.vs_speed->setValue(0);
+	ui.vs_speed->setEnabled(false);
+	m_sent_speed = 0;
+
+	ui.sb_speed->setValue(0);
+	ui.sb_speed->setEnabled(false);
+
+	ui.rb_backward->setChecked(false);
+	ui.rb_forward->setChecked(false);
+	ui.rb_backward->setEnabled(false);
+	ui.rb_forward->setEnabled(false);
+
+	ui.chb_f0->setChecked(false);
+	ui.chb_f0->setEnabled(false);
+
+	ui.chb_f1->setChecked(false);
+	ui.chb_f1->setEnabled(false);
+
+	ui.chb_f2->setChecked(false);
+	ui.chb_f2->setEnabled(false);
+
+	ui.b_loco_stop->setEnabled(false);
+	ui.b_speed_set->setEnabled(false);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // XpressNET connect/disconnect
 
@@ -297,9 +381,11 @@ void MainWindow::log(QString message) {
 
 void MainWindow::b_addr_set_handle() {
 	ui.b_addr_set->setEnabled(false);
-	ui.b_addr_release->setEnabled(true);
 	ui.sb_loco->setEnabled(false);
 	ui.b_addr_read->setEnabled(false);
+
+	xn.getLocoInfo(Xn::LocoAddr(ui.sb_loco->value()), &xns_gotLocoInfo,
+	               std::make_unique<Xn::XnCb>(&xns_onLocoInfoError));
 }
 
 void MainWindow::b_addr_release_handle() {
@@ -307,14 +393,7 @@ void MainWindow::b_addr_release_handle() {
 	ui.b_addr_release->setEnabled(false);
 	ui.sb_loco->setEnabled(true);
 	ui.b_addr_read->setEnabled(true);
-
-	ui.vs_speed->setEnabled(false);
-	ui.sb_speed->setEnabled(false);
-	ui.b_speed_set->setEnabled(false);
-	ui.b_loco_stop->setEnabled(false);
-	ui.chb_f0->setEnabled(false);
-	ui.chb_f1->setEnabled(false);
-	ui.chb_f2->setEnabled(false);
+	loco_released();
 }
 
 void MainWindow::b_addr_read_handle() {
@@ -324,7 +403,7 @@ void MainWindow::b_speed_set_handle() {
 	try {
 		xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
 		            ui.rb_backward->isChecked());
-		ui.vs_speed->setValue(ui.sb_loco->value());
+		ui.vs_speed->setValue(ui.sb_speed->value());
 	}
 	catch (const QStrException& e) {
 		show_error(e.str());
