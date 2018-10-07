@@ -22,6 +22,7 @@ public:
 	void xn_onLIVersionError(void*, void*);
 	void xn_onCSVersionError(void*, void*);
 	void xn_onCSStatusError(void*, void*);
+	void xn_onCSStatusOk(void*, void*);
 	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
 	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
 	void xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
@@ -72,6 +73,7 @@ private:
 	QTimer t_slider;
 	int m_sent_speed = 0;
 	QDateTime m_canBlink;
+	bool m_starting = false;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);
@@ -85,6 +87,7 @@ private:
 	static void xns_onLIVersionError(void*, void*);
 	static void xns_onCSVersionError(void*, void*);
 	static void xns_onCSStatusError(void*, void*);
+	static void xns_onCSStatusOk(void*, void*);
 	static void xns_gotLIVersion(void*, unsigned hw, unsigned sw);
 	static void xns_gotCSVersion(void*, unsigned major, unsigned minor);
 	static void xns_gotLocoInfo(void*, unsigned major, unsigned minor);

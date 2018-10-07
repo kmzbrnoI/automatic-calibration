@@ -47,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_xn_dcc_go, SIGNAL(triggered(bool)), this, SLOT(a_dcc_go(bool)));
 	QObject::connect(ui.a_xn_dcc_stop, SIGNAL(triggered(bool)), this, SLOT(a_dcc_stop(bool)));
 
+	QObject::connect(ui.a_wsm_connect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_connect(bool)));
+	QObject::connect(ui.a_wsm_disconnect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_disconnect(bool)));
+
 	ui.tw_main->setCurrentIndex(0);
 	log("Application launched.");
 }
@@ -97,9 +100,14 @@ void MainWindow::show_error(const QString error) {
 }
 
 void MainWindow::b_start_handle() {
-	a_xn_connect(true);
+	if (!xn.connected()) {
+		m_starting = true;
+		a_xn_connect(true);
+	} else {
+		if (nullptr == wsm)
+			a_wsm_connect(true);
+	}
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // XN Events
@@ -196,6 +204,7 @@ void MainWindow::xns_onDccStopError(void* s, void* d) { wref->xn_onDccStopError(
 void MainWindow::xns_onLIVersionError(void* s, void* d) { wref->xn_onLIVersionError(s, d); }
 void MainWindow::xns_onCSVersionError(void* s, void* d) { wref->xn_onCSVersionError(s, d); }
 void MainWindow::xns_onCSStatusError(void* s, void* d) { wref->xn_onCSStatusError(s, d); }
+void MainWindow::xns_onCSStatusOk(void* s, void* d) { wref->xn_onCSStatusOk(s, d); }
 void MainWindow::xns_gotLIVersion(void* s, unsigned hw, unsigned sw) { wref->xn_gotLIVersion(s, hw, sw); }
 void MainWindow::xns_gotCSVersion(void* s, unsigned major, unsigned minor) { wref->xn_gotCSVersion(s, major, minor); }
 void MainWindow::xns_gotLocoInfo(void* s, bool used, bool direction, unsigned speed, Xn::XnFA fa, Xn::XnFB fb) {
@@ -224,6 +233,7 @@ void MainWindow::show_response_error(QString command) {
 
 void MainWindow::xn_onLIVersionError(void* sender, void* data) {
 	(void)sender; (void)data;
+	m_starting = false;
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
 		"Error!",
@@ -241,17 +251,29 @@ void MainWindow::xn_onCSVersionError(void* sender, void* data) {
 		", is the LI really connected to the command station?!",
 		QMessageBox::Ok
 	);
+	m_starting = false;
 }
 
 void MainWindow::xn_onCSStatusError(void* sender, void* data) {
 	(void)sender; (void)data;
 	show_response_error("STATUS");
+	m_starting = false;
+}
+
+void MainWindow::xn_onCSStatusOk(void* sender, void* data) {
+	(void)sender; (void)data;
+	if (m_starting) {
+		m_starting = false;
+		if (nullptr == wsm)
+			a_wsm_connect(true);
+	}
 }
 
 void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
 	log("Got LI version. HW: " + QString::number(hw) + ", SW: " + QString::number(sw));
 	try {
-		xn.getCommandStationStatus(nullptr, std::make_unique<Xn::XnCb>(xns_onCSStatusError));
+		xn.getCommandStationStatus(std::make_unique<Xn::XnCb>(xns_onCSStatusOk),
+		                           std::make_unique<Xn::XnCb>(xns_onCSStatusError));
 	}
 	catch (const QStrException& e) {
 		show_error(e.str());
@@ -466,6 +488,7 @@ void MainWindow::a_wsm_connect(bool a) {
 
 		ui.a_wsm_connect->setEnabled(false);
 		ui.a_wsm_disconnect->setEnabled(true);
+		widget_set_color(*(ui.l_wsm), Qt::green);
 	} catch (const Wsm::EOpenError& e) {
 		show_error("Error while opening serial port '" + s.wsm.portname + "':\n" + e);
 	}
@@ -476,10 +499,11 @@ void MainWindow::a_wsm_disconnect(bool a) {
 
 	wsm = nullptr;
 	ui.l_wsm_speed->setText("??.?");
-	ui.sb_main->showMessage("WSM battery: ?.?? V [3.5 – 4.2 V] (?, ?)");
+	ui.l_wsm_bat_voltage->setText("?.?? V");
 	widget_set_color(*(ui.l_wsm_alive), ui.l_wsm_speed->palette().color(QPalette::WindowText));
 	ui.a_wsm_connect->setEnabled(true);
 	ui.a_wsm_disconnect->setEnabled(false);
+	widget_set_color(*(ui.l_wsm), Qt::red);
 }
 
 void MainWindow::mc_speedRead(double speed, uint16_t speed_raw) {
@@ -506,14 +530,14 @@ void MainWindow::mc_onError(QString error) {
 }
 
 void MainWindow::mc_batteryRead(double voltage, uint16_t voltage_raw) {
+	(void)voltage_raw;
 	QString text;
 	text.sprintf(
-		"WSM battery: %4.2f V [3.5 – 4.2 V] (%d, %s)",
+		"%4.2f V (%s)",
 		voltage,
-		voltage_raw,
 		QTime::currentTime().toString().toLatin1().data()
 	);
-	ui.sb_main->showMessage(text);
+	ui.l_wsm_bat_voltage->setText(text);
 }
 
 void MainWindow::mc_batteryCritical() {
