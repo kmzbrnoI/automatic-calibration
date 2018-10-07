@@ -66,7 +66,7 @@ private:
 	QTimer t_xn_disconnect;
 	QTimer t_wsm_disconnect;
 	QTimer t_slider;
-	bool m_sent_speed;
+	int m_sent_speed = 0;
 	QDateTime m_canBlink;
 
 	void widget_set_color(QWidget&, const QColor);
