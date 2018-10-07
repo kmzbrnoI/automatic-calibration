@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <QObject>
+#include <memory>
 
 const size_t _STEPS_CNT = 256;
 
@@ -10,16 +11,19 @@ class PowerToSpeedMap : public QObject {
 	Q_OBJECT
 
 public:
-	PowerToSpeedMap();
+	PowerToSpeedMap(float max_speed = 120, QObject *parent = nullptr);
+	float m_max_speed;
+
 	void clear();
-	void add(unsigned step, float speed);
+	void addOrUpdate(unsigned step, float speed);
 	unsigned steps(float speed);
 
 signals:
-	void onAdd(unsigned step, float speed);
+	void onAddOrUpdate(unsigned step, float speed);
+	void onClear();
 
 private:
-	float map[_STEPS_CNT];
+	std::unique_ptr<float> map[_STEPS_CNT];
 };
 
 #endif
