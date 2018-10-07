@@ -142,6 +142,13 @@ void MainWindow::xn_onConnect() {
 	ui.chb_f2->setEnabled(false);
 
 	log("Connected to XpressNET.");
+
+	try {
+		xn.getLIVersion(&xns_gotLIVersion, std::make_unique<Xn::XnCb>(&xns_onLIVersionError));
+	}
+	catch (const QStrException& e) {
+		show_error(e.str());
+	}
 }
 
 void MainWindow::xn_onDisconnect() {
@@ -155,13 +162,6 @@ void MainWindow::xn_onDisconnect() {
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_release->setEnabled(false);
 	log("Disconnected from XpressNET");
-
-	try {
-		xn.getLIVersion(&xns_gotLIVersion, std::make_unique<Xn::XnCb>(&xns_onLIVersionError));
-	}
-	catch (const QStrException& e) {
-		show_error(e.str());
-	}
 }
 
 void MainWindow::xn_onTrkStatusChanged(Xn::XnTrkStatus status) {
