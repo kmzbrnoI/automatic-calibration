@@ -506,6 +506,17 @@
         <property name="title">
          <string>Calibration Graph</string>
         </property>
+        <widget class="QWidget" name="horizontalLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>461</width>
+           <height>411</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="l_cal_graph"/>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="gb_wsm">
         <property name="geometry">
