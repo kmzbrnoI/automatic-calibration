@@ -1,4 +1,5 @@
 #include <QMessageBox>
+#include <QSlider>
 
 #include "main-window.h"
 #include "ui_main-window.h"
@@ -51,6 +52,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_wsm_disconnect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_disconnect(bool)));
 
 	QObject::connect(ui.m_power_graph, SIGNAL(aboutToShow()), this, SLOT(a_power_graph()));
+
+	init_calib_graph();
 
 	ui.tw_main->setCurrentIndex(0);
 	log("Application launched.");
@@ -563,6 +566,39 @@ void MainWindow::t_mc_disconnect_tick() {
 
 void MainWindow::a_power_graph() {
 	w_pg.show();
+}
+
+void MainWindow::init_calib_graph() {
+	for(size_t i = 0; i < _STEPS_CNT; i++) {
+		QLabel* speed = new QLabel("??", ui.gb_cal_graph);
+		speed->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+		ui_steps[i].speed = speed;
+		ui.l_cal_graph->addWidget(speed, 0, i);
+
+		QLabel* value = new QLabel("0", ui.gb_cal_graph);
+		value->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+		ui_steps[i].value = value;
+		ui.l_cal_graph->addWidget(value, 1, i);
+
+		QSlider* slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
+		slider->setMinimum(0);
+		slider->setMaximum(255);
+		ui_steps[i].slider = slider;
+		ui.l_cal_graph->addWidget(slider, 2, i);
+
+		QCheckBox* selected = new QCheckBox(ui.gb_cal_graph);
+		ui_steps[i].selected = selected;
+		ui.l_cal_graph->addWidget(selected, 3, i);
+
+		QLabel* step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
+		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+		ui_steps[i].step = step;
+		ui.l_cal_graph->addWidget(step, 4, i);
+
+		QPushButton* calibrate = new QPushButton("C", ui.gb_cal_graph);
+		ui_steps[i].calibrate = calibrate;
+		ui.l_cal_graph->addWidget(calibrate, 5, i);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////

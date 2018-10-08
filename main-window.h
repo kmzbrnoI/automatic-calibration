@@ -2,6 +2,10 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSlider>
+#include <QLabel>
+#include <QCheckBox>
+#include <QPushButton>
 
 #include "ui_main-window.h"
 #include "lib/xn/xn.h"
@@ -10,6 +14,14 @@
 #include "power-graph-window.h"
 
 const QString _CONFIG_FN = "config.ini";
+const unsigned _STEPS_CNT = 28;
+
+struct UiStep {
+	QSlider *slider;
+	QLabel *step, *speed, *value;
+	QCheckBox *selected;
+	QPushButton *calibrate;
+};
 
 class MainWindow : public QMainWindow {
 	Q_OBJECT
@@ -78,6 +90,7 @@ private:
 	QDateTime m_canBlink;
 	bool m_starting = false;
 	PowerGraphWindow w_pg;
+	UiStep ui_steps[_STEPS_CNT];
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);
@@ -85,6 +98,7 @@ private:
 	void wsm_status_blink();
 	void show_error(const QString error);
 	void loco_released();
+	void init_calib_graph();
 
 	static void xns_onDccGoError(void*, void*);
 	static void xns_onDccStopError(void*, void*);

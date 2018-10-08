@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>955</width>
+    <width>1060</width>
     <height>668</height>
    </rect>
   </property>
@@ -207,7 +207,7 @@
         </property>
         <property name="geometry">
          <rect>
-          <x>710</x>
+          <x>820</x>
           <y>10</y>
           <width>211</width>
           <height>421</height>
@@ -494,28 +494,28 @@
          </property>
         </widget>
        </widget>
-       <widget class="QGroupBox" name="gb_calib_graph">
+       <widget class="QGroupBox" name="gb_cal_graph">
         <property name="geometry">
          <rect>
           <x>220</x>
           <y>120</y>
-          <width>481</width>
+          <width>591</width>
           <height>451</height>
          </rect>
         </property>
         <property name="title">
          <string>Calibration Graph</string>
         </property>
-        <widget class="QWidget" name="horizontalLayoutWidget">
+        <widget class="QWidget" name="gridLayoutWidget">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>30</y>
-           <width>461</width>
+           <width>571</width>
            <height>411</height>
           </rect>
          </property>
-         <layout class="QHBoxLayout" name="l_cal_graph"/>
+         <layout class="QGridLayout" name="l_cal_graph"/>
         </widget>
        </widget>
        <widget class="QGroupBox" name="gb_wsm">
@@ -632,7 +632,7 @@
          <rect>
           <x>220</x>
           <y>10</y>
-          <width>481</width>
+          <width>591</width>
           <height>101</height>
          </rect>
         </property>
@@ -643,7 +643,7 @@
        <widget class="QGroupBox" name="gb_fill">
         <property name="geometry">
          <rect>
-          <x>710</x>
+          <x>820</x>
           <y>440</y>
           <width>211</width>
           <height>131</height>
@@ -751,7 +751,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>955</width>
+     <width>1060</width>
      <height>19</height>
     </rect>
    </property>
