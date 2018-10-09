@@ -63,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_ssm.load("speed.csv");
 
 	ui.tw_main->setCurrentIndex(0);
-	log("Application launched.");
+	log("Application launched");
 }
 
 MainWindow::~MainWindow() {
@@ -85,7 +85,8 @@ void MainWindow::widget_set_color(QWidget& widget, const QColor color) {
 }
 
 void MainWindow::t_xn_disconnect_tick() {
-	disconnect();
+	log("XN error, disconnected from XpressNET...");
+	xn.disconnect();
 
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
@@ -102,6 +103,8 @@ void MainWindow::cb_xn_ll_index_changed(int index) {
 }
 
 void MainWindow::show_error(const QString error) {
+	log(error);
+
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
 		"Error!",
@@ -235,6 +238,7 @@ void MainWindow::xn_onDccStopError(void* sender, void* data) {
 }
 
 void MainWindow::show_response_error(QString command) {
+	log("Command station did not respond to " + command + " command!");
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
 		"Error!",
@@ -246,16 +250,18 @@ void MainWindow::show_response_error(QString command) {
 void MainWindow::xn_onLIVersionError(void* sender, void* data) {
 	(void)sender; (void)data;
 	m_starting = false;
+	log("LI did not respond to version request!");
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
 		"Error!",
-		"LI not respond to version request, are you really connected to the LI?!",
+		"LI did not respond to version request, are you really connected to the LI?!",
 		QMessageBox::Ok
 	);
 }
 
 void MainWindow::xn_onCSVersionError(void* sender, void* data) {
 	(void)sender; (void)data;
+	log("Coomand station did not respond to version request!");
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
 		"Error!",
@@ -276,6 +282,7 @@ void MainWindow::xn_onCSStatusOk(void* sender, void* data) {
 	(void)sender; (void)data;
 	if (m_starting) {
 		m_starting = false;
+		log("Succesfully connected to Command station");
 		if (nullptr == wsm)
 			a_wsm_connect(true);
 	}
@@ -327,6 +334,8 @@ void MainWindow::xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed
 
 	ui.b_loco_stop->setEnabled(true);
 	ui.b_speed_set->setEnabled(true);
+
+	log("Acquired loco " + QString::number(ui.sb_loco->value()));
 }
 
 void MainWindow::xn_onLocoInfoError(void*, void*) {
@@ -360,6 +369,8 @@ void MainWindow::loco_released() {
 
 	ui.b_loco_stop->setEnabled(false);
 	ui.b_speed_set->setEnabled(false);
+
+	log("Released loco" + QString::number(ui.sb_loco->value()));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -370,6 +381,7 @@ void MainWindow::a_xn_connect(bool) {
 		return;
 
 	try {
+		log("Connecting to XN...");
 		xn.connect(s.xn.portname, s.xn.br, s.xn.fc);
 	} catch (const QStrException& e) {
 		show_error(e.str());
@@ -381,6 +393,7 @@ void MainWindow::a_xn_disconnect(bool) {
 		return;
 
 	try {
+		log("Disconnecting from XN...");
 		xn.disconnect();
 	} catch (const QStrException& e) {
 		show_error(e.str());
@@ -410,6 +423,7 @@ void MainWindow::a_dcc_stop(bool) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::log(QString message) {
+	ui.lv_log->insertItem(0, message);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -498,6 +512,7 @@ void MainWindow::wsm_status_blink() {
 
 void MainWindow::a_wsm_connect(bool a) {
 	(void)a;
+	log("Connecting to WSM...");
 
 	try {
 		wsm = std::make_unique<Wsm::MeasureCar>(s.wsm.portname, s.wsm.scale, s.wsm.wheelDiameter);
@@ -520,6 +535,8 @@ void MainWindow::a_wsm_connect(bool a) {
 		QObject::connect(m_cm.get(), SIGNAL(done()), this, SLOT(cm_done()));
 		QObject::connect(m_cm.get(), SIGNAL(xn_error()), this, SLOT(cm_xn_error()));
 		QObject::connect(m_cm.get(), SIGNAL(step_power_changed(unsigned, unsigned)), this, SLOT(cm_step_power_changed(unsigned, unsigned)));
+
+		log("Connected to WSM");
 	} catch (const Wsm::EOpenError& e) {
 		show_error("Error while opening serial port '" + s.wsm.portname + "':\n" + e);
 	}
@@ -536,6 +553,7 @@ void MainWindow::a_wsm_disconnect(bool a) {
 	ui.a_wsm_connect->setEnabled(true);
 	ui.a_wsm_disconnect->setEnabled(false);
 	widget_set_color(*(ui.l_wsm), Qt::red);
+	log("Disconnected from WSM");
 }
 
 void MainWindow::mc_speedRead(double speed, uint16_t speed_raw) {
@@ -586,11 +604,21 @@ void MainWindow::mc_batteryCritical() {
 }
 
 void MainWindow::t_mc_disconnect_tick() {
+	log("WSM error, disconnecting...");
 	wsm->disconnect();
 }
 
 void MainWindow::mc_speedReceiveTimeout() {
+	log("WSM receive timeout!");
 	widget_set_color(*(ui.l_wsm_alive), Qt::red);
+}
+
+void MainWindow::mc_speedReceiveRestore() {
+	log("WSM speed receive restored");
+}
+
+void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
+	log("WSM long term done: sp=" + QString::number(speed) + ", diff=" + QString::number(diffusion));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -689,6 +717,7 @@ void MainWindow::cm_xn_error() {
 
 void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 	ui_steps[step-1].slider->setValue(power);
+	log("Setting step " + QString::number(step) + " to " + QString::number(power));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

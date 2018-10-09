@@ -192,12 +192,8 @@
          <string>Main Log</string>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QListView" name="lv_log">
-           <property name="isWrapping" stdset="0">
-            <bool>false</bool>
-           </property>
-          </widget>
+         <item row="0" column="1">
+          <widget class="QListWidget" name="lv_log"/>
          </item>
         </layout>
        </widget>
