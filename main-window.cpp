@@ -216,14 +216,19 @@ void MainWindow::xn_onDisconnect() {
 }
 
 void MainWindow::xn_onTrkStatusChanged(Xn::XnTrkStatus status) {
-	if (status == Xn::XnTrkStatus::Unknown)
+	if (status == Xn::XnTrkStatus::Unknown) {
 		widget_set_color(*(ui.l_dcc), Qt::gray);
-	else if (status == Xn::XnTrkStatus::Off)
+		log("CS status: Unknown");
+	} else if (status == Xn::XnTrkStatus::Off) {
 		widget_set_color(*(ui.l_dcc), Qt::red);
-	if (status == Xn::XnTrkStatus::On)
+		log("CS status: Off");
+	} else if (status == Xn::XnTrkStatus::On) {
 		widget_set_color(*(ui.l_dcc), Qt::green);
-	if (status == Xn::XnTrkStatus::Programming)
+		log("CS status: On");
+	}else if (status == Xn::XnTrkStatus::Programming) {
 		widget_set_color(*(ui.l_dcc), Qt::yellow);
+		log("CS status: Programming");
+	}
 }
 
 void MainWindow::xns_onDccGoError(void* s, void* d) { wref->xn_onDccGoError(s, d); }
@@ -382,7 +387,7 @@ void MainWindow::loco_released() {
 	ui.b_loco_stop->setEnabled(false);
 	ui.b_speed_set->setEnabled(false);
 
-	log("Released loco" + QString::number(ui.sb_loco->value()));
+	log("Released loco " + QString::number(ui.sb_loco->value()));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
