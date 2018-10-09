@@ -68,6 +68,7 @@ private slots:
 	void b_addr_read_handle();
 	void b_speed_set_handle();
 	void b_loco_stop_handle();
+	void b_loco_idle_handle();
 	void vs_speed_slider_moved(int);
 	void rb_direction_toggled(bool);
 	void t_slider_tick();

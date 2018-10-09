@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_addr_read, SIGNAL(released()), this, SLOT(b_addr_read_handle()));
 	QObject::connect(ui.b_speed_set, SIGNAL(released()), this, SLOT(b_speed_set_handle()));
 	QObject::connect(ui.b_loco_stop, SIGNAL(released()), this, SLOT(b_loco_stop_handle()));
+	QObject::connect(ui.b_loco_idle, SIGNAL(released()), this, SLOT(b_loco_idle_handle()));
 	QObject::connect(ui.vs_speed, SIGNAL(valueChanged(int)), this, SLOT(vs_speed_slider_moved(int)));
 	QObject::connect(ui.rb_backward, SIGNAL(toggled(bool)), this, SLOT(rb_direction_toggled(bool)));
 	QObject::connect(ui.chb_f0, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
@@ -177,6 +178,7 @@ void MainWindow::xn_onConnect() {
 	ui.sb_speed->setEnabled(false);
 	ui.b_speed_set->setEnabled(false);
 	ui.b_loco_stop->setEnabled(false);
+	ui.b_loco_idle->setEnabled(false);
 	ui.chb_f0->setEnabled(false);
 	ui.chb_f1->setEnabled(false);
 	ui.chb_f2->setEnabled(false);
@@ -186,7 +188,6 @@ void MainWindow::xn_onConnect() {
 	ui.sb_loco->setEnabled(true);
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_read->setEnabled(true);
-	ui.b_loco_stop->setEnabled(false);
 	ui.b_speed_set->setEnabled(false);
 	ui.gb_ad->setEnabled(true);
 
@@ -355,6 +356,7 @@ void MainWindow::xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed
 	ui.chb_f2->setEnabled(true);
 
 	ui.b_loco_stop->setEnabled(true);
+	ui.b_loco_idle->setEnabled(true);
 	ui.b_speed_set->setEnabled(true);
 
 	log("Acquired loco " + QString::number(ui.sb_loco->value()));
@@ -390,6 +392,7 @@ void MainWindow::loco_released() {
 	ui.chb_f2->setEnabled(false);
 
 	ui.b_loco_stop->setEnabled(false);
+	ui.b_loco_idle->setEnabled(false);
 	ui.b_speed_set->setEnabled(false);
 
 	log("Released loco " + QString::number(ui.sb_loco->value()));
@@ -552,6 +555,11 @@ void MainWindow::b_loco_stop_handle() {
 	catch (const QStrException& e) {
 		show_error(e.str());
 	}
+}
+
+void MainWindow::b_loco_idle_handle() {
+	ui.sb_speed->setValue(0);
+	b_speed_set_handle();
 }
 
 void MainWindow::vs_speed_slider_moved(int value) {

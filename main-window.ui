@@ -242,7 +242,7 @@
            <x>20</x>
            <y>60</y>
            <width>51</width>
-           <height>221</height>
+           <height>161</height>
           </rect>
          </property>
          <property name="maximum">
@@ -345,9 +345,9 @@
         <widget class="QPushButton" name="b_loco_stop">
          <property name="geometry">
           <rect>
-           <x>90</x>
-           <y>110</y>
-           <width>81</width>
+           <x>10</x>
+           <y>260</y>
+           <width>71</width>
            <height>22</height>
           </rect>
          </property>
@@ -358,8 +358,8 @@
         <widget class="QCheckBox" name="chb_f0">
          <property name="geometry">
           <rect>
-           <x>90</x>
-           <y>210</y>
+           <x>100</x>
+           <y>180</y>
            <width>41</width>
            <height>20</height>
           </rect>
@@ -371,8 +371,8 @@
         <widget class="QCheckBox" name="chb_f1">
          <property name="geometry">
           <rect>
-           <x>90</x>
-           <y>230</y>
+           <x>100</x>
+           <y>200</y>
            <width>41</width>
            <height>20</height>
           </rect>
@@ -410,8 +410,8 @@
         <widget class="QCheckBox" name="chb_f2">
          <property name="geometry">
           <rect>
-           <x>90</x>
-           <y>250</y>
+           <x>100</x>
+           <y>220</y>
            <width>41</width>
            <height>20</height>
           </rect>
@@ -437,7 +437,7 @@
          <property name="geometry">
           <rect>
            <x>90</x>
-           <y>150</y>
+           <y>120</y>
            <width>102</width>
            <height>20</height>
           </rect>
@@ -456,7 +456,7 @@
          <property name="geometry">
           <rect>
            <x>90</x>
-           <y>170</y>
+           <y>140</y>
            <width>102</width>
            <height>20</height>
           </rect>
@@ -487,6 +487,19 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_loco_idle">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>230</y>
+           <width>71</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Idle</string>
          </property>
         </widget>
        </widget>
