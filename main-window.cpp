@@ -243,6 +243,11 @@ void MainWindow::xns_gotLocoInfo(void* s, bool used, bool direction, unsigned sp
 	wref->xn_gotLocoInfo(s, used, direction, speed, fa, fb);
 }
 void MainWindow::xns_onLocoInfoError(void* s, void* d) { wref->xn_onLocoInfoError(s, d); }
+void MainWindow::xns_addrReadError(void* s, void* d) { wref->xn_addrReadError(s, d); }
+void MainWindow::xns_adReadError(void* s, void* d) { wref->xn_adReadError(s, d); }
+void MainWindow::xns_cvRead(void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) {
+	wref->xn_cvRead(s, st, cv, value);
+}
 
 void MainWindow::xn_onDccGoError(void* sender, void* data) {
 	(void)sender; (void)data;
@@ -390,6 +395,62 @@ void MainWindow::loco_released() {
 	log("Released loco " + QString::number(ui.sb_loco->value()));
 }
 
+void MainWindow::xn_addrReadError(void*, void*) {
+	show_error("Unable to read address: no response from command station!");
+	ui.sb_loco->setEnabled(true);
+	ui.b_addr_set->setEnabled(true);
+	ui.b_addr_read->setEnabled(true);
+}
+
+void MainWindow::xn_adReadError(void*, void*) {
+	show_error("Unable to read CV: no response from command station!");
+	ui.gb_ad->setEnabled(true);
+}
+
+void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) {
+	if (st != Xn::XnReadCVStatus::Ok) {
+		show_error("Unable to read CV " + QString::number(cv) + ": " +
+		           Xn::XpressNet::xnReadCVStatusToQString(st));
+
+		if (cv == _CV_ADDR_LO || cv == _CV_ADDR_HI) {
+			ui.sb_loco->setEnabled(true);
+			ui.b_addr_set->setEnabled(true);
+			ui.b_addr_read->setEnabled(true);
+		} else if (cv == _CV_ACCEL || cv == _CV_DECEL) {
+			ui.gb_ad->setEnabled(true);
+		}
+		return;
+	}
+
+	if (cv == _CV_ADDR_LO) {
+		try {
+			ui.sb_loco->setValue(Xn::LocoAddr(value, 0xC0));
+		}
+		catch (const Xn::EInvalidAddr&) {
+			show_error("Invalid address!");
+		}
+		xn.readCVdirect(_CV_ADDR_HI, &xns_cvRead, std::make_unique<Xn::XnCb>(&xns_addrReadError));
+	} else if (cv == _CV_ADDR_HI) {
+		try {
+			ui.sb_loco->setValue(Xn::LocoAddr(ui.sb_loco->value(), value));
+		}
+		catch (const Xn::EInvalidAddr&) {
+			show_error("Invalid address!");
+		}
+		ui.sb_loco->setEnabled(true);
+		ui.b_addr_set->setEnabled(true);
+		ui.b_addr_read->setEnabled(true);
+		a_dcc_go(true);
+	} else if (cv == _CV_ACCEL) {
+		ui.sb_accel->setValue(value);
+		xn.readCVdirect(_CV_DECEL, &xns_cvRead, std::make_unique<Xn::XnCb>(&xns_adReadError));
+	} else if (cv == _CV_DECEL) {
+		ui.sb_decel->setValue(value);
+		ui.gb_ad->setEnabled(true);
+		a_dcc_go(true);
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // XpressNET connect/disconnect
 
@@ -464,6 +525,10 @@ void MainWindow::b_addr_release_handle() {
 }
 
 void MainWindow::b_addr_read_handle() {
+	ui.sb_loco->setEnabled(false);
+	ui.b_addr_set->setEnabled(false);
+	ui.b_addr_read->setEnabled(false);
+	xn.readCVdirect(_CV_ADDR_LO, &xns_cvRead, std::make_unique<Xn::XnCb>(&xns_addrReadError));
 }
 
 void MainWindow::b_speed_set_handle() {
@@ -740,6 +805,8 @@ void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::b_ad_read_handle() {
+	ui.gb_ad->setEnabled(false);
+	xn.readCVdirect(_CV_ACCEL, &xns_cvRead, std::make_unique<Xn::XnCb>(&xns_adReadError));
 }
 
 void MainWindow::b_ad_write_handle() {

@@ -19,6 +19,12 @@
 const QString _CONFIG_FN = "config.ini";
 const unsigned _STEPS_CNT = 28;
 
+const unsigned _CV_ACCEL = 3;
+const unsigned _CV_DECEL = 4;
+const unsigned _CV_ADDR_LO = 18;
+const unsigned _CV_ADDR_HI = 17;
+const unsigned _CV_BASIC = 29;
+
 struct UiStep {
 	QSlider *slider;
 	QLabel *step, *speed_want, *value, *speed_measured;
@@ -42,8 +48,11 @@ public:
 	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
 	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
 	void xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
-	                            Xn::XnFA, Xn::XnFB);
+	                    Xn::XnFA, Xn::XnFB);
 	void xn_onLocoInfoError(void*, void*);
+	void xn_addrReadError(void*, void*);
+	void xn_adReadError(void*, void*);
+	void xn_cvRead(void*, Xn::XnReadCVStatus, uint8_t cv, uint8_t value);
 
 private slots:
 	void xn_onError(QString error);
@@ -136,6 +145,9 @@ private:
 	static void xns_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
 	                            Xn::XnFA, Xn::XnFB);
 	static void xns_onLocoInfoError(void*, void*);
+	static void xns_addrReadError(void*, void*);
+	static void xns_adReadError(void*, void*);
+	static void xns_cvRead(void*, Xn::XnReadCVStatus, uint8_t cv, uint8_t value);
 };
 
 #endif // MAINWINDOW_H
