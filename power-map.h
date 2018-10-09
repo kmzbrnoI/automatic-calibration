@@ -5,6 +5,8 @@
 #include <QObject>
 #include <memory>
 
+namespace Pm {
+
 const size_t _STEPS_CNT = 256;
 
 class PowerToSpeedMap : public QObject {
@@ -25,5 +27,7 @@ signals:
 private:
 	std::unique_ptr<float> map[_STEPS_CNT];
 };
+
+}//end namespace
 
 #endif

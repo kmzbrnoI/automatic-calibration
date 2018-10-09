@@ -1,5 +1,7 @@
 #include "power-map.h"
 
+namespace Pm {
+
 PowerToSpeedMap::PowerToSpeedMap(float max_speed, QObject *parent)
 	: QObject(parent), m_max_speed(max_speed) {
 	map[0] = std::make_unique<float>(0);
@@ -36,3 +38,5 @@ unsigned PowerToSpeedMap::steps(float speed) {
 		}
 	}
 }
+
+}//end namespace
