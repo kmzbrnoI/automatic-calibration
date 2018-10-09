@@ -64,6 +64,8 @@ private slots:
 	void t_slider_tick();
 	void b_start_handle();
 	void chb_f_clicked(bool);
+	void b_ad_read_handle();
+	void b_ad_write_handle();
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);

@@ -15,6 +15,10 @@ class PowerGraphWindow : public QMainWindow {
 public:
 	PowerGraphWindow(QWidget *parent = nullptr);
 
+public slots:
+	void addOrUpdate(unsigned step, float speed);
+	void clear();
+
 private:
 	Ui::PowerGraphWindow ui;
 	QLineSeries series;

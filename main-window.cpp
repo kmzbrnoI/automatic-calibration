@@ -56,11 +56,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(ui.m_power_graph, SIGNAL(aboutToShow()), this, SLOT(a_power_graph()));
 
+	// Connect power-to-map with GUI
+	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
+	QObject::connect(&m_pm, SIGNAL(onClear()), &w_pg, SLOT(clear()));
+	m_pm.clear();
+
 	init_calib_graph();
 
 	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	m_ssm.load("speed.csv");
+	for(size_t i = 0; i < _STEPS_CNT; i++)
+		ui_steps[i].calibrate->setEnabled(nullptr != m_ssm.map[i]);
+
+	QObject::connect(ui.b_ad_read, SIGNAL(released()), this, SLOT(b_ad_read_handle()));
+	QObject::connect(ui.b_ad_write, SIGNAL(released()), this, SLOT(b_ad_write_handle()));
 
 	ui.tw_main->setCurrentIndex(0);
 	log("Application launched");
@@ -85,7 +95,7 @@ void MainWindow::widget_set_color(QWidget& widget, const QColor color) {
 }
 
 void MainWindow::t_xn_disconnect_tick() {
-	log("XN error, disconnected from XpressNET...");
+	log("XN error, disconnecting from XpressNET...");
 	xn.disconnect();
 
 	QMessageBox m(
@@ -130,7 +140,7 @@ void MainWindow::b_start_handle() {
 void MainWindow::xn_onError(QString error) {
 	xn_onLog(error, Xn::XnLogLevel::Error);
 
-	if (!t_xn_disconnect.isActive())
+	if (!t_xn_disconnect.isActive() && xn.connected())
 		t_xn_disconnect.start(100);
 }
 
@@ -178,6 +188,7 @@ void MainWindow::xn_onConnect() {
 	ui.b_addr_read->setEnabled(true);
 	ui.b_loco_stop->setEnabled(false);
 	ui.b_speed_set->setEnabled(false);
+	ui.gb_ad->setEnabled(true);
 
 	log("Connected to XpressNET.");
 
@@ -199,6 +210,7 @@ void MainWindow::xn_onDisconnect() {
 	ui.gb_speed->setEnabled(false);
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_release->setEnabled(false);
+	ui.gb_ad->setEnabled(false);
 	loco_released();
 	log("Disconnected from XpressNET");
 }
@@ -718,6 +730,14 @@ void MainWindow::cm_xn_error() {
 void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 	ui_steps[step-1].slider->setValue(power);
 	log("Setting step " + QString::number(step) + " to " + QString::number(power));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::b_ad_read_handle() {
+}
+
+void MainWindow::b_ad_write_handle() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////

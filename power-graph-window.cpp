@@ -32,3 +32,21 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent)
 	series.append(100, 100);
 	//chart->createDefaultAxes();
 }
+
+void PowerGraphWindow::addOrUpdate(unsigned step, float speed) {
+	for(int i = 0; i < series.count(); i++) {
+		if (series.at(i).x() == step) {
+			series.replace(i, QPointF(step, speed));
+			return;
+		}
+		if (series.at(i).x() > step) {
+			series.insert(i, QPointF(step, speed));
+			return;
+		}
+	}
+	series.append(step, speed);
+}
+
+void PowerGraphWindow::clear() {
+	series.clear();
+}
