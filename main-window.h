@@ -12,6 +12,7 @@
 #include "lib/wsm/measure-car.h"
 #include "settings.h"
 #include "power-graph-window.h"
+#include "speed-map.h"
 
 const QString _CONFIG_FN = "config.ini";
 const unsigned _STEPS_CNT = 28;
@@ -80,6 +81,9 @@ private slots:
 	void mc_distanceRead(double distance, uint32_t distance_raw);
 	void t_mc_disconnect_tick();
 
+	void ssm_onAddOrUpdate(unsigned step, unsigned speed);
+	void ssm_onClear();
+
 private:
 	Ui::MainWindow ui;
 	Xn::XpressNet xn;
@@ -94,6 +98,7 @@ private:
 	PowerGraphWindow w_pg;
 	UiStep ui_steps[_STEPS_CNT];
 	Xn::XnFA m_fa;
+	Ssm::StepsToSpeedMap m_ssm;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);

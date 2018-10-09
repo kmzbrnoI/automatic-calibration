@@ -58,6 +58,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	init_calib_graph();
 
+	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
+	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
+	m_ssm.load("speed.csv");
+
+
 	ui.tw_main->setCurrentIndex(0);
 	log("Application launched.");
 }
@@ -583,16 +588,18 @@ void MainWindow::a_power_graph() {
 void MainWindow::init_calib_graph() {
 	for(size_t i = 0; i < _STEPS_CNT; i++) {
 		QLabel* speed_want = new QLabel("??", ui.gb_cal_graph);
+		speed_want->setFont(QFont("Sans Serif", 8));
 		speed_want->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].speed_want = speed_want;
 		ui.l_cal_graph->addWidget(speed_want, 0, i);
 
 		QLabel* speed_measured = new QLabel("??", ui.gb_cal_graph);
+		speed_measured->setFont(QFont("Sans Serif", 8));
 		speed_measured->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].speed_measured = speed_measured;
 		ui.l_cal_graph->addWidget(speed_measured, 1, i);
-		QLabel* value = new QLabel("0", ui.gb_cal_graph);
 
+		QLabel* value = new QLabel("0", ui.gb_cal_graph);
 		value->setFont(QFont("Sans Serif", 8));
 		value->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].value = value;
@@ -626,6 +633,17 @@ void MainWindow::init_calib_graph() {
 void MainWindow::vs_steps_moved(int value) {
 	unsigned stepi = qobject_cast<QSlider*>(QObject::sender())->property("step").toUInt();
 	ui_steps[stepi].value->setText(QString::number(value));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::ssm_onAddOrUpdate(unsigned step, unsigned speed) {
+	ui_steps[step].speed_want->setText(QString::number(speed));
+}
+
+void MainWindow::ssm_onClear() {
+	for(size_t i = 0; i < _STEPS_CNT; i++)
+		ui_steps[i].speed_want->setText("0");
 }
 
 ///////////////////////////////////////////////////////////////////////////////

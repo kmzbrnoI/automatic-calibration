@@ -24,8 +24,11 @@ void StepsToSpeedMap::load(QString filename) {
 		getline(templine, data, ';');
 		unsigned speed = stoul(data);
 
-		map[step] = std::make_unique<unsigned>(speed);
-		onAddOrUpdate(step, speed);
+		if (step <= 0 || step > 28)
+			continue;
+
+		map[step-1] = std::make_unique<unsigned>(speed);
+		onAddOrUpdate(step-1, speed);
 	}
 }
 
