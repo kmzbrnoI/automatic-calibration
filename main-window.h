@@ -60,6 +60,7 @@ private slots:
 	void rb_direction_toggled(bool);
 	void t_slider_tick();
 	void b_start_handle();
+	void chb_f_clicked(bool);
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);
@@ -91,6 +92,7 @@ private:
 	bool m_starting = false;
 	PowerGraphWindow w_pg;
 	UiStep ui_steps[_STEPS_CNT];
+	Xn::XnFA m_fa;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);

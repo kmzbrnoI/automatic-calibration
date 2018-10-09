@@ -27,6 +27,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_loco_stop, SIGNAL(released()), this, SLOT(b_loco_stop_handle()));
 	QObject::connect(ui.vs_speed, SIGNAL(sliderMoved(int)), this, SLOT(vs_speed_slider_moved(int)));
 	QObject::connect(ui.rb_backward, SIGNAL(toggled(bool)), this, SLOT(rb_direction_toggled(bool)));
+	QObject::connect(ui.chb_f0, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
+	QObject::connect(ui.chb_f1, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
+	QObject::connect(ui.chb_f2, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
@@ -294,6 +297,8 @@ void MainWindow::xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed
 	(void)used;
 	(void)fb;
 
+	m_fa = fa;
+
 	ui.b_addr_release->setEnabled(true);
 
 	ui.vs_speed->setValue(speed);
@@ -466,6 +471,13 @@ void MainWindow::t_slider_tick() {
 	catch (const QStrException& e) {
 		show_error(e.str());
 	}
+}
+
+void MainWindow::chb_f_clicked(bool) {
+	m_fa.sep.f0 = ui.chb_f0->isChecked();
+	m_fa.sep.f1 = ui.chb_f1->isChecked();
+	m_fa.sep.f2 = ui.chb_f2->isChecked();
+	xn.setFuncA(Xn::LocoAddr(ui.sb_loco->value()), m_fa);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
