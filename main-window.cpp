@@ -587,7 +587,7 @@ void MainWindow::a_power_graph() {
 
 void MainWindow::init_calib_graph() {
 	for(size_t i = 0; i < _STEPS_CNT; i++) {
-		QLabel* speed_want = new QLabel("??", ui.gb_cal_graph);
+		QLabel* speed_want = new QLabel("-", ui.gb_cal_graph);
 		speed_want->setFont(QFont("Sans Serif", 8));
 		speed_want->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].speed_want = speed_want;
