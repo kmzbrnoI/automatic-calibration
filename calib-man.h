@@ -52,6 +52,7 @@ signals:
 	void loco_stopped();
 	void done();
 	void xn_error();
+	void step_power_changed(unsigned step, unsigned power);
 };
 
 }//end namespace
