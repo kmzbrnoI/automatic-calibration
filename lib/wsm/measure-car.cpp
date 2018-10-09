@@ -1,6 +1,7 @@
 #include <QCoreApplication>
 #include <QSerialPort>
 #include <QtMath>
+#include <cmath>
 
 #include "measure-car.h"
 
@@ -12,6 +13,9 @@ MeasureCar::MeasureCar(QString portname, unsigned int scale, double wheelDiamete
 	m_serialPort.setFlowControl(QSerialPort::FlowControl::HardwareControl);
 	m_serialPort.setPortName(portname);
 	m_serialPort.setReadBufferSize(256);
+
+	QObject::connect(&m_speedTimer, SIGNAL(timeout()), this, SLOT(t_speedTimeout()));
+	m_speedTimer.setSingleShot(true);
 
 	QObject::connect(&m_serialPort, SIGNAL(readyRead()), this, SLOT(handleReadyRead()));
 	QObject::connect(&m_serialPort, SIGNAL(errorOccurred(QSerialPort::SerialPortError)),
@@ -66,19 +70,27 @@ void MeasureCar::parseMessage(QByteArray message) {
 
 		if (0x81 == static_cast<uint8_t>(message[1])) {
 			// Speed measured via interval measuring.
+			if (!m_speedOk) {
+				m_speedOk = true;
+				speedReceiveRestore();
+				m_speedTimer.start(_SPEED_RECEIVE_TIMEOUT);
+			}
+
 			uint16_t interval = \
 					((static_cast<uint8_t>(message[2]) & 0x03) << 14) | \
 					((static_cast<uint8_t>(message[3]) & 0x7F) << 7) |  \
 					(static_cast<uint8_t>(message[4]) & 0x7F);
 
-			if (interval == 0xFFFF)
-				speedRead(0, 0xFFFF);
-			else {
-				double speed = (static_cast<double>(M_PI) * wheelDiameter * F_CPU * 3.6 * scale / 1000) /
-				               (HOLE_COUNT * PSK * interval);
-
-				speedRead(speed, interval);
+			double speed;
+			if (interval == 0xFFFF) {
+				speed = 0;
+			} else {
+				speed = (static_cast<double>(M_PI) * wheelDiameter * F_CPU * 3.6 * scale / 1000) /
+				        (HOLE_COUNT * PSK * interval);
 			}
+			speedRead(speed, 0xFFFF);
+			if (m_lt_measuring)
+				recordLt(speed);
 		} else if (0x82 == static_cast<uint8_t>(message[1])) {
 			// distance measured
 			m_dist = \
@@ -106,6 +118,47 @@ void MeasureCar::parseMessage(QByteArray message) {
 
 void MeasureCar::distanceReset() {
 	m_distStart = m_dist;
+}
+
+void MeasureCar::t_speedTimeout() {
+	m_speedOk = false;
+	m_lt_measuring = false;
+	speedReceiveTimeout();
+}
+
+bool MeasureCar::isSpeedOk() const {
+	return m_speedOk;
+}
+
+void MeasureCar::startLongTermMeasure(unsigned count) {
+	if (m_lt_measuring)
+		throw ELtAlreadyMeasuring("Long-term speed measurement is alterady running!");
+	if (!m_speedOk)
+		throw ENoSpeedData("Cannot init measurement, speed not received!");
+
+	m_lt_count_max = count;
+	m_lt_count = 0;
+	m_lt_sum = 0;
+	m_lt_measuring = true;
+}
+
+void MeasureCar::recordLt(double speed) {
+	m_lt_count++;
+	m_lt_sum += speed;
+
+	if (m_lt_count == 1)
+		m_lt_min = m_lt_max = speed;
+
+	if (speed > m_lt_max)
+		m_lt_max = speed;
+
+	if (speed < m_lt_min)
+		m_lt_min = speed;
+
+	if (m_lt_count == m_lt_count_max) {
+		m_lt_measuring = false;
+		longTermMeasureDone(m_lt_sum / m_lt_count, std::abs(m_lt_min-m_lt_max));
+	}
 }
 
 }//end namespace
