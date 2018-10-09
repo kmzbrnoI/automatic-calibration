@@ -14,18 +14,21 @@ const double _DEFAULT_EPSILON = 0.5; // +- 0.7 kmph
 const unsigned _SP_ADAPT_TIMEOUT = 2000; // 2 s
 const double _MAX_DIFFUSION = 3; // 3 kmph
 const unsigned _CV_START = 67; // cv 67 = step 1
+const unsigned _MEASURE_COUNT = 30; // measuring 30 values = 3 s
 
 class CalibStep : public QObject {
 	Q_OBJECT
 
 public:
-	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, QObject *parent = nullptr);
+	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::MeasureCar& wsm,
+	          QObject *parent = nullptr);
 	void calibrate(const unsigned loco_addr, const unsigned step,
 	               const double speed, const double epsilon = _DEFAULT_EPSILON);
 
 private:
 	Xn::XpressNet& m_xn;
 	Pm::PowerToSpeedMap& m_pm;
+	Wsm::MeasureCar& m_wsm;
 
 	unsigned m_loco_addr;
 	unsigned m_step;
@@ -41,8 +44,8 @@ private:
 
 private slots:
 	void wsm_lt_read(double speed, double diffusion);
+	void wsm_lt_error();
 	void t_sp_adapt_tick();
-
 
 signals:
 	void diffusion_error();
