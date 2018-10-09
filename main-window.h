@@ -18,7 +18,7 @@ const unsigned _STEPS_CNT = 28;
 
 struct UiStep {
 	QSlider *slider;
-	QLabel *step, *speed, *value;
+	QLabel *step, *speed_want, *value, *speed_measured;
 	QCheckBox *selected;
 	QPushButton *calibrate;
 };

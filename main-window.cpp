@@ -582,16 +582,21 @@ void MainWindow::a_power_graph() {
 
 void MainWindow::init_calib_graph() {
 	for(size_t i = 0; i < _STEPS_CNT; i++) {
-		QLabel* speed = new QLabel("??", ui.gb_cal_graph);
-		speed->setAlignment(Qt::AlignmentFlag::AlignHCenter);
-		ui_steps[i].speed = speed;
-		ui.l_cal_graph->addWidget(speed, 0, i);
+		QLabel* speed_want = new QLabel("??", ui.gb_cal_graph);
+		speed_want->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+		ui_steps[i].speed_want = speed_want;
+		ui.l_cal_graph->addWidget(speed_want, 0, i);
 
+		QLabel* speed_measured = new QLabel("??", ui.gb_cal_graph);
+		speed_measured->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+		ui_steps[i].speed_measured = speed_measured;
+		ui.l_cal_graph->addWidget(speed_measured, 1, i);
 		QLabel* value = new QLabel("0", ui.gb_cal_graph);
+
 		value->setFont(QFont("Sans Serif", 8));
 		value->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].value = value;
-		ui.l_cal_graph->addWidget(value, 1, i);
+		ui.l_cal_graph->addWidget(value, 2, i);
 
 		QSlider* slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
 		slider->setMinimum(0);
@@ -599,22 +604,22 @@ void MainWindow::init_calib_graph() {
 		slider->setProperty("step", static_cast<uint>(i));
 		QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(vs_steps_moved(int)));
 		ui_steps[i].slider = slider;
-		ui.l_cal_graph->addWidget(slider, 2, i);
+		ui.l_cal_graph->addWidget(slider, 3, i);
 
 		QCheckBox* selected = new QCheckBox(ui.gb_cal_graph);
 		selected->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].selected = selected;
-		ui.l_cal_graph->addWidget(selected, 3, i);
+		ui.l_cal_graph->addWidget(selected, 4, i);
 
 		QLabel* step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
 		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].step = step;
-		ui.l_cal_graph->addWidget(step, 4, i);
+		ui.l_cal_graph->addWidget(step, 5, i);
 
 		QPushButton* calibrate = new QPushButton("C", ui.gb_cal_graph);
 		calibrate->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].calibrate = calibrate;
-		ui.l_cal_graph->addWidget(calibrate, 5, i);
+		ui.l_cal_graph->addWidget(calibrate, 6, i);
 	}
 }
 
