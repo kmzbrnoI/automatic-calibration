@@ -626,6 +626,7 @@ void MainWindow::init_calib_graph() {
 		QPushButton* calibrate = new QPushButton("C", ui.gb_cal_graph);
 		calibrate->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].calibrate = calibrate;
+		QObject::connect(calibrate, SIGNAL(released()), this, SLOT(b_calibrate_handle()));
 		ui.l_cal_graph->addWidget(calibrate, 6, i);
 	}
 }
@@ -633,6 +634,10 @@ void MainWindow::init_calib_graph() {
 void MainWindow::vs_steps_moved(int value) {
 	unsigned stepi = qobject_cast<QSlider*>(QObject::sender())->property("step").toUInt();
 	ui_steps[stepi].value->setText(QString::number(value));
+}
+
+void MainWindow::b_calibrate_handle() {
+	unsigned step = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt() + 1;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
