@@ -515,7 +515,14 @@
            <height>411</height>
           </rect>
          </property>
-         <layout class="QGridLayout" name="l_cal_graph"/>
+         <layout class="QGridLayout" name="l_cal_graph">
+          <property name="horizontalSpacing">
+           <number>1</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>6</number>
+          </property>
+         </layout>
         </widget>
        </widget>
        <widget class="QGroupBox" name="gb_wsm">

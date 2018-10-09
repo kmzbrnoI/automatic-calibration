@@ -25,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_addr_read, SIGNAL(released()), this, SLOT(b_addr_read_handle()));
 	QObject::connect(ui.b_speed_set, SIGNAL(released()), this, SLOT(b_speed_set_handle()));
 	QObject::connect(ui.b_loco_stop, SIGNAL(released()), this, SLOT(b_loco_stop_handle()));
-	QObject::connect(ui.vs_speed, SIGNAL(sliderMoved(int)), this, SLOT(vs_speed_slider_moved(int)));
+	QObject::connect(ui.vs_speed, SIGNAL(valueChanged(int)), this, SLOT(vs_speed_slider_moved(int)));
 	QObject::connect(ui.rb_backward, SIGNAL(toggled(bool)), this, SLOT(rb_direction_toggled(bool)));
 	QObject::connect(ui.chb_f0, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.chb_f1, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
@@ -588,6 +588,7 @@ void MainWindow::init_calib_graph() {
 		ui.l_cal_graph->addWidget(speed, 0, i);
 
 		QLabel* value = new QLabel("0", ui.gb_cal_graph);
+		value->setFont(QFont("Sans Serif", 8));
 		value->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].value = value;
 		ui.l_cal_graph->addWidget(value, 1, i);
@@ -595,10 +596,13 @@ void MainWindow::init_calib_graph() {
 		QSlider* slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
 		slider->setMinimum(0);
 		slider->setMaximum(255);
+		slider->setProperty("step", static_cast<uint>(i));
+		QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(vs_steps_moved(int)));
 		ui_steps[i].slider = slider;
 		ui.l_cal_graph->addWidget(slider, 2, i);
 
 		QCheckBox* selected = new QCheckBox(ui.gb_cal_graph);
+		selected->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].selected = selected;
 		ui.l_cal_graph->addWidget(selected, 3, i);
 
@@ -608,9 +612,15 @@ void MainWindow::init_calib_graph() {
 		ui.l_cal_graph->addWidget(step, 4, i);
 
 		QPushButton* calibrate = new QPushButton("C", ui.gb_cal_graph);
+		calibrate->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].calibrate = calibrate;
 		ui.l_cal_graph->addWidget(calibrate, 5, i);
 	}
+}
+
+void MainWindow::vs_steps_moved(int value) {
+	unsigned stepi = qobject_cast<QSlider*>(QObject::sender())->property("step").toUInt();
+	ui_steps[stepi].value->setText(QString::number(value));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -71,6 +71,7 @@ private slots:
 	void a_wsm_disconnect(bool);
 
 	void a_power_graph();
+	void vs_steps_moved(int);
 
 	void mc_speedRead(double speed, uint16_t speed_raw);
 	void mc_onError(QString error);
