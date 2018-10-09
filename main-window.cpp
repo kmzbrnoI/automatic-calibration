@@ -544,6 +544,9 @@ void MainWindow::b_speed_set_handle() {
 
 void MainWindow::b_loco_stop_handle() {
 	try {
+		m_sent_speed = 0;
+		ui.vs_speed->setValue(0);
+		ui.sb_speed->setValue(0);
 		xn.emergencyStop(Xn::LocoAddr(ui.sb_loco->value()));
 	}
 	catch (const QStrException& e) {
