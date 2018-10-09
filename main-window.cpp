@@ -62,7 +62,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	m_ssm.load("speed.csv");
 
-
 	ui.tw_main->setCurrentIndex(0);
 	log("Application launched.");
 }
@@ -512,6 +511,15 @@ void MainWindow::a_wsm_connect(bool a) {
 		ui.a_wsm_connect->setEnabled(false);
 		ui.a_wsm_disconnect->setEnabled(true);
 		widget_set_color(*(ui.l_wsm), Qt::green);
+
+		// Initialize calibration manager (temporary single step)
+		m_cm = std::make_unique<Cm::CalibStep>(xn, m_pm, *wsm);
+
+		QObject::connect(m_cm.get(), SIGNAL(diffusion_error()), this, SLOT(diffusion_error()));
+		QObject::connect(m_cm.get(), SIGNAL(loco_stopped()), this, SLOT(cm_loco_stopped()));
+		QObject::connect(m_cm.get(), SIGNAL(done()), this, SLOT(cm_done()));
+		QObject::connect(m_cm.get(), SIGNAL(xn_error()), this, SLOT(cm_xn_error()));
+		QObject::connect(m_cm.get(), SIGNAL(step_power_changed(unsigned, unsigned)), this, SLOT(cm_step_power_changed(unsigned, unsigned)));
 	} catch (const Wsm::EOpenError& e) {
 		show_error("Error while opening serial port '" + s.wsm.portname + "':\n" + e);
 	}
@@ -521,6 +529,7 @@ void MainWindow::a_wsm_disconnect(bool a) {
 	(void)a;
 
 	wsm = nullptr;
+	m_cm = nullptr;
 	ui.l_wsm_speed->setText("??.?");
 	ui.l_wsm_bat_voltage->setText("?.?? V");
 	widget_set_color(*(ui.l_wsm_alive), ui.l_wsm_speed->palette().color(QPalette::WindowText));
@@ -643,6 +652,10 @@ void MainWindow::vs_steps_moved(int value) {
 
 void MainWindow::b_calibrate_handle() {
 	unsigned step = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt() + 1;
+	if (nullptr != m_cm && nullptr != m_ssm.map[step-1]) {
+		m_cm->calibrate(ui.sb_loco->value(), step, *(m_ssm.map[step-1]));
+		log("Starting calibration of step " + QString::number(step));
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -654,6 +667,28 @@ void MainWindow::ssm_onAddOrUpdate(unsigned step, unsigned speed) {
 void MainWindow::ssm_onClear() {
 	for(size_t i = 0; i < _STEPS_CNT; i++)
 		ui_steps[i].speed_want->setText("0");
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::cm_diffusion_error() {
+	log("Loco is to diffused!");
+}
+
+void MainWindow::cm_loco_stopped() {
+	log("Loco is stopped by outer source!");
+}
+
+void MainWindow::cm_done() {
+	log("Calibration of a step done.");
+}
+
+void MainWindow::cm_xn_error() {
+	log("XpressNET error while calibration!");
+}
+
+void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
+	ui_steps[step-1].slider->setValue(power);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

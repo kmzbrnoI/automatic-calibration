@@ -13,6 +13,8 @@
 #include "settings.h"
 #include "power-graph-window.h"
 #include "speed-map.h"
+#include "power-map.h"
+#include "calib-man.h"
 
 const QString _CONFIG_FN = "config.ini";
 const unsigned _STEPS_CNT = 28;
@@ -86,6 +88,12 @@ private slots:
 	void ssm_onAddOrUpdate(unsigned step, unsigned speed);
 	void ssm_onClear();
 
+	void cm_diffusion_error();
+	void cm_loco_stopped();
+	void cm_done();
+	void cm_xn_error();
+	void cm_step_power_changed(unsigned step, unsigned power);
+
 private:
 	Ui::MainWindow ui;
 	Xn::XpressNet xn;
@@ -100,7 +108,9 @@ private:
 	PowerGraphWindow w_pg;
 	UiStep ui_steps[_STEPS_CNT];
 	Xn::XnFA m_fa;
+	Pm::PowerToSpeedMap m_pm;
 	Ssm::StepsToSpeedMap m_ssm;
+	std::unique_ptr<Cm::CalibStep> m_cm;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);
