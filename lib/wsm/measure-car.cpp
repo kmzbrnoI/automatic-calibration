@@ -73,8 +73,8 @@ void MeasureCar::parseMessage(QByteArray message) {
 			if (!m_speedOk) {
 				m_speedOk = true;
 				speedReceiveRestore();
-				m_speedTimer.start(_SPEED_RECEIVE_TIMEOUT);
 			}
+			m_speedTimer.start(_SPEED_RECEIVE_TIMEOUT);
 
 			uint16_t interval = \
 					((static_cast<uint8_t>(message[2]) & 0x03) << 14) | \
