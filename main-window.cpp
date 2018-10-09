@@ -491,10 +491,10 @@ void MainWindow::chb_f_clicked(bool) {
 void MainWindow::wsm_status_blink() {
 	QPalette palette = ui.l_wsm_alive->palette();
 	QColor color = palette.color(QPalette::WindowText);
-	if (color == Qt::gray)
+	if (color == Qt::green)
 		widget_set_color(*(ui.l_wsm_alive), palette.color(QPalette::Window));
 	else
-		widget_set_color(*(ui.l_wsm_alive), Qt::gray);
+		widget_set_color(*(ui.l_wsm_alive), Qt::green);
 }
 
 void MainWindow::a_wsm_connect(bool a) {
@@ -507,6 +507,7 @@ void MainWindow::a_wsm_connect(bool a) {
 		QObject::connect(wsm.get(), SIGNAL(batteryRead(double, uint16_t)), this, SLOT(mc_batteryRead(double, uint16_t)));
 		QObject::connect(wsm.get(), SIGNAL(batteryCritical()), this, SLOT(mc_batteryCritical()));
 		QObject::connect(wsm.get(), SIGNAL(distanceRead(double, uint32_t)), this, SLOT(mc_distanceRead(double, uint32_t)));
+		QObject::connect(wsm.get(), SIGNAL(speedReceiveTimeout()), this, SLOT(mc_speedReceiveTimeout()));
 
 		ui.a_wsm_connect->setEnabled(false);
 		ui.a_wsm_disconnect->setEnabled(true);
@@ -577,6 +578,10 @@ void MainWindow::mc_batteryCritical() {
 
 void MainWindow::t_mc_disconnect_tick() {
 	wsm->disconnect();
+}
+
+void MainWindow::mc_speedReceiveTimeout() {
+	widget_set_color(*(ui.l_wsm_alive), Qt::red);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

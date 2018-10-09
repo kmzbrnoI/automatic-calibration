@@ -81,6 +81,7 @@ private slots:
 	void mc_batteryCritical();
 	void mc_distanceRead(double distance, uint32_t distance_raw);
 	void t_mc_disconnect_tick();
+	void mc_speedReceiveTimeout();
 
 	void ssm_onAddOrUpdate(unsigned step, unsigned speed);
 	void ssm_onClear();
