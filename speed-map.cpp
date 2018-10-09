@@ -4,6 +4,8 @@
 
 #include "speed-map.h"
 
+namespace Ssm {
+
 StepsToSpeedMap::StepsToSpeedMap(QObject *parent) : QObject(parent) {}
 
 StepsToSpeedMap::StepsToSpeedMap(QString filename, QObject *parent)
@@ -45,3 +47,5 @@ void StepsToSpeedMap::addOrUpdate(unsigned step, unsigned speed) {
 	map[step] = std::make_unique<unsigned>(speed);
 	onAddOrUpdate(step, speed);
 }
+
+}//end namespace

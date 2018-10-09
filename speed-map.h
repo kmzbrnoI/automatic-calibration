@@ -5,6 +5,8 @@
 #include <QObject>
 #include <memory>
 
+namespace Ssm {
+
 const size_t _STEPS_CNT = 28;
 
 class StepsToSpeedMap : public QObject {
@@ -25,5 +27,7 @@ signals:
 	void onAddOrUpdate(unsigned step, unsigned speed);
 	void onClear();
 };
+
+}//end namespace
 
 #endif
