@@ -24,7 +24,8 @@ SOURCES += \
 	lib/xn/xn.cpp \
 	settings.cpp \
 	power-map.cpp \
-	power-graph-window.cpp
+	power-graph-window.cpp \
+	speed-map.cpp
 
 HEADERS += \
 	main-window.h \
@@ -34,7 +35,8 @@ HEADERS += \
 	lib/xn/xn-typedefs.h \
 	settings.h \
 	power-map.h \
-	power-graph-window.h
+	power-graph-window.h \
+	speed-map.h
 
 FORMS += \
 	main-window.ui \
