@@ -752,6 +752,8 @@ void MainWindow::b_wsm_lt_handle() {
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::a_power_graph() {
+	w_pg.move(ui.centralwidget->pos().x() + ui.centralwidget->size().width(),
+	          ui.centralwidget->pos().y() - ui.mb_main->size().height());
 	w_pg.show();
 }
 
