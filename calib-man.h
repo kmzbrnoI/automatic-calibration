@@ -10,8 +10,8 @@
 
 namespace Cm {
 
-const double _DEFAULT_EPSILON = 0.5; // +- 0.7 kmph
-const unsigned _SP_ADAPT_TIMEOUT = 2000; // 2 s
+const double _DEFAULT_EPSILON = 1; // +- 1 kmph
+const unsigned _SP_ADAPT_TIMEOUT = 4000; // 2 s
 const double _MAX_DIFFUSION = 3; // 3 kmph
 const unsigned _CV_START = 67; // cv 67 = step 1
 const unsigned _MEASURE_COUNT = 30; // measuring 30 values = 3 s

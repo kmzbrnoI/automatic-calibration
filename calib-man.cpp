@@ -49,7 +49,17 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	}
 
 	m_pm.addOrUpdate(m_last_power, speed);
-	m_last_power = m_pm.steps(m_target_speed);
+
+	unsigned new_power = m_pm.steps(m_target_speed);
+
+	// Manually increase step when step too small
+	if (std::abs(static_cast<int>(m_last_power)-static_cast<int>(new_power)) < 3) {
+		if (new_power < m_last_power)
+			new_power = m_last_power - 3;
+		else
+			new_power = m_last_power + 3;
+	}
+	m_last_power = new_power;
 
 	m_xn.PomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
