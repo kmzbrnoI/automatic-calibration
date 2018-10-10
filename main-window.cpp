@@ -243,7 +243,7 @@ void MainWindow::xns_onCSStatusError(void* s, void* d) { wref->xn_onCSStatusErro
 void MainWindow::xns_onCSStatusOk(void* s, void* d) { wref->xn_onCSStatusOk(s, d); }
 void MainWindow::xns_gotLIVersion(void* s, unsigned hw, unsigned sw) { wref->xn_gotLIVersion(s, hw, sw); }
 void MainWindow::xns_gotCSVersion(void* s, unsigned major, unsigned minor) { wref->xn_gotCSVersion(s, major, minor); }
-void MainWindow::xns_gotLocoInfo(void* s, bool used, bool direction, unsigned speed, Xn::XnFA fa, Xn::XnFB fb) {
+void MainWindow::xns_gotLocoInfo(void* s, bool used, Xn::XnDirection direction, unsigned speed, Xn::XnFA fa, Xn::XnFB fb) {
 	wref->xn_gotLocoInfo(s, used, direction, speed, fa, fb);
 }
 void MainWindow::xns_onLocoInfoError(void* s, void* d) { wref->xn_onLocoInfoError(s, d); }
@@ -332,7 +332,7 @@ void MainWindow::xn_gotCSVersion(void*, unsigned major, unsigned minor) {
 	log("Got command station version:" + QString::number(major) + "." + QString::number(minor));
 }
 
-void MainWindow::xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
+void MainWindow::xn_gotLocoInfo(void*, bool used, Xn::XnDirection direction, unsigned speed,
                                 Xn::XnFA fa, Xn::XnFB fb) {
 	(void)used;
 	(void)fb;
@@ -348,9 +348,9 @@ void MainWindow::xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed
 	ui.sb_speed->setValue(speed);
 	ui.sb_speed->setEnabled(true);
 
-	ui.rb_backward->setChecked(direction);
 	ui.rb_backward->setEnabled(true);
 	ui.rb_forward->setEnabled(true);
+	ui.rb_forward->setChecked(static_cast<bool>(direction));
 
 	ui.chb_f0->setChecked(fa.sep.f0);
 	ui.chb_f0->setEnabled(true);
@@ -558,7 +558,7 @@ void MainWindow::b_addr_read_handle() {
 void MainWindow::b_speed_set_handle() {
 	try {
 		xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
-		            ui.rb_backward->isChecked());
+		            static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 		ui.vs_speed->setValue(ui.sb_speed->value());
 	}
 	catch (const QStrException& e) {
@@ -597,7 +597,7 @@ void MainWindow::t_slider_tick() {
 		if (ui.vs_speed->value() != m_sent_speed) {
 			m_sent_speed = ui.vs_speed->value();
 			xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
-			            ui.rb_backward->isChecked());
+			            static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 		}
 	}
 	catch (const QStrException& e) {

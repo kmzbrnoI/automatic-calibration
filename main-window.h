@@ -47,7 +47,7 @@ public:
 	void xn_onCSStatusOk(void*, void*);
 	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
 	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
-	void xn_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
+	void xn_gotLocoInfo(void*, bool used, Xn::XnDirection direction, unsigned speed,
 	                    Xn::XnFA, Xn::XnFB);
 	void xn_onLocoInfoError(void*, void*);
 	void xn_addrReadError(void*, void*);
@@ -147,8 +147,8 @@ private:
 	static void xns_gotLIVersion(void*, unsigned hw, unsigned sw);
 	static void xns_gotCSVersion(void*, unsigned major, unsigned minor);
 	static void xns_gotLocoInfo(void*, unsigned major, unsigned minor);
-	static void xns_gotLocoInfo(void*, bool used, bool direction, unsigned speed,
-	                            Xn::XnFA, Xn::XnFB);
+	static void xns_gotLocoInfo(void*, bool used, Xn::XnDirection direction,
+	                            unsigned speed, Xn::XnFA, Xn::XnFB);
 	static void xns_onLocoInfoError(void*, void*);
 	static void xns_addrReadError(void*, void*);
 	static void xns_adReadError(void*, void*);
