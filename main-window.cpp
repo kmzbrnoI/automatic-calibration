@@ -74,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_ad_read, SIGNAL(released()), this, SLOT(b_ad_read_handle()));
 	QObject::connect(ui.b_ad_write, SIGNAL(released()), this, SLOT(b_ad_write_handle()));
 
+	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
+
 	ui.tw_main->setCurrentIndex(0);
 	log("Application launched");
 }
