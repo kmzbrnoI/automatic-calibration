@@ -179,24 +179,6 @@
          </property>
         </widget>
        </widget>
-       <widget class="QGroupBox" name="gb_log">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>260</y>
-          <width>201</width>
-          <height>311</height>
-         </rect>
-        </property>
-        <property name="title">
-         <string>Main Log</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="1">
-          <widget class="QListWidget" name="lv_log"/>
-         </item>
-        </layout>
-       </widget>
        <widget class="QGroupBox" name="gb_speed">
         <property name="enabled">
          <bool>false</bool>
@@ -507,9 +489,9 @@
         <property name="geometry">
          <rect>
           <x>220</x>
-          <y>120</y>
+          <y>260</y>
           <width>591</width>
-          <height>451</height>
+          <height>311</height>
          </rect>
         </property>
         <property name="title">
@@ -521,7 +503,7 @@
            <x>10</x>
            <y>30</y>
            <width>571</width>
-           <height>411</height>
+           <height>271</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="l_cal_graph">
@@ -646,10 +628,10 @@
        <widget class="QGroupBox" name="gb_calib_settings">
         <property name="geometry">
          <rect>
-          <x>220</x>
-          <y>10</y>
-          <width>591</width>
-          <height>101</height>
+          <x>10</x>
+          <y>260</y>
+          <width>201</width>
+          <height>311</height>
          </rect>
         </property>
         <property name="title">
@@ -749,6 +731,24 @@
           <string>Read</string>
          </property>
         </widget>
+       </widget>
+       <widget class="QGroupBox" name="gb_log">
+        <property name="geometry">
+         <rect>
+          <x>220</x>
+          <y>10</y>
+          <width>591</width>
+          <height>241</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Main Log</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="1">
+          <widget class="QListWidget" name="lv_log"/>
+         </item>
+        </layout>
        </widget>
       </widget>
       <widget class="QWidget" name="t_xn_log">
