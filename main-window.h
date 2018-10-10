@@ -53,6 +53,9 @@ public:
 	void xn_addrReadError(void*, void*);
 	void xn_adReadError(void*, void*);
 	void xn_cvRead(void*, Xn::XnReadCVStatus, uint8_t cv, uint8_t value);
+	void xn_adWriteError(void*, void*);
+	void xn_accelWritten(void*, void*);
+	void xn_decelWritten(void*, void*);
 
 private slots:
 	void xn_onError(QString error);
@@ -149,6 +152,9 @@ private:
 	static void xns_addrReadError(void*, void*);
 	static void xns_adReadError(void*, void*);
 	static void xns_cvRead(void*, Xn::XnReadCVStatus, uint8_t cv, uint8_t value);
+	static void xns_adWriteError(void*, void*);
+	static void xns_accelWritten(void*, void*);
+	static void xns_decelWritten(void*, void*);
 };
 
 #endif // MAINWINDOW_H

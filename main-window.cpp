@@ -249,6 +249,9 @@ void MainWindow::xns_adReadError(void* s, void* d) { wref->xn_adReadError(s, d);
 void MainWindow::xns_cvRead(void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) {
 	wref->xn_cvRead(s, st, cv, value);
 }
+void MainWindow::xns_adWriteError(void* s, void* d) { wref->xn_adWriteError(s, d); }
+void MainWindow::xns_accelWritten(void* s, void* d) { wref->xn_accelWritten(s, d); }
+void MainWindow::xns_decelWritten(void* s, void* d) { wref->xn_decelWritten(s, d); }
 
 void MainWindow::xn_onDccGoError(void* sender, void* data) {
 	(void)sender; (void)data;
@@ -452,6 +455,21 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 		ui.gb_ad->setEnabled(true);
 		a_dcc_go(true);
 	}
+}
+
+void MainWindow::xn_adWriteError(void*, void*) {
+	ui.gb_ad->setEnabled(true);
+	show_error("XN POM no response!");
+}
+
+void MainWindow::xn_accelWritten(void*, void*) {
+	xn.PomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_DECEL, ui.sb_decel->value(),
+	              std::make_unique<Xn::XnCb>(&xns_decelWritten),
+	              std::make_unique<Xn::XnCb>(&xns_adWriteError));
+}
+
+void MainWindow::xn_decelWritten(void*, void*) {
+	ui.gb_ad->setEnabled(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -821,6 +839,16 @@ void MainWindow::b_ad_read_handle() {
 }
 
 void MainWindow::b_ad_write_handle() {
+	if (ui.sb_loco->isEnabled()) {
+		show_error("Loco must be set!");
+		return;
+	}
+
+	ui.gb_ad->setEnabled(false);
+
+	xn.PomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_ACCEL, ui.sb_accel->value(),
+	              std::make_unique<Xn::XnCb>(&xns_accelWritten),
+	              std::make_unique<Xn::XnCb>(&xns_adWriteError));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
