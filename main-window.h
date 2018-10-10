@@ -79,6 +79,7 @@ private slots:
 	void chb_f_clicked(bool);
 	void b_ad_read_handle();
 	void b_ad_write_handle();
+	void b_wsm_lt_handle();
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);

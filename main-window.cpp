@@ -54,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(ui.a_wsm_connect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_connect(bool)));
 	QObject::connect(ui.a_wsm_disconnect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_disconnect(bool)));
+	QObject::connect(ui.b_wsm_lt, SIGNAL(released()), this, SLOT(b_wsm_lt_handle()));
 
 	QObject::connect(ui.m_power_graph, SIGNAL(aboutToShow()), this, SLOT(a_power_graph()));
 
@@ -633,6 +634,8 @@ void MainWindow::a_wsm_connect(bool a) {
 		QObject::connect(wsm.get(), SIGNAL(batteryCritical()), this, SLOT(mc_batteryCritical()));
 		QObject::connect(wsm.get(), SIGNAL(distanceRead(double, uint32_t)), this, SLOT(mc_distanceRead(double, uint32_t)));
 		QObject::connect(wsm.get(), SIGNAL(speedReceiveTimeout()), this, SLOT(mc_speedReceiveTimeout()));
+		QObject::connect(wsm.get(), SIGNAL(longTermMeasureDone(double, double)), this, SLOT(mc_longTermMeasureDone(double, double)));
+		QObject::connect(wsm.get(), SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
 
 		ui.a_wsm_connect->setEnabled(false);
 		ui.a_wsm_disconnect->setEnabled(true);
@@ -641,7 +644,7 @@ void MainWindow::a_wsm_connect(bool a) {
 		// Initialize calibration manager (temporary single step)
 		m_cm = std::make_unique<Cm::CalibStep>(xn, m_pm, *wsm);
 
-		QObject::connect(m_cm.get(), SIGNAL(diffusion_error()), this, SLOT(diffusion_error()));
+		QObject::connect(m_cm.get(), SIGNAL(diffusion_error()), this, SLOT(cm_diffusion_error()));
 		QObject::connect(m_cm.get(), SIGNAL(loco_stopped()), this, SLOT(cm_loco_stopped()));
 		QObject::connect(m_cm.get(), SIGNAL(done()), this, SLOT(cm_done()));
 		QObject::connect(m_cm.get(), SIGNAL(xn_error()), this, SLOT(cm_xn_error()));
@@ -725,11 +728,25 @@ void MainWindow::mc_speedReceiveTimeout() {
 }
 
 void MainWindow::mc_speedReceiveRestore() {
+	ui.b_wsm_lt->setEnabled(true);
 	log("WSM speed receive restored");
 }
 
 void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
+	ui.b_wsm_lt->setEnabled(true);
 	log("WSM long term done: sp=" + QString::number(speed) + ", diff=" + QString::number(diffusion));
+}
+
+void MainWindow::b_wsm_lt_handle() {
+	if (nullptr != wsm) {
+		try {
+			wsm->startLongTermMeasure(30); // 3 s
+		}
+		catch (const QStrException& e) {
+			show_error(e.str());
+		}
+		ui.b_wsm_lt->setEnabled(false);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////

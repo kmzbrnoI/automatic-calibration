@@ -570,7 +570,7 @@
            <x>120</x>
            <y>30</y>
            <width>41</width>
-           <height>31</height>
+           <height>16</height>
           </rect>
          </property>
          <property name="font">
@@ -580,19 +580,6 @@
          </property>
          <property name="text">
           <string>km/h</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="l_wsm_speed_raw">
-         <property name="geometry">
-          <rect>
-           <x>120</x>
-           <y>60</y>
-           <width>59</width>
-           <height>14</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>(?)</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_9">
@@ -640,6 +627,19 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_wsm_lt">
+         <property name="geometry">
+          <rect>
+           <x>170</x>
+           <y>30</y>
+           <width>21</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>LT</string>
          </property>
         </widget>
        </widget>
