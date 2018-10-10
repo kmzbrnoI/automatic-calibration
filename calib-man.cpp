@@ -27,6 +27,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 		std::make_unique<Xn::XnCb>(&xns_pom_ok, this),
 		std::make_unique<Xn::XnCb>(&xns_pom_err, this)
 	);
+	step_power_changed(m_step, m_last_power);
 }
 
 void CalibStep::wsm_lt_read(double speed, double diffusion) {
