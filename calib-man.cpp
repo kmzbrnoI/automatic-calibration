@@ -6,7 +6,9 @@ namespace Cm {
 
 CalibMan::CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
                    Ssm::StepsToSpeedMap& ssm, QObject *parent)
-	: QObject(parent), cs(xn, pm, wsm), m_ssm(ssm), m_xn(xn) {}
+	: QObject(parent), cs(xn, pm, wsm), m_ssm(ssm), m_xn(xn) {
+	reset();
+}
 
 void CalibMan::reset() {
 	for(auto& s : state)
