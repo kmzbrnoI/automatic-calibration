@@ -38,6 +38,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_max_speed_changed(int)));
 
+	ui.sb_min->setKeyboardTracking(false);
+	QObject::connect(ui.sb_min, SIGNAL(valueChanged(int)), this, SLOT(sb_min_changed(int)));
+
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
 
@@ -663,6 +666,10 @@ void MainWindow::sb_max_speed_changed(int value) {
 
 void MainWindow::sb_speed_changed(int) {
 	b_speed_set_handle();
+}
+
+void MainWindow::sb_min_changed(int) {
+	m_pm.addOrUpdate(0, ui.sb_min->value());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
