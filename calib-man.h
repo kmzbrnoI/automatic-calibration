@@ -20,7 +20,7 @@ class CalibStep : public QObject {
 	Q_OBJECT
 
 public:
-	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::MeasureCar& wsm,
+	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	          QObject *parent = nullptr);
 	void calibrate(const unsigned loco_addr, const unsigned step,
 	               const double speed, const double epsilon = _DEFAULT_EPSILON);
@@ -28,7 +28,7 @@ public:
 private:
 	Xn::XpressNet& m_xn;
 	Pm::PowerToSpeedMap& m_pm;
-	Wsm::MeasureCar& m_wsm;
+	Wsm::Wsm& m_wsm;
 
 	unsigned m_loco_addr;
 	unsigned m_step;

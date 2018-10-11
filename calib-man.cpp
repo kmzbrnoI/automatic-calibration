@@ -4,7 +4,7 @@
 
 namespace Cm {
 
-CalibStep::CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::MeasureCar& wsm,
+CalibStep::CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
                      QObject *parent)
 	: QObject(parent), m_xn(xn), m_pm(pm), m_wsm(wsm) {
 	t_sp_adapt.setSingleShot(true);

@@ -7,7 +7,7 @@
 
 namespace Wsm {
 
-MeasureCar::MeasureCar(QString portname, unsigned int scale, double wheelDiameter, QObject *parent)
+Wsm::Wsm(QString portname, unsigned int scale, double wheelDiameter, QObject *parent)
 	: QObject(parent), scale(scale), wheelDiameter(wheelDiameter), m_distStart(0) {
 	m_serialPort.setBaudRate(9600);
 	m_serialPort.setFlowControl(QSerialPort::FlowControl::HardwareControl);
@@ -25,7 +25,7 @@ MeasureCar::MeasureCar(QString portname, unsigned int scale, double wheelDiamete
 		throw EOpenError(m_serialPort.errorString());
 }
 
-void MeasureCar::handleReadyRead() {
+void Wsm::handleReadyRead() {
 	// check timeout
 	if (m_receiveTimeout < QDateTime::currentDateTime() && m_readData.size() > 0) {
 		// clear input buffer when data not received for a long time
@@ -55,12 +55,12 @@ void MeasureCar::handleReadyRead() {
 	}
 }
 
-void MeasureCar::handleError(QSerialPort::SerialPortError serialPortError) {
+void Wsm::handleError(QSerialPort::SerialPortError serialPortError) {
 	(void)serialPortError;
 	onError(m_serialPort.errorString());
 }
 
-void MeasureCar::parseMessage(QByteArray message) {
+void Wsm::parseMessage(QByteArray message) {
 	const uint8_t MSG_SPEED = 0x1;
 	const uint8_t MSG_BATTERY = 0x2;
 
@@ -116,21 +116,21 @@ void MeasureCar::parseMessage(QByteArray message) {
 	}
 }
 
-void MeasureCar::distanceReset() {
+void Wsm::distanceReset() {
 	m_distStart = m_dist;
 }
 
-void MeasureCar::t_speedTimeout() {
+void Wsm::t_speedTimeout() {
 	m_speedOk = false;
 	m_lt_measuring = false;
 	speedReceiveTimeout();
 }
 
-bool MeasureCar::isSpeedOk() const {
+bool Wsm::isSpeedOk() const {
 	return m_speedOk;
 }
 
-void MeasureCar::startLongTermMeasure(unsigned count) {
+void Wsm::startLongTermMeasure(unsigned count) {
 	if (m_lt_measuring)
 		throw ELtAlreadyMeasuring("Long-term speed measurement is alterady running!");
 	if (!m_speedOk)
@@ -142,7 +142,7 @@ void MeasureCar::startLongTermMeasure(unsigned count) {
 	m_lt_measuring = true;
 }
 
-void MeasureCar::recordLt(double speed) {
+void Wsm::recordLt(double speed) {
 	m_lt_count++;
 	m_lt_sum += speed;
 

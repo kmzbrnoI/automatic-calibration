@@ -23,11 +23,11 @@ struct ENoSpeedData : public QStrException {
 	ENoSpeedData(const QString str) : QStrException(str) {}
 };
 
-class MeasureCar : public QObject {
+class Wsm : public QObject {
 	Q_OBJECT
 
 public:
-	explicit MeasureCar(QString portname, unsigned int scale=120,
+	explicit Wsm(QString portname, unsigned int scale=120,
 	                    double wheelDiameter = 8, QObject *parent = nullptr);
 	unsigned int scale;
 	double wheelDiameter; // unit: mm

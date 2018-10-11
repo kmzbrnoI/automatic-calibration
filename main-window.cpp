@@ -629,7 +629,7 @@ void MainWindow::a_wsm_connect(bool a) {
 	log("Connecting to WSM...");
 
 	try {
-		wsm = std::make_unique<Wsm::MeasureCar>(s.wsm.portname, s.wsm.scale, s.wsm.wheelDiameter);
+		wsm = std::make_unique<Wsm::Wsm>(s.wsm.portname, s.wsm.scale, s.wsm.wheelDiameter);
 		QObject::connect(wsm.get(), SIGNAL(speedRead(double, uint16_t)), this, SLOT(mc_speedRead(double, uint16_t)));
 		QObject::connect(wsm.get(), SIGNAL(onError(QString)), this, SLOT(mc_onError(QString)));
 		QObject::connect(wsm.get(), SIGNAL(batteryRead(double, uint16_t)), this, SLOT(mc_batteryRead(double, uint16_t)));
