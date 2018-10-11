@@ -22,8 +22,8 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 	state[step] = StepState::Calibred;
 
 	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
-		if (nullptr != m_ssm.map[i] && i != step && *(m_ssm.map[i]) == *(m_ssm.map[step]) &&
-		    state[*m_ssm.map[i]] == StepState::Uncalibred) {
+		if (nullptr != m_ssm[i] && i != step && *(m_ssm[i]) == *(m_ssm[step]) &&
+		    state[*m_ssm[i]] == StepState::Uncalibred) {
 			m_step_writing = i;
 			m_step_power = power;
 			m_xn.PomWriteCv(
@@ -58,9 +58,9 @@ void CalibMan::xnStepWritten(void*, void*) {
 	onStepDone(m_step_writing+1, m_step_power);
 
 	for(size_t i = m_step_writing+1; i < Xn::_STEPS_CNT; i++) {
-		if (nullptr != m_ssm.map[i] && i != m_step_writing &&
-		    *(m_ssm.map[i]) == *(m_ssm.map[m_step_writing]) &&
-			state[*m_ssm.map[i]] == StepState::Uncalibred) {
+		if (nullptr != m_ssm[i] && i != m_step_writing &&
+		    *(m_ssm[i]) == *(m_ssm[m_step_writing]) &&
+			state[*m_ssm[i]] == StepState::Uncalibred) {
 			m_step_writing = i;
 			m_xn.PomWriteCv(
 				Xn::LocoAddr(m_locoAddr),
@@ -87,9 +87,9 @@ std::unique_ptr<unsigned> CalibMan::nextStep() {
 	std::vector<unsigned> used_steps; // map of indexes of steps
 	int last = -1;
 	for(size_t i = 0; i < Xn::_STEPS_CNT; i++)
-		if (nullptr != m_ssm.map[i] && static_cast<int>(*m_ssm.map[i]) != last) {
+		if (nullptr != m_ssm[i] && static_cast<int>(*m_ssm[i]) != last) {
 			used_steps.push_back(i);
-			last = *m_ssm.map[i]; // avoid duplicate speds
+			last = *m_ssm[i]; // avoid duplicate speds
 		}
 
 	if (used_steps.size() == 0) // no available steps
@@ -149,7 +149,7 @@ void CalibMan::calibrateNextStep() {
 	onStepStart((*next) + 1);
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), *next, direction);
 	onLocoSpeedChanged(*next);
-	cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm.map[*next]));
+	cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm[*next]));
 }
 
 void CalibMan::csSigConnect() {
