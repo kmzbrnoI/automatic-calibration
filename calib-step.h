@@ -1,5 +1,5 @@
-#ifndef _CALIB_M_H_
-#define _CALIB_M_H_
+#ifndef _CALIB_STEP_H_
+#define _CALIB_STEP_H_
 
 #include <QObject>
 #include <QTimer>
