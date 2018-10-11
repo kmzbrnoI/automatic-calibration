@@ -69,8 +69,8 @@ void Wsm::handleReadyRead() {
 }
 
 void Wsm::handleError(QSerialPort::SerialPortError serialPortError) {
-	(void)serialPortError;
-	onError(m_serialPort.errorString());
+	if (serialPortError != QSerialPort::NoError)
+		onError(m_serialPort.errorString());
 }
 
 void Wsm::parseMessage(QByteArray message) {
