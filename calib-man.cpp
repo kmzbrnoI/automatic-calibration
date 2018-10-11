@@ -109,6 +109,9 @@ std::unique_ptr<unsigned> CalibMan::nextStep() {
 
 std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& used_steps,
                                                 const size_t left, const size_t right) {
+	if (right <= left)
+		return nullptr;
+
 	size_t middle = ((right-left) / 2) + left;
 	if (state[used_steps[middle]] == StepState::Uncalibred)
 		return std::make_unique<unsigned>(middle);
@@ -119,7 +122,7 @@ std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& use
 	if (nullptr != res)
 		return res;
 
-	res = std::move(nextStepBin(used_steps, middle, right));
+	res = std::move(nextStepBin(used_steps, middle+1, right));
 	if (nullptr != res)
 		return res;
 
