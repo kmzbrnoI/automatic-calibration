@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_speed_set, SIGNAL(released()), this, SLOT(b_speed_set_handle()));
 	QObject::connect(ui.b_loco_stop, SIGNAL(released()), this, SLOT(b_loco_stop_handle()));
 	QObject::connect(ui.b_loco_idle, SIGNAL(released()), this, SLOT(b_loco_idle_handle()));
+	ui.sb_speed->setKeyboardTracking(false);
 	QObject::connect(ui.sb_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_speed_changed(int)));
 	QObject::connect(ui.vs_speed, SIGNAL(valueChanged(int)), this, SLOT(vs_speed_slider_moved(int)));
 	QObject::connect(ui.rb_backward, SIGNAL(toggled(bool)), this, SLOT(rb_direction_toggled(bool)));
@@ -600,6 +601,7 @@ void MainWindow::b_speed_set_handle() {
 	try {
 		xn.setSpeed(Xn::LocoAddr(ui.sb_loco->value()), ui.sb_speed->value(),
 		            static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
+		m_sent_speed = ui.sb_speed->value();
 		ui.vs_speed->setValue(ui.sb_speed->value());
 	}
 	catch (const QStrException& e) {
