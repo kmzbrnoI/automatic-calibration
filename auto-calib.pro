@@ -20,7 +20,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
 	main.cpp \
 	main-window.cpp \
-	lib/wsm/measure-car.cpp \
+	lib/wsm/wsm.cpp \
 	lib/xn/xn.cpp \
 	settings.cpp \
 	power-map.cpp \
@@ -31,7 +31,7 @@ SOURCES += \
 HEADERS += \
 	main-window.h \
 	lib/q-str-exception.h \
-	lib/wsm/measure-car.h \
+	lib/wsm/wsm.h \
 	lib/xn/xn.h \
 	lib/xn/xn-typedefs.h \
 	settings.h \

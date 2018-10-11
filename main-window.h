@@ -9,7 +9,7 @@
 
 #include "ui_main-window.h"
 #include "lib/xn/xn.h"
-#include "lib/wsm/measure-car.h"
+#include "lib/wsm/wsm.h"
 #include "settings.h"
 #include "power-graph-window.h"
 #include "speed-map.h"

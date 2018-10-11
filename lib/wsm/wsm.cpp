@@ -3,7 +3,7 @@
 #include <QtMath>
 #include <cmath>
 
-#include "measure-car.h"
+#include "wsm.h"
 
 namespace Wsm {
 

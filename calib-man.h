@@ -5,7 +5,7 @@
 #include <QTimer>
 
 #include "lib/xn/xn.h"
-#include "lib/wsm/measure-car.h"
+#include "lib/wsm/wsm.h"
 #include "power-map.h"
 
 namespace Cm {
