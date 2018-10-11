@@ -27,17 +27,20 @@ public:
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
 
-	void calibrateAll();
+	void calibrateAll(unsigned locoAddr);
 
 private:
 	Ssm::StepsToSpeedMap& m_ssm;
 	Xn::XpressNet& m_xn;
 	StepState state[Xn::_STEPS_CNT]; // step index used as index
+	unsigned m_locoAddr;
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();
 	std::unique_ptr<unsigned> nextStepBin(const std::vector<unsigned>& used_steps,
 	                                      const size_t left, const size_t right);
+	void csSigConnect();
+	void csSigDisconnect();
 
 private slots:
 	void csDone();
