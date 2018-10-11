@@ -107,11 +107,19 @@ private slots:
 	void ssm_onAddOrUpdate(unsigned step, unsigned speed);
 	void ssm_onClear();
 
-	void cm_diffusion_error();
-	void cm_loco_stopped();
+	void cs_diffusion_error();
+	void cs_loco_stopped();
+	void cs_done();
+	void cs_xn_error();
+	void cs_step_power_changed(unsigned step, unsigned power);
+
+	void cm_stepDone(unsigned step, unsigned power);
+	void cm_stepStart(unsigned step);
+	void cm_stepError(unsigned step);
+	void cm_locoSpeedChanged(unsigned step);
+	void cm_setStep(unsigned step);
 	void cm_done();
-	void cm_xn_error();
-	void cm_step_power_changed(unsigned step, unsigned power);
+	void cm_stepPowerChanged(unsigned step, unsigned power);
 
 private:
 	Ui::MainWindow ui;
@@ -129,7 +137,7 @@ private:
 	Xn::XnFA m_fa;
 	Pm::PowerToSpeedMap m_pm;
 	Ssm::StepsToSpeedMap m_ssm;
-	std::unique_ptr<Cm::CalibStep> m_cm;
+	Cm::CalibMan cm;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);

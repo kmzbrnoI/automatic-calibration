@@ -8,7 +8,7 @@ const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 MainWindow* wref = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent), xn(this), s(_CONFIG_FN) {
+	QMainWindow(parent), xn(this), s(_CONFIG_FN), cm(xn, m_pm, wsm, m_ssm) {
 	ui.setupUi(this);
 	wref = this;
 
@@ -77,14 +77,23 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(mc_longTermMeasureDone(double, double)));
 	QObject::connect(&wsm, SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
 
-	// Initialize calibration manager (temporary single step)
-	m_cm = std::make_unique<Cm::CalibStep>(xn, m_pm, wsm);
+	// Calibration Manager signals
+	QObject::connect(&cm.cs, SIGNAL(onStepDone(unsigned, unsigned)),
+	                 this, SLOT(ccm_stepDone(unsigned, unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(onStepStart(unsigned)), this, SLOT(ccm_stepStart(unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(onStepError(unsigned)), this, SLOT(ccm_stepError(unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(onLocoSpeedChanged(unsigned)),
+	                 this, SLOT(ccm_locoSpeedChanged(unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(onSetStep(unsigned)), this, SLOT(ccm_setStep(unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(onDone()), this, SLOT(ccm_done()));
+	QObject::connect(&cm.cs, SIGNAL(onStepPowerChanged(unsigned, unsigned)),
+	                 this, SLOT(ccm_stepPowerChanged(unsigned, unsigned)));
 
-	QObject::connect(m_cm.get(), SIGNAL(diffusion_error()), this, SLOT(cm_diffusion_error()));
-	QObject::connect(m_cm.get(), SIGNAL(loco_stopped()), this, SLOT(cm_loco_stopped()));
-	QObject::connect(m_cm.get(), SIGNAL(done()), this, SLOT(cm_done()));
-	QObject::connect(m_cm.get(), SIGNAL(xn_error()), this, SLOT(cm_xn_error()));
-	QObject::connect(m_cm.get(), SIGNAL(step_power_changed(unsigned, unsigned)), this, SLOT(cm_step_power_changed(unsigned, unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(diffusion_error()), this, SLOT(cs_diffusion_error()));
+	QObject::connect(&cm.cs, SIGNAL(loco_stopped()), this, SLOT(cs_loco_stopped()));
+	QObject::connect(&cm.cs, SIGNAL(done()), this, SLOT(cs_done()));
+	QObject::connect(&cm.cs, SIGNAL(xn_error()), this, SLOT(cs_xn_error()));
+	QObject::connect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)), this, SLOT(cs_step_power_changed(unsigned, unsigned)));
 
 	// Connect power-to-map with GUI
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
@@ -820,8 +829,8 @@ void MainWindow::vs_steps_moved(int value) {
 
 void MainWindow::b_calibrate_handle() {
 	unsigned step = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt() + 1;
-	if (nullptr != m_cm && nullptr != m_ssm.map[step-1]) {
-		m_cm->calibrate(ui.sb_loco->value(), step, *(m_ssm.map[step-1]));
+	if (nullptr != m_ssm.map[step-1]) {
+		cm.cs.calibrate(ui.sb_loco->value(), step, *(m_ssm.map[step-1]));
 		log("Starting calibration of step " + QString::number(step));
 	}
 }
@@ -839,25 +848,48 @@ void MainWindow::ssm_onClear() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::cm_diffusion_error() {
+void MainWindow::cs_diffusion_error() {
 	log("Loco is to diffused!");
 }
 
-void MainWindow::cm_loco_stopped() {
+void MainWindow::cs_loco_stopped() {
 	log("Loco is stopped by outer source!");
 }
 
-void MainWindow::cm_done() {
+void MainWindow::cs_done() {
 	log("Calibration of a step done.");
 }
 
-void MainWindow::cm_xn_error() {
+void MainWindow::cs_xn_error() {
 	log("XpressNET error while calibration!");
 }
 
-void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
+void MainWindow::cs_step_power_changed(unsigned step, unsigned power) {
 	ui_steps[step-1].slider->setValue(power);
 	log("Setting step " + QString::number(step) + " to " + QString::number(power));
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::cm_stepDone(unsigned step, unsigned power) {
+}
+
+void MainWindow::cm_stepStart(unsigned step) {
+}
+
+void MainWindow::cm_stepError(unsigned step) {
+}
+
+void MainWindow::cm_locoSpeedChanged(unsigned step) {
+}
+
+void MainWindow::cm_setStep(unsigned step) {
+}
+
+void MainWindow::cm_done() {
+}
+
+void MainWindow::cm_stepPowerChanged(unsigned step, unsigned power) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
