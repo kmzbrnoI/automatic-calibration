@@ -152,8 +152,8 @@ void CalibMan::calibrateNextStep() {
 	}
 
 	onStepStart((*next) + 1);
-	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), *next, direction);
-	onLocoSpeedChanged(*next);
+	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), (*next) + 1, direction);
+	onLocoSpeedChanged((*next) + 1);
 	cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm[*next]));
 }
 
