@@ -392,7 +392,10 @@ void MainWindow::xn_gotLocoInfo(void*, bool used, Xn::XnDirection direction, uns
 
 	ui.rb_backward->setEnabled(true);
 	ui.rb_forward->setEnabled(true);
-	ui.rb_forward->setChecked(static_cast<bool>(direction));
+	if (direction == Xn::XnDirection::Forward)
+		ui.rb_forward->setChecked(true);
+	else
+		ui.rb_backward->setChecked(true);
 
 	ui.chb_f0->setChecked(fa.sep.f0);
 	ui.chb_f0->setEnabled(true);
