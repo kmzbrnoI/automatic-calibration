@@ -23,11 +23,12 @@ class CalibMan : public QObject {
 
 public:
 	CalibStep cs;
+	Xn::XnDirection direction;
 
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
 
-	void calibrateAll(unsigned locoAddr);
+	void calibrateAll(unsigned locoAddr,  Xn::XnDirection dir);
 	void reset();
 
 private:
@@ -59,7 +60,7 @@ signals:
 	void onStepDone(unsigned step, unsigned power);
 	void onStepStart(unsigned step);
 	void onStepError(unsigned step);
-	void onLocoSetSpeed(unsigned step);
+	void onLocoSpeedChanged(unsigned step);
 	void onSetStep(unsigned step);
 	void onDone();
 	void onStepPowerChanged(unsigned step, unsigned power);

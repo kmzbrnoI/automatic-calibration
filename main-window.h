@@ -15,6 +15,7 @@
 #include "speed-map.h"
 #include "power-map.h"
 #include "calib-step.h"
+#include "calib-man.h"
 
 const QString _CONFIG_FN = "config.ini";
 const unsigned _STEPS_CNT = 28;

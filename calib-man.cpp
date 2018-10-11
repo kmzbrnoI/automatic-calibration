@@ -128,8 +128,9 @@ std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& use
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void CalibMan::calibrateAll(unsigned locoAddr) {
+void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	m_locoAddr = locoAddr;
+	direction = dir;
 	csSigConnect();
 	calibrateNextStep();
 }
@@ -139,11 +140,15 @@ void CalibMan::calibrateNextStep() {
 	if (nullptr == next) {
 		// No more steps to calibrate
 		csSigDisconnect();
+		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
+		onLocoSpeedChanged(0);
 		onDone();
 		return;
 	}
 
 	onStepStart((*next) + 1);
+	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), *next, direction);
+	onLocoSpeedChanged(*next);
 	cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm.map[*next]));
 }
 
