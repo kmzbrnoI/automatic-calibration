@@ -7,11 +7,10 @@
 
 namespace Wsm {
 
-Wsm::Wsm(QString portname, unsigned int scale, double wheelDiameter, QObject *parent)
+Wsm::Wsm(unsigned int scale, double wheelDiameter, QObject *parent)
 	: QObject(parent), scale(scale), wheelDiameter(wheelDiameter), m_distStart(0) {
 	m_serialPort.setBaudRate(9600);
 	m_serialPort.setFlowControl(QSerialPort::FlowControl::HardwareControl);
-	m_serialPort.setPortName(portname);
 	m_serialPort.setReadBufferSize(256);
 
 	QObject::connect(&m_speedTimer, SIGNAL(timeout()), this, SLOT(t_speedTimeout()));
@@ -20,9 +19,23 @@ Wsm::Wsm(QString portname, unsigned int scale, double wheelDiameter, QObject *pa
 	QObject::connect(&m_serialPort, SIGNAL(readyRead()), this, SLOT(handleReadyRead()));
 	QObject::connect(&m_serialPort, SIGNAL(errorOccurred(QSerialPort::SerialPortError)),
 	                 this, SLOT(handleError(QSerialPort::SerialPortError)));
+}
+
+void Wsm::connect(QString portname) {
+	m_serialPort.setPortName(portname);
 
 	if (!m_serialPort.open(QIODevice::ReadOnly))
 		throw EOpenError(m_serialPort.errorString());
+}
+
+void Wsm::disconnect() {
+	if (m_speedTimer.isActive())
+		m_speedTimer.stop();
+	m_serialPort.close();
+}
+
+bool Wsm::connected() const {
+	return m_serialPort.isOpen();
 }
 
 void Wsm::handleReadyRead() {

@@ -27,13 +27,17 @@ class Wsm : public QObject {
 	Q_OBJECT
 
 public:
-	explicit Wsm(QString portname, unsigned int scale=120,
-	                    double wheelDiameter = 8, QObject *parent = nullptr);
 	unsigned int scale;
 	double wheelDiameter; // unit: mm
+
+	explicit Wsm(unsigned int scale=120, double wheelDiameter = 8, QObject *parent = nullptr);
 	void distanceReset();
 	void startLongTermMeasure(unsigned count);
 	bool isSpeedOk() const;
+
+	void connect(QString portname);
+	void disconnect();
+	bool connected() const;
 
 private slots:
 	void handleReadyRead();

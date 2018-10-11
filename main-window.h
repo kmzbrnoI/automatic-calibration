@@ -115,7 +115,7 @@ private slots:
 private:
 	Ui::MainWindow ui;
 	Xn::XpressNet xn;
-	std::unique_ptr<Wsm::Wsm> wsm;
+	Wsm::Wsm wsm;
 	Settings s;
 	QTimer t_xn_disconnect;
 	QTimer t_wsm_disconnect;

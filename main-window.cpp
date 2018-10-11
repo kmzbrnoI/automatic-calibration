@@ -12,14 +12,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui.setupUi(this);
 	wref = this;
 
+	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
 	QObject::connect(&xn, SIGNAL(onLog(QString, Xn::XnLogLevel)), this, SLOT(xn_onLog(QString, Xn::XnLogLevel)));
 	QObject::connect(&xn, SIGNAL(onConnect()), this, SLOT(xn_onConnect()));
 	QObject::connect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
 	QObject::connect(&xn, SIGNAL(onTrkStatusChanged(Xn::XnTrkStatus)), this, SLOT(xn_onTrkStatusChanged(Xn::XnTrkStatus)));
 
+	// UI signals
 	QObject::connect(ui.b_start, SIGNAL(released()), this, SLOT(b_start_handle()));
-
 	QObject::connect(ui.b_addr_set, SIGNAL(released()), this, SLOT(b_addr_set_handle()));
 	QObject::connect(ui.b_addr_release, SIGNAL(released()), this, SLOT(b_addr_release_handle()));
 	QObject::connect(ui.b_addr_read, SIGNAL(released()), this, SLOT(b_addr_read_handle()));
@@ -38,11 +39,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	t_slider.start(100);
 	QObject::connect(&t_slider, SIGNAL(timeout()), this, SLOT(t_slider_tick()));
 
+	QObject::connect(ui.b_ad_read, SIGNAL(released()), this, SLOT(b_ad_read_handle()));
+	QObject::connect(ui.b_ad_write, SIGNAL(released()), this, SLOT(b_ad_write_handle()));
+
+	// UI set defaults
 	widget_set_color(*(ui.l_xn), Qt::red);
 	widget_set_color(*(ui.l_dcc), Qt::gray);
 	widget_set_color(*(ui.l_wsm), Qt::red);
 	widget_set_color(*(ui.l_wsm_alive), Qt::gray);
 
+	// XN UI
 	ui.cb_xn_loglevel->setCurrentIndex(s.xn.loglevel);
 	xn.loglevel = static_cast<Xn::XnLogLevel>(s.xn.loglevel);
 	QObject::connect(ui.cb_xn_loglevel, SIGNAL(currentIndexChanged(int)), this, SLOT(cb_xn_ll_index_changed(int)));
@@ -58,6 +64,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(ui.m_power_graph, SIGNAL(aboutToShow()), this, SLOT(a_power_graph()));
 
+	// WSM init
+	wsm.scale = s.wsm.scale;
+	wsm.wheelDiameter = s.wsm.wheelDiameter;
+
+	QObject::connect(&wsm, SIGNAL(speedRead(double, uint16_t)), this, SLOT(mc_speedRead(double, uint16_t)));
+	QObject::connect(&wsm, SIGNAL(onError(QString)), this, SLOT(mc_onError(QString)));
+	QObject::connect(&wsm, SIGNAL(batteryRead(double, uint16_t)), this, SLOT(mc_batteryRead(double, uint16_t)));
+	QObject::connect(&wsm, SIGNAL(batteryCritical()), this, SLOT(mc_batteryCritical()));
+	QObject::connect(&wsm, SIGNAL(distanceRead(double, uint32_t)), this, SLOT(mc_distanceRead(double, uint32_t)));
+	QObject::connect(&wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(mc_speedReceiveTimeout()));
+	QObject::connect(&wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(mc_longTermMeasureDone(double, double)));
+	QObject::connect(&wsm, SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
+
+	// Initialize calibration manager (temporary single step)
+	m_cm = std::make_unique<Cm::CalibStep>(xn, m_pm, wsm);
+
+	QObject::connect(m_cm.get(), SIGNAL(diffusion_error()), this, SLOT(cm_diffusion_error()));
+	QObject::connect(m_cm.get(), SIGNAL(loco_stopped()), this, SLOT(cm_loco_stopped()));
+	QObject::connect(m_cm.get(), SIGNAL(done()), this, SLOT(cm_done()));
+	QObject::connect(m_cm.get(), SIGNAL(xn_error()), this, SLOT(cm_xn_error()));
+	QObject::connect(m_cm.get(), SIGNAL(step_power_changed(unsigned, unsigned)), this, SLOT(cm_step_power_changed(unsigned, unsigned)));
+
 	// Connect power-to-map with GUI
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
 	QObject::connect(&m_pm, SIGNAL(onClear()), &w_pg, SLOT(clear()));
@@ -65,14 +93,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	init_calib_graph();
 
+	// Steps to Speed map
 	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	m_ssm.load("speed.csv");
 	for(size_t i = 0; i < _STEPS_CNT; i++)
 		ui_steps[i].calibrate->setEnabled(nullptr != m_ssm.map[i]);
-
-	QObject::connect(ui.b_ad_read, SIGNAL(released()), this, SLOT(b_ad_read_handle()));
-	QObject::connect(ui.b_ad_write, SIGNAL(released()), this, SLOT(b_ad_write_handle()));
 
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
 
@@ -133,7 +159,7 @@ void MainWindow::b_start_handle() {
 		m_starting = true;
 		a_xn_connect(true);
 	} else {
-		if (nullptr == wsm)
+		if (!wsm.connected())
 			a_wsm_connect(true);
 	}
 }
@@ -312,7 +338,7 @@ void MainWindow::xn_onCSStatusOk(void* sender, void* data) {
 	if (m_starting) {
 		m_starting = false;
 		log("Succesfully connected to Command station");
-		if (nullptr == wsm)
+		if (!wsm.connected())
 			a_wsm_connect(true);
 	}
 }
@@ -629,28 +655,11 @@ void MainWindow::a_wsm_connect(bool a) {
 	log("Connecting to WSM...");
 
 	try {
-		wsm = std::make_unique<Wsm::Wsm>(s.wsm.portname, s.wsm.scale, s.wsm.wheelDiameter);
-		QObject::connect(wsm.get(), SIGNAL(speedRead(double, uint16_t)), this, SLOT(mc_speedRead(double, uint16_t)));
-		QObject::connect(wsm.get(), SIGNAL(onError(QString)), this, SLOT(mc_onError(QString)));
-		QObject::connect(wsm.get(), SIGNAL(batteryRead(double, uint16_t)), this, SLOT(mc_batteryRead(double, uint16_t)));
-		QObject::connect(wsm.get(), SIGNAL(batteryCritical()), this, SLOT(mc_batteryCritical()));
-		QObject::connect(wsm.get(), SIGNAL(distanceRead(double, uint32_t)), this, SLOT(mc_distanceRead(double, uint32_t)));
-		QObject::connect(wsm.get(), SIGNAL(speedReceiveTimeout()), this, SLOT(mc_speedReceiveTimeout()));
-		QObject::connect(wsm.get(), SIGNAL(longTermMeasureDone(double, double)), this, SLOT(mc_longTermMeasureDone(double, double)));
-		QObject::connect(wsm.get(), SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
+		wsm.connect(s.wsm.portname);
 
 		ui.a_wsm_connect->setEnabled(false);
 		ui.a_wsm_disconnect->setEnabled(true);
 		widget_set_color(*(ui.l_wsm), Qt::green);
-
-		// Initialize calibration manager (temporary single step)
-		m_cm = std::make_unique<Cm::CalibStep>(xn, m_pm, *wsm);
-
-		QObject::connect(m_cm.get(), SIGNAL(diffusion_error()), this, SLOT(cm_diffusion_error()));
-		QObject::connect(m_cm.get(), SIGNAL(loco_stopped()), this, SLOT(cm_loco_stopped()));
-		QObject::connect(m_cm.get(), SIGNAL(done()), this, SLOT(cm_done()));
-		QObject::connect(m_cm.get(), SIGNAL(xn_error()), this, SLOT(cm_xn_error()));
-		QObject::connect(m_cm.get(), SIGNAL(step_power_changed(unsigned, unsigned)), this, SLOT(cm_step_power_changed(unsigned, unsigned)));
 
 		log("Connected to WSM");
 	} catch (const Wsm::EOpenError& e) {
@@ -661,8 +670,7 @@ void MainWindow::a_wsm_connect(bool a) {
 void MainWindow::a_wsm_disconnect(bool a) {
 	(void)a;
 
-	wsm = nullptr;
-	m_cm = nullptr;
+	wsm.disconnect();
 	ui.l_wsm_speed->setText("??.?");
 	ui.l_wsm_bat_voltage->setText("?.?? V");
 	widget_set_color(*(ui.l_wsm_alive), ui.l_wsm_speed->palette().color(QPalette::WindowText));
@@ -721,7 +729,7 @@ void MainWindow::mc_batteryCritical() {
 
 void MainWindow::t_mc_disconnect_tick() {
 	log("WSM error, disconnecting...");
-	wsm->disconnect();
+	wsm.disconnect();
 }
 
 void MainWindow::mc_speedReceiveTimeout() {
@@ -740,9 +748,9 @@ void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
 }
 
 void MainWindow::b_wsm_lt_handle() {
-	if (nullptr != wsm) {
+	if (wsm.connected()) {
 		try {
-			wsm->startLongTermMeasure(30); // 3 s
+			wsm.startLongTermMeasure(30); // 3 s
 		}
 		catch (const QStrException& e) {
 			show_error(e.str());
