@@ -27,12 +27,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_speed_set, SIGNAL(released()), this, SLOT(b_speed_set_handle()));
 	QObject::connect(ui.b_loco_stop, SIGNAL(released()), this, SLOT(b_loco_stop_handle()));
 	QObject::connect(ui.b_loco_idle, SIGNAL(released()), this, SLOT(b_loco_idle_handle()));
+	QObject::connect(ui.sb_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_speed_changed(int)));
 	QObject::connect(ui.vs_speed, SIGNAL(valueChanged(int)), this, SLOT(vs_speed_slider_moved(int)));
 	QObject::connect(ui.rb_backward, SIGNAL(toggled(bool)), this, SLOT(rb_direction_toggled(bool)));
 	QObject::connect(ui.chb_f0, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.chb_f1, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.chb_f2, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.b_calib_start, SIGNAL(released()), this, SLOT(b_calib_start_handle()));
+
+	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_max_speed_changed(int)));
 
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
@@ -110,7 +113,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	m_ssm.load("speed.csv");
 	for(size_t i = 0; i < _STEPS_CNT; i++)
-		ui_steps[i].calibrate->setEnabled(nullptr != m_ssm.map[i]);
+		ui_steps[i].calibrate->setEnabled(nullptr != m_ssm[i]);
 
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
 
@@ -650,6 +653,14 @@ void MainWindow::chb_f_clicked(bool) {
 	xn.setFuncA(Xn::LocoAddr(ui.sb_loco->value()), m_fa);
 }
 
+void MainWindow::sb_max_speed_changed(int value) {
+	m_ssm.setMaxSpeed(value);
+}
+
+void MainWindow::sb_speed_changed(int) {
+	b_speed_set_handle();
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // WSM functions
 
@@ -832,8 +843,8 @@ void MainWindow::vs_steps_moved(int value) {
 
 void MainWindow::b_calibrate_handle() {
 	unsigned step = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt() + 1;
-	if (nullptr != m_ssm.map[step-1]) {
-		cm.cs.calibrate(ui.sb_loco->value(), step, *(m_ssm.map[step-1]));
+	if (nullptr != m_ssm[step-1]) {
+		cm.cs.calibrate(ui.sb_loco->value(), step, *(m_ssm[step-1]));
 		log("Starting calibration of step " + QString::number(step));
 	}
 }
