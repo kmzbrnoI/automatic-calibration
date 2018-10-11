@@ -5,9 +5,14 @@
 #include <QObject>
 #include <memory>
 
+#include "lib/q-str-exception.h"
+
 namespace Pm {
 
 const size_t _STEPS_CNT = 256;
+struct ENoMap : public QStrException {
+	ENoMap(const QString str) : QStrException(str) {}
+};
 
 class PowerToSpeedMap : public QObject {
 	Q_OBJECT

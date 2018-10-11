@@ -37,6 +37,8 @@ unsigned PowerToSpeedMap::steps(float speed) {
 			last = i;
 		}
 	}
+
+	throw ENoMap("No map data for this speed!");
 }
 
 }//end namespace
