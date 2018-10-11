@@ -170,7 +170,7 @@ void CalibMan::csSigDisconnect() {
 	QObject::disconnect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::disconnect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::disconnect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::disconnect(&cs, SIGNAL(done(unsigned)), this, SLOT(csDone(unsigned)));
+	QObject::disconnect(&cs, SIGNAL(done(unsigned, unsigned)), this, SLOT(csDone(unsigned, unsigned)));
 	QObject::disconnect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
 }
