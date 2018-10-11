@@ -176,12 +176,6 @@ void MainWindow::b_start_handle() {
 	}
 }
 
-void MainWindow::b_calib_start_handle() {
-	if (wsm.connected() && wsm.isSpeedOk() && xn.connected())
-		cm.calibrateAll(ui.sb_loco->value(),
-		                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // XN Events
 
@@ -891,6 +885,10 @@ void MainWindow::cm_stepStart(unsigned step) {
 
 void MainWindow::cm_stepError(unsigned step) {
 	log("Step " + QString::number(step) + " calibration error!");
+	ui.b_calib_start->setEnabled(true);
+	ui.gb_cal_graph->setEnabled(true);
+	ui.gb_ad->setEnabled(true);
+	ui.b_wsm_lt->setEnabled(true);
 }
 
 void MainWindow::cm_locoSpeedChanged(unsigned step) {
@@ -901,10 +899,25 @@ void MainWindow::cm_locoSpeedChanged(unsigned step) {
 
 void MainWindow::cm_done() {
 	log("Calibration done :)");
+	ui.b_calib_start->setEnabled(true);
+	ui.gb_cal_graph->setEnabled(true);
+	ui.gb_ad->setEnabled(true);
+	ui.b_wsm_lt->setEnabled(true);
 }
 
 void MainWindow::cm_stepPowerChanged(unsigned step, unsigned power) {
 	cs_step_power_changed(step, power);
+}
+
+void MainWindow::b_calib_start_handle() {
+	if (wsm.connected() && wsm.isSpeedOk() && xn.connected()) {
+		ui.b_calib_start->setEnabled(false);
+		ui.gb_cal_graph->setEnabled(false);
+		ui.gb_ad->setEnabled(false);
+		ui.b_wsm_lt->setEnabled(false);
+		cm.calibrateAll(ui.sb_loco->value(),
+		                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
+		}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
