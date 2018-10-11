@@ -100,7 +100,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&cm.cs, SIGNAL(done(unsigned, unsigned)),
 	                 this, SLOT(cs_done(unsigned, unsigned)));
 	QObject::connect(&cm.cs, SIGNAL(xn_error(unsigned)), this, SLOT(cs_xn_error(unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)), this, SLOT(cs_step_power_changed(unsigned, unsigned)));
 
 	// Connect power-to-map with GUI
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
@@ -761,6 +760,8 @@ void MainWindow::t_mc_disconnect_tick() {
 }
 
 void MainWindow::mc_speedReceiveTimeout() {
+	QObject::disconnect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)),
+					    this, SLOT(cs_step_power_changed(unsigned, unsigned)));
 	log("WSM receive timeout!");
 	widget_set_color(*(ui.l_wsm_alive), Qt::red);
 }
@@ -779,6 +780,8 @@ void MainWindow::b_wsm_lt_handle() {
 	if (wsm.connected()) {
 		try {
 			wsm.startLongTermMeasure(30); // 3 s
+			QObject::connect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)),
+			                 this, SLOT(cs_step_power_changed(unsigned, unsigned)));
 		}
 		catch (const QStrException& e) {
 			show_error(e.str());
@@ -884,6 +887,8 @@ void MainWindow::cs_xn_error(unsigned) {
 }
 
 void MainWindow::cs_step_power_changed(unsigned step, unsigned power) {
+	QObject::disconnect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)),
+					    this, SLOT(cs_step_power_changed(unsigned, unsigned)));
 	ui_steps[step-1].slider->setValue(power);
 	log("Setting step " + QString::number(step) + " to " + QString::number(power));
 }
@@ -922,7 +927,8 @@ void MainWindow::cm_done() {
 }
 
 void MainWindow::cm_stepPowerChanged(unsigned step, unsigned power) {
-	cs_step_power_changed(step, power);
+	ui_steps[step-1].slider->setValue(power);
+	log("Setting step " + QString::number(step) + " to " + QString::number(power));
 }
 
 void MainWindow::b_calib_start_handle() {
