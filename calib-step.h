@@ -48,10 +48,10 @@ private slots:
 	void t_sp_adapt_tick();
 
 signals:
-	void diffusion_error();
-	void loco_stopped();
-	void done();
-	void xn_error();
+	void diffusion_error(unsigned step);
+	void loco_stopped(unsigned step);
+	void done(unsigned step, unsigned power);
+	void xn_error(unsigned step);
 	void step_power_changed(unsigned step, unsigned power);
 };
 

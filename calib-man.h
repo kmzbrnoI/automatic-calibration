@@ -28,12 +28,15 @@ public:
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
 
 	void calibrateAll(unsigned locoAddr);
+	void reset();
 
 private:
 	Ssm::StepsToSpeedMap& m_ssm;
 	Xn::XpressNet& m_xn;
 	StepState state[Xn::_STEPS_CNT]; // step index used as index
 	unsigned m_locoAddr;
+	unsigned m_step_writing;
+	unsigned m_step_power;
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();
@@ -42,19 +45,23 @@ private:
 	void csSigConnect();
 	void csSigDisconnect();
 
+	void xnStepWritten(void*, void*);
+	void xnStepWriteError(void*, void*);
+	static void xnsStepWritten(void*, void*);
+	static void xnsStepWriteError(void*, void*);
+
 private slots:
-	void csDone();
-	void csError();
+	void csDone(unsigned step, unsigned power);
+	void csError(unsigned step);
 	void csStepPowerChanged(unsigned step, unsigned power);
 
 signals:
-	void onStepDone(unsigned step);
+	void onStepDone(unsigned step, unsigned power);
 	void onStepStart(unsigned step);
 	void onStepError(unsigned step);
 	void onLocoSetSpeed(unsigned step);
 	void onSetStep(unsigned step);
 	void onDone();
-	void onBreak();
 	void onStepPowerChanged(unsigned step, unsigned power);
 };
 

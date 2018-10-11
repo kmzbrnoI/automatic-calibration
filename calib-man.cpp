@@ -6,20 +6,79 @@ namespace Cm {
 
 CalibMan::CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
                    Ssm::StepsToSpeedMap& ssm, QObject *parent)
-	: QObject(parent), cs(xn, pm, wsm), m_ssm(ssm), m_xn(xn) {
+	: QObject(parent), cs(xn, pm, wsm), m_ssm(ssm), m_xn(xn) {}
+
+void CalibMan::reset() {
+	for(auto& s : state)
+		s = StepState::Uncalibred;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Calibration Step events:
 
-void CalibMan::csDone() {
+void CalibMan::csDone(unsigned step, unsigned power) {
+	onStepDone(step, power);
+	step = step - 1; // convert step to step index
+	state[step] = StepState::Calibred;
+
+	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
+		if (nullptr != m_ssm.map[i] && i != step && *(m_ssm.map[i]) == *(m_ssm.map[step]) &&
+		    state[*m_ssm.map[i]] == StepState::Uncalibred) {
+			m_step_writing = i;
+			m_step_power = power;
+			m_xn.PomWriteCv(
+				Xn::LocoAddr(m_locoAddr),
+				_CV_START + i,
+				power,
+				std::make_unique<Xn::XnCb>(&xnsStepWritten, this),
+				std::make_unique<Xn::XnCb>(&xnsStepWriteError, this)
+			);
+			onStepPowerChanged(i+1, power);
+			return;
+		}
+	}
+
+	calibrateNextStep();
 }
 
-void CalibMan::csError() {
+void CalibMan::csError(unsigned step) {
+	csSigDisconnect();
+	onStepError(step);
 }
 
 void CalibMan::csStepPowerChanged(unsigned step, unsigned power) {
 	onStepPowerChanged(step, power);
+}
+
+void CalibMan::xnsStepWritten(void* s, void* d) { static_cast<CalibMan*>(d)->xnStepWritten(s, d); }
+void CalibMan::xnsStepWriteError(void* s, void* d) { static_cast<CalibMan*>(d)->xnStepWriteError(s, d); }
+
+void CalibMan::xnStepWritten(void*, void*) {
+	state[m_step_writing] = StepState::Calibred;
+	onStepDone(m_step_writing+1, m_step_power);
+
+	for(size_t i = m_step_writing+1; i < Xn::_STEPS_CNT; i++) {
+		if (nullptr != m_ssm.map[i] && i != m_step_writing &&
+		    *(m_ssm.map[i]) == *(m_ssm.map[m_step_writing]) &&
+			state[*m_ssm.map[i]] == StepState::Uncalibred) {
+			m_step_writing = i;
+			m_xn.PomWriteCv(
+				Xn::LocoAddr(m_locoAddr),
+				_CV_START + i,
+				m_step_power,
+				std::make_unique<Xn::XnCb>(&xnsStepWritten, this),
+				std::make_unique<Xn::XnCb>(&xnsStepWriteError, this)
+			);
+			onStepPowerChanged(i+1, m_step_power);
+			return;
+		}
+	}
+
+	calibrateNextStep();
+}
+
+void CalibMan::xnStepWriteError(void*, void*) {
+	onStepError(m_step_writing);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -71,6 +130,7 @@ std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& use
 
 void CalibMan::calibrateAll(unsigned locoAddr) {
 	m_locoAddr = locoAddr;
+	csSigConnect();
 	calibrateNextStep();
 }
 
@@ -78,28 +138,29 @@ void CalibMan::calibrateNextStep() {
 	std::unique_ptr<unsigned> next = nextStep();
 	if (nullptr == next) {
 		// No more steps to calibrate
+		csSigDisconnect();
 		onDone();
 		return;
 	}
 
-	csSigConnect();
+	onStepStart((*next) + 1);
 	cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm.map[*next]));
 }
 
 void CalibMan::csSigConnect() {
-	QObject::connect(&cs, SIGNAL(diffusion_error()), this, SLOT(csError()));
-	QObject::connect(&cs, SIGNAL(loco_stopped()), this, SLOT(csError()));
-	QObject::connect(&cs, SIGNAL(xn_error()), this, SLOT(csError()));
-	QObject::connect(&cs, SIGNAL(done()), this, SLOT(csDone()));
+	QObject::connect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::connect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::connect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::connect(&cs, SIGNAL(done(unsigned, unsigned)), this, SLOT(csDone(unsigned, unsigned)));
 	QObject::connect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
 }
 
 void CalibMan::csSigDisconnect() {
-	QObject::disconnect(&cs, SIGNAL(diffusion_error()), this, SLOT(csError()));
-	QObject::disconnect(&cs, SIGNAL(loco_stopped()), this, SLOT(csError()));
-	QObject::disconnect(&cs, SIGNAL(xn_error()), this, SLOT(csError()));
-	QObject::disconnect(&cs, SIGNAL(done()), this, SLOT(csDone()));
+	QObject::disconnect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::disconnect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::disconnect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::disconnect(&cs, SIGNAL(done(unsigned)), this, SLOT(csDone(unsigned)));
 	QObject::disconnect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
 }

@@ -35,16 +35,16 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 
 	if (diffusion > _MAX_DIFFUSION) {
-		diffusion_error();
+		diffusion_error(m_step);
 		return;
 	}
 	if (speed == 0) {
-		loco_stopped();
+		loco_stopped(m_step);
 		return;
 	}
 
 	if (std::abs(speed-m_target_speed) < m_epsilon) {
-		done();
+		done(m_step, m_last_power);
 		return;
 	}
 
@@ -92,7 +92,7 @@ void CalibStep::xn_pom_ok(void* source, void* data) {
 void CalibStep::xn_pom_err(void* source, void* data) {
 	(void)source;
 	(void)data;
-	xn_error();
+	xn_error(m_step);
 }
 
 void CalibStep::wsm_lt_error() {
