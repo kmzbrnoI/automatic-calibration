@@ -637,6 +637,19 @@
         <property name="title">
          <string>Calibration Settings</string>
         </property>
+        <widget class="QPushButton" name="b_calib_start">
+         <property name="geometry">
+          <rect>
+           <x>60</x>
+           <y>280</y>
+           <width>131</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Start calibration</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="gb_ad">
         <property name="enabled">

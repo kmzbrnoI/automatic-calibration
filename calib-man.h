@@ -61,7 +61,6 @@ signals:
 	void onStepStart(unsigned step);
 	void onStepError(unsigned step);
 	void onLocoSpeedChanged(unsigned step);
-	void onSetStep(unsigned step);
 	void onDone();
 	void onStepPowerChanged(unsigned step, unsigned power);
 };

@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.chb_f0, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.chb_f1, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.chb_f2, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
+	QObject::connect(ui.b_calib_start, SIGNAL(released()), this, SLOT(b_calib_start_handle()));
 
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
@@ -78,21 +79,23 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&wsm, SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
 
 	// Calibration Manager signals
-	QObject::connect(&cm.cs, SIGNAL(onStepDone(unsigned, unsigned)),
-	                 this, SLOT(ccm_stepDone(unsigned, unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(onStepStart(unsigned)), this, SLOT(ccm_stepStart(unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(onStepError(unsigned)), this, SLOT(ccm_stepError(unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(onLocoSpeedChanged(unsigned)),
-	                 this, SLOT(ccm_locoSpeedChanged(unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(onSetStep(unsigned)), this, SLOT(ccm_setStep(unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(onDone()), this, SLOT(ccm_done()));
-	QObject::connect(&cm.cs, SIGNAL(onStepPowerChanged(unsigned, unsigned)),
-	                 this, SLOT(ccm_stepPowerChanged(unsigned, unsigned)));
+	QObject::connect(&cm, SIGNAL(onStepDone(unsigned, unsigned)),
+	                 this, SLOT(cm_stepDone(unsigned, unsigned)));
+	QObject::connect(&cm, SIGNAL(onStepStart(unsigned)), this, SLOT(cm_stepStart(unsigned)));
+	QObject::connect(&cm, SIGNAL(onStepError(unsigned)), this, SLOT(cm_stepError(unsigned)));
+	QObject::connect(&cm, SIGNAL(onLocoSpeedChanged(unsigned)),
+	                 this, SLOT(cm_locoSpeedChanged(unsigned)));
+	QObject::connect(&cm, SIGNAL(onDone()), this, SLOT(cm_done()));
+	QObject::connect(&cm, SIGNAL(onStepPowerChanged(unsigned, unsigned)),
+	                 this, SLOT(cm_stepPowerChanged(unsigned, unsigned)));
 
-	QObject::connect(&cm.cs, SIGNAL(diffusion_error()), this, SLOT(cs_diffusion_error()));
-	QObject::connect(&cm.cs, SIGNAL(loco_stopped()), this, SLOT(cs_loco_stopped()));
-	QObject::connect(&cm.cs, SIGNAL(done()), this, SLOT(cs_done()));
-	QObject::connect(&cm.cs, SIGNAL(xn_error()), this, SLOT(cs_xn_error()));
+	QObject::connect(&cm.cs, SIGNAL(diffusion_error(unsigned)),
+	                 this, SLOT(cs_diffusion_error(unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(loco_stopped(unsigned)),
+	                 this, SLOT(cs_loco_stopped(unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(done(unsigned, unsigned)),
+	                 this, SLOT(cs_done(unsigned, unsigned)));
+	QObject::connect(&cm.cs, SIGNAL(xn_error(unsigned)), this, SLOT(cs_xn_error(unsigned)));
 	QObject::connect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)), this, SLOT(cs_step_power_changed(unsigned, unsigned)));
 
 	// Connect power-to-map with GUI
@@ -171,6 +174,12 @@ void MainWindow::b_start_handle() {
 		if (!wsm.connected())
 			a_wsm_connect(true);
 	}
+}
+
+void MainWindow::b_calib_start_handle() {
+	if (wsm.connected() && wsm.isSpeedOk() && xn.connected())
+		cm.calibrateAll(ui.sb_loco->value(),
+		                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -848,19 +857,19 @@ void MainWindow::ssm_onClear() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::cs_diffusion_error() {
+void MainWindow::cs_diffusion_error(unsigned) {
 	log("Loco is to diffused!");
 }
 
-void MainWindow::cs_loco_stopped() {
+void MainWindow::cs_loco_stopped(unsigned) {
 	log("Loco is stopped by outer source!");
 }
 
-void MainWindow::cs_done() {
+void MainWindow::cs_done(unsigned, unsigned) {
 	log("Calibration of a step done.");
 }
 
-void MainWindow::cs_xn_error() {
+void MainWindow::cs_xn_error(unsigned) {
 	log("XpressNET error while calibration!");
 }
 
@@ -872,24 +881,30 @@ void MainWindow::cs_step_power_changed(unsigned step, unsigned power) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::cm_stepDone(unsigned step, unsigned power) {
+	(void)power;
+	log("Step " + QString::number(step) + " done");
 }
 
 void MainWindow::cm_stepStart(unsigned step) {
+	log("Starting calibration of step " + QString::number(step));
 }
 
 void MainWindow::cm_stepError(unsigned step) {
+	log("Step " + QString::number(step) + " calibration error!");
 }
 
 void MainWindow::cm_locoSpeedChanged(unsigned step) {
-}
-
-void MainWindow::cm_setStep(unsigned step) {
+	ui.vs_speed->setValue(step);
+	ui.sb_speed->setValue(step);
+	m_sent_speed = step;
 }
 
 void MainWindow::cm_done() {
+	log("Calibration done :)");
 }
 
 void MainWindow::cm_stepPowerChanged(unsigned step, unsigned power) {
+	cs_step_power_changed(step, power);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

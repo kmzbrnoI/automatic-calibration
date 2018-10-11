@@ -81,6 +81,7 @@ private slots:
 	void b_ad_read_handle();
 	void b_ad_write_handle();
 	void b_wsm_lt_handle();
+	void b_calib_start_handle();
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);
@@ -107,17 +108,16 @@ private slots:
 	void ssm_onAddOrUpdate(unsigned step, unsigned speed);
 	void ssm_onClear();
 
-	void cs_diffusion_error();
-	void cs_loco_stopped();
-	void cs_done();
-	void cs_xn_error();
+	void cs_diffusion_error(unsigned step);
+	void cs_loco_stopped(unsigned step);
+	void cs_done(unsigned step, unsigned power);
+	void cs_xn_error(unsigned step);
 	void cs_step_power_changed(unsigned step, unsigned power);
 
 	void cm_stepDone(unsigned step, unsigned power);
 	void cm_stepStart(unsigned step);
 	void cm_stepError(unsigned step);
 	void cm_locoSpeedChanged(unsigned step);
-	void cm_setStep(unsigned step);
 	void cm_done();
 	void cm_stepPowerChanged(unsigned step, unsigned power);
 
