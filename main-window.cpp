@@ -94,15 +94,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	                 this, SLOT(cm_locoSpeedChanged(unsigned)));
 	QObject::connect(&cm, SIGNAL(onDone()), this, SLOT(cm_done()));
 	QObject::connect(&cm, SIGNAL(onStepPowerChanged(unsigned, unsigned)),
-	                 this, SLOT(cm_stepPowerChanged(unsigned, unsigned)));
-
-	QObject::connect(&cm.cs, SIGNAL(diffusion_error(unsigned)),
-	                 this, SLOT(cs_diffusion_error(unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(loco_stopped(unsigned)),
-	                 this, SLOT(cs_loco_stopped(unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(done(unsigned, unsigned)),
-	                 this, SLOT(cs_done(unsigned, unsigned)));
-	QObject::connect(&cm.cs, SIGNAL(xn_error(unsigned)), this, SLOT(cs_xn_error(unsigned)));
+	                 this, SLOT(cm_step_power_changed(unsigned, unsigned)));
+	QObject::connect(&cm, SIGNAL(onDiffusionError(unsigned)),
+	                 this, SLOT(cm_diffusion_error(unsigned)));
+	QObject::connect(&cm, SIGNAL(onLocoStopped(unsigned)),
+	                 this, SLOT(cm_loco_stopped(unsigned)));
 
 	// Connect power-to-map with GUI
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
@@ -767,8 +763,6 @@ void MainWindow::t_mc_disconnect_tick() {
 }
 
 void MainWindow::mc_speedReceiveTimeout() {
-	QObject::disconnect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)),
-					    this, SLOT(cs_step_power_changed(unsigned, unsigned)));
 	log("WSM receive timeout!");
 	widget_set_color(*(ui.l_wsm_alive), Qt::red);
 }
@@ -787,8 +781,7 @@ void MainWindow::b_wsm_lt_handle() {
 	if (wsm.connected()) {
 		try {
 			wsm.startLongTermMeasure(30); // 3 s
-			QObject::connect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)),
-			                 this, SLOT(cs_step_power_changed(unsigned, unsigned)));
+
 		}
 		catch (const QStrException& e) {
 			show_error(e.str());
@@ -877,30 +870,18 @@ void MainWindow::ssm_onClear() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::cs_diffusion_error(unsigned) {
+void MainWindow::cm_diffusion_error(unsigned) {
 	log("Loco is to diffused!");
 }
 
-void MainWindow::cs_loco_stopped(unsigned) {
+void MainWindow::cm_loco_stopped(unsigned) {
 	log("Loco is stopped by outer source!");
 }
 
-void MainWindow::cs_done(unsigned, unsigned) {
-	log("Calibration of a step done.");
-}
-
-void MainWindow::cs_xn_error(unsigned) {
-	log("XpressNET error while calibration!");
-}
-
-void MainWindow::cs_step_power_changed(unsigned step, unsigned power) {
-	QObject::disconnect(&cm.cs, SIGNAL(step_power_changed(unsigned, unsigned)),
-					    this, SLOT(cs_step_power_changed(unsigned, unsigned)));
+void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 	ui_steps[step-1].slider->setValue(power);
 	log("Setting step " + QString::number(step) + " to " + QString::number(power));
 }
-
-///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::cm_stepDone(unsigned step, unsigned power) {
 	(void)power;
@@ -931,11 +912,6 @@ void MainWindow::cm_done() {
 	ui.gb_cal_graph->setEnabled(true);
 	ui.gb_ad->setEnabled(true);
 	ui.b_wsm_lt->setEnabled(true);
-}
-
-void MainWindow::cm_stepPowerChanged(unsigned step, unsigned power) {
-	ui_steps[step-1].slider->setValue(power);
-	log("Setting step " + QString::number(step) + " to " + QString::number(power));
 }
 
 void MainWindow::b_calib_start_handle() {

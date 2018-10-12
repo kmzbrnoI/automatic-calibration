@@ -1,5 +1,5 @@
-#ifndef _CALIB_STEP_H_
-#define _CALIB_STEP_H_
+#ifndef _CALIB_OVERVIEW_H_
+#define _CALIB_OVERVIEW_H_
 
 #include <QObject>
 #include <QTimer>
@@ -55,9 +55,9 @@ private slots:
 	void t_sp_adapt_tick();
 
 signals:
-	void diffusion_error();
+	void diffusion_error(unsigned step);
 	void done();
-	void xn_error();
+	void xn_error(unsigned step);
 	void step_power_changed(unsigned step, unsigned power);
 };
 

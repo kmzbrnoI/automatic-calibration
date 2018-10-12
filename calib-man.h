@@ -10,6 +10,7 @@
 #include "power-map.h"
 #include "speed-map.h"
 #include "calib-step.h"
+#include "calib-overview.h"
 
 namespace Cm {
 
@@ -23,6 +24,7 @@ class CalibMan : public QObject {
 
 public:
 	CalibStep cs;
+	Co::CalibOverview co;
 	Xn::XnDirection direction;
 
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
@@ -55,6 +57,10 @@ private slots:
 	void csDone(unsigned step, unsigned power);
 	void csError(unsigned step);
 	void csStepPowerChanged(unsigned step, unsigned power);
+	void csDiffusionError(unsigned step);
+	void coDone();
+	void csXnError(unsigned step);
+	void csLocoStopped(unsigned step);
 
 signals:
 	void onStepDone(unsigned step, unsigned power);
@@ -63,6 +69,8 @@ signals:
 	void onLocoSpeedChanged(unsigned step);
 	void onDone();
 	void onStepPowerChanged(unsigned step, unsigned power);
+	void onDiffusionError(unsigned step);
+	void onLocoStopped(unsigned step);
 };
 
 }//end namespace
