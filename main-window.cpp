@@ -658,7 +658,8 @@ void MainWindow::sb_max_speed_changed(int value) {
 }
 
 void MainWindow::sb_speed_changed(int) {
-	b_speed_set_handle();
+	if (m_sent_speed != ui.sb_speed->value())
+		b_speed_set_handle();
 }
 
 void MainWindow::sb_min_changed(int) {
@@ -900,9 +901,9 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 }
 
 void MainWindow::cm_locoSpeedChanged(unsigned step) {
+	m_sent_speed = step;
 	ui.vs_speed->setValue(step);
 	ui.sb_speed->setValue(step);
-	m_sent_speed = step;
 }
 
 void MainWindow::cm_done() {

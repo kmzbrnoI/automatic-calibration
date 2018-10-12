@@ -25,7 +25,7 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 
 	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
 		if (nullptr != m_ssm[i] && i != step && *(m_ssm[i]) == *(m_ssm[step]) &&
-		    state[*m_ssm[i]] == StepState::Uncalibred) {
+		    state[i] == StepState::Uncalibred) {
 			m_step_writing = i;
 			m_step_power = power;
 			m_xn.PomWriteCv(
@@ -79,9 +79,8 @@ void CalibMan::xnStepWritten(void*, void*) {
 	onStepDone(m_step_writing+1, m_step_power);
 
 	for(size_t i = m_step_writing+1; i < Xn::_STEPS_CNT; i++) {
-		if (nullptr != m_ssm[i] && i != m_step_writing &&
-		    *(m_ssm[i]) == *(m_ssm[m_step_writing]) &&
-			state[*m_ssm[i]] == StepState::Uncalibred) {
+		if (nullptr != m_ssm[i] && *(m_ssm[i]) == *(m_ssm[m_step_writing]) &&
+			state[i] == StepState::Uncalibred) {
 			m_step_writing = i;
 			m_xn.PomWriteCv(
 				Xn::LocoAddr(m_locoAddr),
