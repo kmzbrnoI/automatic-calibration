@@ -21,6 +21,11 @@ const unsigned _START_STEP = 10;
 const unsigned _STEPS_CNT = 28;
 const unsigned _CV_START = 67; // cv 67 = step 1
 
+enum class CoError {
+	LargeDiffusion,
+	XnNoResponse,
+};
+
 class CalibOverview : public QObject {
 	Q_OBJECT
 
@@ -55,9 +60,8 @@ private slots:
 	void t_sp_adapt_tick();
 
 signals:
-	void diffusion_error(unsigned step);
+	void on_error(CoError, unsigned step);
 	void done();
-	void xn_error(unsigned step);
 	void step_power_changed(unsigned step, unsigned power);
 };
 

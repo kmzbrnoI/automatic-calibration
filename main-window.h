@@ -111,11 +111,9 @@ private slots:
 	void ssm_onAddOrUpdate(unsigned step, unsigned speed);
 	void ssm_onClear();
 
-	void cm_diffusion_error(unsigned step);
-	void cm_loco_stopped(unsigned step);
-	void cm_stepDone(unsigned step, unsigned power);
 	void cm_stepStart(unsigned step);
-	void cm_stepError(unsigned step);
+	void cm_stepDone(unsigned step, unsigned power);
+	void cm_stepError(Cm::CmError, unsigned step);
 	void cm_locoSpeedChanged(unsigned step);
 	void cm_done();
 	void cm_step_power_changed(unsigned step, unsigned power);

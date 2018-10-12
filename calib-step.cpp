@@ -2,7 +2,7 @@
 
 #include "calib-step.h"
 
-namespace Cm {
+namespace Cs {
 
 CalibStep::CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
                      QObject *parent)
@@ -19,7 +19,13 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 	m_epsilon = epsilon;
 	m_diff_count = 0;
 
-	m_last_power = m_pm.steps(m_target_speed);
+	try {
+		m_last_power = m_pm.steps(m_target_speed);
+	}
+	catch (const Pm::ENoMap&) {
+		on_error(CsError::NoStep, m_step);
+		return;
+	}
 
 	m_xn.PomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
@@ -37,7 +43,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 
 	if (diffusion > _MAX_DIFFUSION) {
 		if (m_diff_count >= _ADAPT_MAX_TICKS) {
-			diffusion_error(m_step);
+			on_error(CsError::LargeDiffusion, m_step);
 			return;
 		}
 		// Wait for speed...
@@ -46,7 +52,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		return;
 	}
 	if (speed == 0) {
-		loco_stopped(m_step);
+		on_error(CsError::LocoStopped, m_step);
 		return;
 	}
 
@@ -57,7 +63,14 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 
 	m_pm.addOrUpdate(m_last_power, speed);
 
-	unsigned new_power = m_pm.steps(m_target_speed);
+	unsigned new_power;
+	try {
+		new_power = m_pm.steps(m_target_speed);
+	}
+	catch (const Pm::ENoMap&) {
+		on_error(CsError::NoStep, m_step);
+		return;
+	}
 
 	// Manually increase step when step too small
 	if (std::abs(static_cast<int>(m_last_power)-static_cast<int>(new_power)) < 3) {
@@ -99,7 +112,7 @@ void CalibStep::xn_pom_ok(void* source, void* data) {
 void CalibStep::xn_pom_err(void* source, void* data) {
 	(void)source;
 	(void)data;
-	xn_error(m_step);
+	on_error(CsError::XnNoResponse, m_step);
 }
 
 void CalibStep::wsm_lt_error() {

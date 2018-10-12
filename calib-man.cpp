@@ -30,7 +30,7 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 			m_step_power = power;
 			m_xn.PomWriteCv(
 				Xn::LocoAddr(m_locoAddr),
-				_CV_START + i,
+				Cs::_CV_START + i,
 				power,
 				std::make_unique<Xn::XnCb>(&xnsStepWritten, this),
 				std::make_unique<Xn::XnCb>(&xnsStepWriteError, this)
@@ -43,13 +43,31 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 	calibrateNextStep();
 }
 
-void CalibMan::csError(unsigned step) {
+void CalibMan::csError(Cs::CsError cs, unsigned step) {
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
 	csSigDisconnect();
-	onStepError(step);
+
+	if (cs == Cs::CsError::LargeDiffusion)
+		onStepError(CmError::LargeDiffusion, step);
+	else if (cs == Cs::CsError::XnNoResponse)
+		onStepError(CmError::XnNoResponse, step);
+	else if (cs == Cs::CsError::LocoStopped)
+		onStepError(CmError::LocoStopped, step);
+	else if (cs == Cs::CsError::NoStep)
+		onStepError(CmError::NoStep, step);
 }
 
-void CalibMan::csStepPowerChanged(unsigned step, unsigned power) {
+void CalibMan::coError(Co::CoError co, unsigned step) {
+	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
+	csSigDisconnect();
+
+	if (co == Co::CoError::LargeDiffusion)
+		onStepError(CmError::LargeDiffusion, step);
+	else if (co == Co::CoError::XnNoResponse)
+		onStepError(CmError::XnNoResponse, step);
+}
+
+void CalibMan::cStepPowerChanged(unsigned step, unsigned power) {
 	onStepPowerChanged(step, power);
 }
 
@@ -67,7 +85,7 @@ void CalibMan::xnStepWritten(void*, void*) {
 			m_step_writing = i;
 			m_xn.PomWriteCv(
 				Xn::LocoAddr(m_locoAddr),
-				_CV_START + i,
+				Cs::_CV_START + i,
 				m_step_power,
 				std::make_unique<Xn::XnCb>(&xnsStepWritten, this),
 				std::make_unique<Xn::XnCb>(&xnsStepWriteError, this)
@@ -81,24 +99,12 @@ void CalibMan::xnStepWritten(void*, void*) {
 }
 
 void CalibMan::xnStepWriteError(void*, void*) {
-	onStepError(m_step_writing);
-}
-
-void CalibMan::csDiffusionError(unsigned step) {
-	onDiffusionError(step);
+	onStepError(CmError::XnNoResponse, m_step_writing);
 }
 
 void CalibMan::coDone() {
 	// Move from phase "Getting basic data" to phase "Calibration"
 	calibrateNextStep();
-}
-
-void CalibMan::csXnError(unsigned step) {
-	onStepError(step);
-}
-
-void CalibMan::csLocoStopped(unsigned step) {
-	onLocoStopped(step);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -178,43 +184,27 @@ void CalibMan::calibrateNextStep() {
 }
 
 void CalibMan::csSigConnect() {
-	QObject::connect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csDiffusionError(unsigned)));
-	QObject::connect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::connect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csXnError(unsigned)));
-	QObject::connect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::connect(&cs, SIGNAL(loco_stooped(unsigned)), this, SLOT(csLocoStopped(unsigned)));
-	QObject::connect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::connect(&cs, SIGNAL(on_error(Cs::CsError, unsigned)), this, SLOT(csError(Cs::CsError, unsigned)));
 	QObject::connect(&cs, SIGNAL(done(unsigned, unsigned)), this, SLOT(csDone(unsigned, unsigned)));
 	QObject::connect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
-	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
+	                 this, SLOT(cStepPowerChanged(unsigned, unsigned)));
 
-	QObject::connect(&co, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::connect(&co, SIGNAL(diffusion_error(unsigned)), this, SLOT(csDiffusionError(unsigned)));
+	QObject::connect(&co, SIGNAL(on_error(Co::CoError, unsigned)), this, SLOT(coError(Co::CoError, unsigned)));
 	QObject::connect(&co, SIGNAL(done()), this, SLOT(coDone()));
-	QObject::connect(&co, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::connect(&co, SIGNAL(xn_error(unsigned)), this, SLOT(csXnError(unsigned)));
 	QObject::connect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
-	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
+	                 this, SLOT(cStepPowerChanged(unsigned, unsigned)));
 }
 
 void CalibMan::csSigDisconnect() {
-	QObject::disconnect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csDiffusionError(unsigned)));
-	QObject::disconnect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::disconnect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csXnError(unsigned)));
-	QObject::disconnect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::disconnect(&cs, SIGNAL(loco_stooped(unsigned)), this, SLOT(csLocoStopped(unsigned)));
-	QObject::disconnect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::disconnect(&cs, SIGNAL(on_error(Cs::CsError, unsigned)), this, SLOT(csError(Cs::CsError, unsigned)));
 	QObject::disconnect(&cs, SIGNAL(done(unsigned, unsigned)), this, SLOT(csDone(unsigned, unsigned)));
 	QObject::disconnect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
-	                    this, SLOT(csStepPowerChanged(unsigned, unsigned)));
+	                    this, SLOT(cStepPowerChanged(unsigned, unsigned)));
 
-	QObject::disconnect(&co, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::disconnect(&co, SIGNAL(diffusion_error(unsigned)), this, SLOT(csDiffusionError(unsigned)));
+	QObject::disconnect(&co, SIGNAL(on_error(Co::CoError, unsigned)), this, SLOT(coError(Co::CoError, unsigned)));
 	QObject::disconnect(&co, SIGNAL(done()), this, SLOT(coDone()));
-	QObject::disconnect(&co, SIGNAL(xn_error(unsigned)), this, SLOT(csXnError(unsigned)));
-	QObject::disconnect(&co, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::disconnect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
-	                    this, SLOT(csStepPowerChanged(unsigned, unsigned)));
+	                    this, SLOT(cStepPowerChanged(unsigned, unsigned)));
 }
 
 }//end namespace

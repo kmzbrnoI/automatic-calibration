@@ -78,7 +78,7 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 
 	if (diffusion > _MAX_DIFFUSION) {
 		if (m_diff_count >= _ADAPT_MAX_TICKS) {
-			diffusion_error(_OVERVIEW_STEP);
+			on_error(CoError::LargeDiffusion, _OVERVIEW_STEP);
 			return;
 		}
 		// Wait for speed...
@@ -106,7 +106,7 @@ void CalibOverview::xn_pom_ok(void*, void*) {
 }
 
 void CalibOverview::xn_pom_err(void*, void*) {
-	xn_error(_OVERVIEW_STEP);
+	on_error(CoError::XnNoResponse, _OVERVIEW_STEP);
 }
 
 void CalibOverview::wsm_lt_error() {

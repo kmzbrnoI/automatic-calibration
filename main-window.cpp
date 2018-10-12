@@ -86,19 +86,16 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&wsm, SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
 
 	// Calibration Manager signals
+	QObject::connect(&cm, SIGNAL(onStepStart(unsigned)), this, SLOT(cm_stepStart(unsigned)));
 	QObject::connect(&cm, SIGNAL(onStepDone(unsigned, unsigned)),
 	                 this, SLOT(cm_stepDone(unsigned, unsigned)));
-	QObject::connect(&cm, SIGNAL(onStepStart(unsigned)), this, SLOT(cm_stepStart(unsigned)));
-	QObject::connect(&cm, SIGNAL(onStepError(unsigned)), this, SLOT(cm_stepError(unsigned)));
+	QObject::connect(&cm, SIGNAL(onStepError(Cm::CmError, unsigned)),
+	                 this, SLOT(cm_stepError(Cm::CmError, unsigned)));
 	QObject::connect(&cm, SIGNAL(onLocoSpeedChanged(unsigned)),
 	                 this, SLOT(cm_locoSpeedChanged(unsigned)));
 	QObject::connect(&cm, SIGNAL(onDone()), this, SLOT(cm_done()));
 	QObject::connect(&cm, SIGNAL(onStepPowerChanged(unsigned, unsigned)),
 	                 this, SLOT(cm_step_power_changed(unsigned, unsigned)));
-	QObject::connect(&cm, SIGNAL(onDiffusionError(unsigned)),
-	                 this, SLOT(cm_diffusion_error(unsigned)));
-	QObject::connect(&cm, SIGNAL(onLocoStopped(unsigned)),
-	                 this, SLOT(cm_loco_stopped(unsigned)));
 
 	// Connect power-to-map with GUI
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
@@ -870,14 +867,6 @@ void MainWindow::ssm_onClear() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::cm_diffusion_error(unsigned) {
-	log("Loco is to diffused!");
-}
-
-void MainWindow::cm_loco_stopped(unsigned) {
-	log("Loco is stopped by outer source!");
-}
-
 void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 	ui_steps[step-1].slider->setValue(power);
 	log("Setting step " + QString::number(step) + " to " + QString::number(power));
@@ -892,8 +881,18 @@ void MainWindow::cm_stepStart(unsigned step) {
 	log("Starting calibration of step " + QString::number(step));
 }
 
-void MainWindow::cm_stepError(unsigned step) {
+void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 	log("Step " + QString::number(step) + " calibration error!");
+
+	if (ce == Cm::CmError::LargeDiffusion)
+		log("Loco speed too diffused!");
+	else if (ce == Cm::CmError::XnNoResponse)
+		log("No response from XpressNET!");
+	else if (ce == Cm::CmError::LocoStopped)
+		log("Loco stopped!");
+	else if (ce == Cm::CmError::NoStep)
+		log("No suitable power step for this speed!");
+
 	ui.b_calib_start->setEnabled(true);
 	ui.gb_cal_graph->setEnabled(true);
 	ui.gb_ad->setEnabled(true);

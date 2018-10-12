@@ -19,11 +19,18 @@ enum class StepState {
 	Uncalibred,
 };
 
+enum class CmError {
+	LargeDiffusion,
+	XnNoResponse,
+	LocoStopped,
+	NoStep,
+};
+
 class CalibMan : public QObject {
 	Q_OBJECT
 
 public:
-	CalibStep cs;
+	Cs::CalibStep cs;
 	Co::CalibOverview co;
 	Xn::XnDirection direction;
 
@@ -55,22 +62,21 @@ private:
 
 private slots:
 	void csDone(unsigned step, unsigned power);
-	void csError(unsigned step);
-	void csStepPowerChanged(unsigned step, unsigned power);
-	void csDiffusionError(unsigned step);
+	void csError(Cs::CsError, unsigned step);
+
 	void coDone();
-	void csXnError(unsigned step);
-	void csLocoStopped(unsigned step);
+	void coError(Co::CoError, unsigned step);
+
+	void cStepPowerChanged(unsigned step, unsigned power);
 
 signals:
-	void onStepDone(unsigned step, unsigned power);
 	void onStepStart(unsigned step);
-	void onStepError(unsigned step);
+	void onStepDone(unsigned step, unsigned power);
+	void onStepError(Cm::CmError, unsigned step);
+
 	void onLocoSpeedChanged(unsigned step);
 	void onDone();
 	void onStepPowerChanged(unsigned step, unsigned power);
-	void onDiffusionError(unsigned step);
-	void onLocoStopped(unsigned step);
 };
 
 }//end namespace

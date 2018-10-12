@@ -8,7 +8,7 @@
 #include "lib/wsm/wsm.h"
 #include "power-map.h"
 
-namespace Cm {
+namespace Cs {
 
 const double _DEFAULT_EPSILON = 1; // +- 1 kmph
 const unsigned _SP_ADAPT_TIMEOUT = 2000; // 2 s
@@ -16,6 +16,13 @@ const double _MAX_DIFFUSION = 3; // 3 kmph
 const unsigned _CV_START = 67; // cv 67 = step 1
 const unsigned _MEASURE_COUNT = 30; // measuring 30 values = 3 s
 const unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
+
+enum class CsError {
+	LargeDiffusion,
+	XnNoResponse,
+	LocoStopped,
+	NoStep,
+};
 
 class CalibStep : public QObject {
 	Q_OBJECT
@@ -50,10 +57,8 @@ private slots:
 	void t_sp_adapt_tick();
 
 signals:
-	void diffusion_error(unsigned step);
-	void loco_stopped(unsigned step);
+	void on_error(CsError, unsigned step);
 	void done(unsigned step, unsigned power);
-	void xn_error(unsigned step);
 	void step_power_changed(unsigned step, unsigned power);
 };
 
