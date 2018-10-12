@@ -103,8 +103,8 @@ void CalibMan::xnStepWriteError(void*, void*) {
 
 void CalibMan::coDone() {
 	// Move from phase "Getting basic data" to phase "Calibration"
-	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
-	onLocoSpeedChanged(0);
+	//m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
+	//onLocoSpeedChanged(0);
 
 	calibrateNextStep();
 }
