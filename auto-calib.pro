@@ -27,7 +27,8 @@ SOURCES += \
 	power-graph-window.cpp \
 	speed-map.cpp \
 	calib-step.cpp \
-	calib-man.cpp
+	calib-man.cpp \
+	calib-overview.cpp
 
 HEADERS += \
 	main-window.h \
@@ -40,7 +41,8 @@ HEADERS += \
 	power-graph-window.h \
 	speed-map.h \
 	calib-step.h \
-	calib-man.h
+	calib-man.h \
+	calib-overview.h
 
 FORMS += \
 	main-window.ui \

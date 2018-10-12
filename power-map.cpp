@@ -41,4 +41,12 @@ unsigned PowerToSpeedMap::steps(float speed) {
 	throw ENoMap("No map data for this speed!");
 }
 
+bool PowerToSpeedMap::isRecord(unsigned step) {
+	return (nullptr != map[step]);
+}
+
+float* PowerToSpeedMap::speed(unsigned step) {
+	return map[step].get();
+}
+
 }//end namespace

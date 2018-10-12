@@ -9,6 +9,8 @@
 
 namespace Pm {
 
+// This class uses stepindex everywhere!
+
 const size_t _STEPS_CNT = 256;
 struct ENoMap : public QStrException {
 	ENoMap(const QString str) : QStrException(str) {}
@@ -24,6 +26,8 @@ public:
 	void clear();
 	void addOrUpdate(unsigned step, float speed);
 	unsigned steps(float speed);
+	bool isRecord(unsigned step);
+	float* speed(unsigned step);
 
 signals:
 	void onAddOrUpdate(unsigned step, float speed);
