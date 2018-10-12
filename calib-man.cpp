@@ -44,6 +44,7 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 }
 
 void CalibMan::csError(unsigned step) {
+	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
 	csSigDisconnect();
 	onStepError(step);
 }
@@ -88,7 +89,8 @@ void CalibMan::csDiffusionError(unsigned step) {
 }
 
 void CalibMan::coDone() {
-	// TODO
+	// Move from phase "Getting basic data" to phase "Calibration"
+	calibrateNextStep();
 }
 
 void CalibMan::csXnError(unsigned step) {
@@ -153,7 +155,9 @@ void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	m_locoAddr = locoAddr;
 	direction = dir;
 	csSigConnect();
-	calibrateNextStep();
+
+	// Phase 1: make an overview of mapping steps to speed
+	co.makeOverview(locoAddr);
 }
 
 void CalibMan::calibrateNextStep() {
@@ -174,12 +178,12 @@ void CalibMan::calibrateNextStep() {
 }
 
 void CalibMan::csSigConnect() {
-	QObject::connect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::connect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csDiffusionError(unsigned)));
+	QObject::connect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::connect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csXnError(unsigned)));
-	QObject::connect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::connect(&cs, SIGNAL(loco_stooped(unsigned)), this, SLOT(csLocoStopped(unsigned)));
 	QObject::connect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::connect(&cs, SIGNAL(loco_stooped(unsigned)), this, SLOT(csLocoStopped(unsigned)));
+	QObject::connect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::connect(&cs, SIGNAL(done(unsigned, unsigned)), this, SLOT(csDone(unsigned, unsigned)));
 	QObject::connect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
@@ -187,28 +191,30 @@ void CalibMan::csSigConnect() {
 	QObject::connect(&co, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::connect(&co, SIGNAL(diffusion_error(unsigned)), this, SLOT(csDiffusionError(unsigned)));
 	QObject::connect(&co, SIGNAL(done()), this, SLOT(coDone()));
+	QObject::connect(&co, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::connect(&co, SIGNAL(xn_error(unsigned)), this, SLOT(csXnError(unsigned)));
 	QObject::connect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
 }
 
 void CalibMan::csSigDisconnect() {
-	QObject::disconnect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::disconnect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csDiffusionError(unsigned)));
+	QObject::disconnect(&cs, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::disconnect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csXnError(unsigned)));
-	QObject::disconnect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
-	QObject::disconnect(&cs, SIGNAL(loco_stooped(unsigned)), this, SLOT(csLocoStopped(unsigned)));
 	QObject::disconnect(&cs, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
+	QObject::disconnect(&cs, SIGNAL(loco_stooped(unsigned)), this, SLOT(csLocoStopped(unsigned)));
+	QObject::disconnect(&cs, SIGNAL(loco_stopped(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::disconnect(&cs, SIGNAL(done(unsigned, unsigned)), this, SLOT(csDone(unsigned, unsigned)));
 	QObject::disconnect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
-	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
+	                    this, SLOT(csStepPowerChanged(unsigned, unsigned)));
 
 	QObject::disconnect(&co, SIGNAL(diffusion_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::disconnect(&co, SIGNAL(diffusion_error(unsigned)), this, SLOT(csDiffusionError(unsigned)));
 	QObject::disconnect(&co, SIGNAL(done()), this, SLOT(coDone()));
 	QObject::disconnect(&co, SIGNAL(xn_error(unsigned)), this, SLOT(csXnError(unsigned)));
+	QObject::disconnect(&co, SIGNAL(xn_error(unsigned)), this, SLOT(csError(unsigned)));
 	QObject::disconnect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
-	                 this, SLOT(csStepPowerChanged(unsigned, unsigned)));
+	                    this, SLOT(csStepPowerChanged(unsigned, unsigned)));
 }
 
 }//end namespace
