@@ -104,6 +104,9 @@ void CalibMan::xnStepWriteError(void*, void*) {
 
 void CalibMan::coDone() {
 	// Move from phase "Getting basic data" to phase "Calibration"
+	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
+	onLocoSpeedChanged(0);
+
 	calibrateNextStep();
 }
 
@@ -140,7 +143,7 @@ std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& use
 
 	size_t middle = ((right-left) / 2) + left;
 	if (state[used_steps[middle]] == StepState::Uncalibred)
-		return std::make_unique<unsigned>(middle);
+		return std::make_unique<unsigned>(used_steps[middle]);
 
 	std::unique_ptr<unsigned> res;
 
@@ -163,6 +166,8 @@ void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	csSigConnect();
 
 	// Phase 1: make an overview of mapping steps to speed
+	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), Co::_OVERVIEW_STEP, direction);
+	onLocoSpeedChanged(Co::_OVERVIEW_STEP);
 	co.makeOverview(locoAddr);
 }
 

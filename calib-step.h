@@ -57,7 +57,7 @@ private slots:
 	void t_sp_adapt_tick();
 
 signals:
-	void on_error(CsError, unsigned step);
+	void on_error(Cs::CsError, unsigned step);
 	void done(unsigned step, unsigned power);
 	void step_power_changed(unsigned step, unsigned power);
 };

@@ -14,11 +14,11 @@ const unsigned _SP_ADAPT_TIMEOUT = 2000; // 2 s
 const double _MAX_DIFFUSION = 3; // 3 kmph
 const unsigned _MEASURE_COUNT = 30; // measuring 30 values = 3 s
 const unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
-const unsigned _OVERVIEW_STEP = 1;
+const unsigned _OVERVIEW_STEP = 2;
 const unsigned _OVERVIEW_DEFAULT = 10;
 const unsigned _SPEED_MAX = 120;
 const unsigned _START_STEP = 10;
-const unsigned _STEPS_CNT = 28;
+const unsigned _POWER_CNT = 256;
 const unsigned _CV_START = 67; // cv 67 = step 1
 
 enum class CoError {
@@ -60,7 +60,7 @@ private slots:
 	void t_sp_adapt_tick();
 
 signals:
-	void on_error(CoError, unsigned step);
+	void on_error(Co::CoError, unsigned step);
 	void done();
 	void step_power_changed(unsigned step, unsigned power);
 };

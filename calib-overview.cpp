@@ -21,7 +21,7 @@ std::unique_ptr<unsigned> CalibOverview::next_step() {
 			return std::make_unique<unsigned>(step);
 
 		step *= 2;
-		if (step >= _STEPS_CNT-1)
+		if (step >= _POWER_CNT-1)
 			return nullptr;
 
 		speed = m_pm.speed(step);
