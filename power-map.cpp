@@ -2,20 +2,17 @@
 
 namespace Pm {
 
-PowerToSpeedMap::PowerToSpeedMap(float max_speed, QObject *parent)
-	: QObject(parent), m_max_speed(max_speed) {
+PowerToSpeedMap::PowerToSpeedMap(QObject *parent)
+	: QObject(parent) {
 	map[0] = std::make_unique<float>(0);
-	map[_STEPS_CNT-1] = std::make_unique<float>(max_speed);
 }
 
 void PowerToSpeedMap::clear() {
 	for(auto& item : map)
 		item = nullptr;
 	map[0] = std::make_unique<float>(0);
-	map[_STEPS_CNT-1] = std::make_unique<float>(m_max_speed);
 	onClear();
 	onAddOrUpdate(0, 0);
-	onAddOrUpdate(_STEPS_CNT-1, m_max_speed);
 }
 
 void PowerToSpeedMap::addOrUpdate(unsigned step, float speed) {

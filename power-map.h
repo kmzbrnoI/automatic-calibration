@@ -20,8 +20,7 @@ class PowerToSpeedMap : public QObject {
 	Q_OBJECT
 
 public:
-	PowerToSpeedMap(float max_speed = 120, QObject *parent = nullptr);
-	float m_max_speed;
+	PowerToSpeedMap(QObject *parent = nullptr);
 
 	void clear();
 	void addOrUpdate(unsigned step, float speed);
