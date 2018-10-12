@@ -36,10 +36,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.chb_f2, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.b_calib_start, SIGNAL(released()), this, SLOT(b_calib_start_handle()));
 
-	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_max_speed_changed(int)));
+	QObject::connect(ui.b_test1, SIGNAL(released()), this, SLOT(b_test1_handle()));
+	QObject::connect(ui.b_test2, SIGNAL(released()), this, SLOT(b_test2_handle()));
+	QObject::connect(ui.b_test3, SIGNAL(released()), this, SLOT(b_test3_handle()));
 
-	ui.sb_min->setKeyboardTracking(false);
-	QObject::connect(ui.sb_min, SIGNAL(valueChanged(int)), this, SLOT(sb_min_changed(int)));
+	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_max_speed_changed(int)));
 
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
@@ -662,10 +663,6 @@ void MainWindow::sb_speed_changed(int) {
 		b_speed_set_handle();
 }
 
-void MainWindow::sb_min_changed(int) {
-	m_pm.addOrUpdate(0, ui.sb_min->value());
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // WSM functions
 
@@ -849,6 +846,10 @@ void MainWindow::vs_steps_moved(int value) {
 
 void MainWindow::b_calibrate_handle() {
 	unsigned step = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt() + 1;
+
+	cm.setStep(step-1, ui_steps[step-1].slider->value());
+	return;
+
 	if (nullptr != m_ssm[step-1]) {
 		cm.cs.calibrate(ui.sb_loco->value(), step, *(m_ssm[step-1]));
 		log("Starting calibration of step " + QString::number(step));
@@ -946,3 +947,17 @@ void MainWindow::b_ad_write_handle() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::b_test1_handle() {
+	for(size_t i = 0; i < _STEPS_CNT; i++) {
+		//cm.setStep(i+1, ui_steps[i].slider->value());
+	}
+}
+
+void MainWindow::b_test2_handle() {
+	cm.interpolateAll();
+}
+
+void MainWindow::b_test3_handle() {}
+
+//////////////////////////////////////////////////////////////////////////////

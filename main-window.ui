@@ -679,33 +679,43 @@
           <string>Maximum speed:</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="sb_min">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>110</y>
-           <width>101</width>
-           <height>23</height>
-          </rect>
-         </property>
-         <property name="minimum">
-          <number>-255</number>
-         </property>
-         <property name="maximum">
-          <number>255</number>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label_13">
+        <widget class="QPushButton" name="b_test1">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>90</y>
-           <width>59</width>
-           <height>14</height>
+           <width>81</width>
+           <height>22</height>
           </rect>
          </property>
          <property name="text">
-          <string>Minimum:</string>
+          <string>test1</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_test2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>120</y>
+           <width>81</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>test2</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_test3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>150</y>
+           <width>81</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>test3</string>
          </property>
         </widget>
        </widget>

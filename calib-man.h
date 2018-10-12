@@ -39,12 +39,15 @@ public:
 
 	void calibrateAll(unsigned locoAddr,  Xn::XnDirection dir);
 	void reset();
+	void interpolateAll();
+	void setStep(unsigned step, unsigned power);
 
 private:
 	Ssm::StepsToSpeedMap& m_ssm;
 	Xn::XpressNet& m_xn;
 	StepState state[Xn::_STEPS_CNT]; // step index used as index
-	unsigned m_locoAddr;
+	unsigned power[Xn::_STEPS_CNT]; // power assigned to steps after calibration
+	unsigned m_locoAddr = 3;
 	unsigned m_step_writing;
 	unsigned m_step_power;
 
@@ -59,6 +62,18 @@ private:
 	void xnStepWriteError(void*, void*);
 	static void xnsStepWritten(void*, void*);
 	static void xnsStepWriteError(void*, void*);
+
+	// Steps interpolation = IP
+	unsigned m_thisIPleft;
+	unsigned m_thisIPstep;
+	unsigned m_thisIPright;
+	unsigned getIPpower(unsigned left, unsigned right, unsigned step);
+
+	void interpolateNext();
+	void xnIPWritten(void*, void*);
+	void xnIPError(void*, void*);
+	static void xnsIPWritten(void*, void*);
+	static void xnsIPError(void*, void*);
 
 private slots:
 	void csDone(unsigned step, unsigned power);

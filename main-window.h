@@ -84,7 +84,10 @@ private slots:
 	void b_calib_start_handle();
 	void sb_max_speed_changed(int value);
 	void sb_speed_changed(int value);
-	void sb_min_changed(int value);
+
+	void b_test1_handle();
+	void b_test2_handle();
+	void b_test3_handle();
 
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);
