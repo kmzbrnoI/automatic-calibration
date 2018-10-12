@@ -17,6 +17,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 	m_step = step;
 	m_target_speed = speed;
 	m_epsilon = epsilon;
+	m_diff_count = 0;
 
 	m_last_power = m_pm.steps(m_target_speed);
 
@@ -35,7 +36,13 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 
 	if (diffusion > _MAX_DIFFUSION) {
-		diffusion_error(m_step);
+		if (m_diff_count >= _ADAPT_MAX_TICKS) {
+			diffusion_error(m_step);
+			return;
+		}
+		// Wait for speed...
+		m_diff_count++;
+		t_sp_adapt_tick();
 		return;
 	}
 	if (speed == 0) {
