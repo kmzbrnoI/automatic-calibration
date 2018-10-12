@@ -56,12 +56,12 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		return;
 	}
 
+	m_pm.addOrUpdate(m_last_power, speed);
+
 	if (std::abs(speed-m_target_speed) < m_epsilon) {
 		done(m_step, m_last_power);
 		return;
 	}
-
-	m_pm.addOrUpdate(m_last_power, speed);
 
 	unsigned new_power;
 	try {
