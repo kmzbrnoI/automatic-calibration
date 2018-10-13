@@ -569,7 +569,7 @@ void MainWindow::a_dcc_stop(bool) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::log(QString message) {
-	ui.lv_log->insertItem(0, message);
+	ui.lv_log->insertItem(0, QTime::currentTime().toString("hh:mm:ss") + ": " + message);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
