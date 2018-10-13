@@ -33,6 +33,7 @@ public:
 	CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	              QObject *parent = nullptr);
 	void makeOverview(const unsigned loco_addr);
+	void stop();
 
 private:
 	Xn::XpressNet& m_xn;

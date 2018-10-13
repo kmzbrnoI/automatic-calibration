@@ -27,6 +27,13 @@ enum class CmError {
 	NoStep,
 };
 
+enum class CalibState {
+	Stopped,
+	Overview,
+	Steps,
+	Interpolation,
+};
+
 const unsigned _CV_CONFIG = 29;
 const unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
 const bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
@@ -43,11 +50,13 @@ public:
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
 
 	void calibrateAll(unsigned locoAddr,  Xn::XnDirection dir);
+	void stop();
 	void reset();
 	void interpolateAll();
 	void setStepManually(unsigned step, unsigned power);
 	void unsetStep(unsigned step);
-	bool inProgress();
+	bool inProgress() const;
+	CalibState progress() const;
 
 private:
 	Ssm::StepsToSpeedMap& m_ssm;
@@ -57,7 +66,7 @@ private:
 	unsigned m_locoAddr = 3;
 	unsigned m_step_writing;
 	unsigned m_step_power;
-	bool m_calib_in_progress = false;
+	CalibState m_progress = CalibState::Stopped;
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();
@@ -65,6 +74,8 @@ private:
 	                                      const size_t left, const size_t right);
 	void csSigConnect();
 	void csSigDisconnect();
+	void updateProg(CalibState cs, size_t progress, size_t max);
+	size_t getProgress(CalibState cs, size_t progress, size_t max);
 
 	void xnStepWritten(void*, void*);
 	void xnStepWriteError(void*, void*);
@@ -109,6 +120,8 @@ signals:
 	void onLocoSpeedChanged(unsigned step);
 	void onDone();
 	void onStepPowerChanged(unsigned step, unsigned power);
+
+	void onProgressUpdate(size_t val); // value 0-100
 };
 
 }//end namespace

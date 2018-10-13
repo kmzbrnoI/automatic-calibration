@@ -38,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.chb_f1, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.chb_f2, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.b_calib_start, SIGNAL(released()), this, SLOT(b_calib_start_handle()));
+	QObject::connect(ui.b_calib_stop, SIGNAL(released()), this, SLOT(b_calib_stop_handle()));
 
 	ui.sb_loco->setKeyboardTracking(false);
 	QObject::connect(ui.sb_loco, SIGNAL(valueChanged(int)), this, SLOT(sb_loco_changed(int)));
@@ -110,6 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&cm, SIGNAL(onDone()), this, SLOT(cm_done()));
 	QObject::connect(&cm, SIGNAL(onStepPowerChanged(unsigned, unsigned)),
 	                 this, SLOT(cm_step_power_changed(unsigned, unsigned)));
+	QObject::connect(&cm, SIGNAL(onProgressUpdate(size_t)), this, SLOT(cm_progress_update(size_t)));
 
 	// Connect power-to-map with GUI
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
@@ -945,6 +947,7 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 		log("No suitable power step for this speed!");
 
 	ui.b_calib_start->setEnabled(true);
+	ui.b_calib_stop->setEnabled(false);
 	ui.sb_max_speed->setEnabled(true);
 	ui.gb_cal_graph->setEnabled(true);
 	ui.gb_ad->setEnabled(true);
@@ -959,11 +962,17 @@ void MainWindow::cm_locoSpeedChanged(unsigned step) {
 
 void MainWindow::cm_done() {
 	log("Calibration done :)");
+	ui.pb_progress->setValue(100);
 	ui.b_calib_start->setEnabled(true);
+	ui.b_calib_stop->setEnabled(false);
 	ui.sb_max_speed->setEnabled(true);
 	ui.gb_cal_graph->setEnabled(true);
 	ui.gb_ad->setEnabled(true);
 	ui.b_wsm_lt->setEnabled(true);
+}
+
+void MainWindow::cm_progress_update(size_t val) {
+	ui.pb_progress->setValue(val);
 }
 
 void MainWindow::b_calib_start_handle() {
@@ -971,12 +980,27 @@ void MainWindow::b_calib_start_handle() {
 		return;
 
 	ui.b_calib_start->setEnabled(false);
+	ui.b_calib_stop->setEnabled(true);
 	ui.sb_max_speed->setEnabled(false);
 	ui.gb_cal_graph->setEnabled(false);
 	ui.gb_ad->setEnabled(false);
 	ui.b_wsm_lt->setEnabled(false);
+	ui.pb_progress->setValue(0);
 	cm.calibrateAll(ui.sb_loco->value(),
-					static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
+	                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
+}
+
+void MainWindow::b_calib_stop_handle() {
+	if (!cm.inProgress())
+		return;
+
+	cm.stop();
+	ui.b_calib_start->setEnabled(true);
+	ui.b_calib_stop->setEnabled(false);
+	ui.sb_max_speed->setEnabled(true);
+	ui.gb_cal_graph->setEnabled(true);
+	ui.gb_ad->setEnabled(true);
+	ui.b_wsm_lt->setEnabled(true);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1021,12 +1045,7 @@ void MainWindow::a_loco_load(bool) {
 	if (filename == "")
 		return;
 
-	m_pm.clear();
-	cm.reset();
-	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
-		ui_steps[i].slider->setValue(0);
-		ui_steps[i].selected->setChecked(false);
-	}
+	reset();
 
 	QXmlStreamReader xr;
 	QFile file(filename);
@@ -1160,4 +1179,14 @@ void MainWindow::b_decel_measure_handle() {
 		return;
 
 	cr.measure(ui.sb_loco->value(), 15, static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
+}
+
+void MainWindow::reset() {
+	m_pm.clear();
+	cm.reset();
+	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
+		ui_steps[i].slider->setValue(0);
+		ui_steps[i].selected->setChecked(false);
+	}
+	ui.pb_progress->setValue(0);
 }

@@ -83,6 +83,7 @@ private slots:
 	void b_ad_write_handle();
 	void b_wsm_lt_handle();
 	void b_calib_start_handle();
+	void b_calib_stop_handle();
 	void sb_max_speed_changed(int value);
 	void sb_speed_changed(int value);
 	void sb_loco_changed(int value);
@@ -128,6 +129,7 @@ private slots:
 	void cm_locoSpeedChanged(unsigned step);
 	void cm_done();
 	void cm_step_power_changed(unsigned step, unsigned power);
+	void cm_progress_update(size_t val);
 
 	void cr_measured(double distance);
 	void cr_error(Cr::CrError, unsigned step);
@@ -158,6 +160,7 @@ private:
 	void show_error(const QString error);
 	void loco_released();
 	void init_calib_graph();
+	void reset();
 
 	static void xns_onDccGoError(void*, void*);
 	static void xns_onDccStopError(void*, void*);

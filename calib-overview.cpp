@@ -124,4 +124,8 @@ void CalibOverview::reset_step() {
 	step_power_changed(_OVERVIEW_STEP, _OVERVIEW_DEFAULT);
 }
 
+void CalibOverview::stop() {
+	wsm_lt_error();
+}
+
 }//end namespace

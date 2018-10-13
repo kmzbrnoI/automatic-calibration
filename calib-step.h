@@ -32,6 +32,7 @@ public:
 	          QObject *parent = nullptr);
 	void calibrate(const unsigned loco_addr, const unsigned step,
 	               const double speed, const double epsilon = _DEFAULT_EPSILON);
+	void stop();
 
 private:
 	Xn::XpressNet& m_xn;

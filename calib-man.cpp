@@ -17,18 +17,38 @@ void CalibMan::reset() {
 		s = 0;
 }
 
-bool CalibMan::inProgress() {
-	return m_calib_in_progress;
+bool CalibMan::inProgress() const {
+	return m_progress != CalibState::Stopped;
+}
+
+CalibState CalibMan::progress() const {
+	return m_progress;
 }
 
 void CalibMan::done() {
-	m_calib_in_progress = false;
+	updateProg(CalibState::Stopped, 1, 1);
 	onDone();
 }
 
 void CalibMan::error(Cm::CmError e, unsigned step) {
-	m_calib_in_progress = false;
+	updateProg(CalibState::Stopped, 0, 1);
 	onStepError(e, step);
+}
+
+void CalibMan::updateProg(CalibState cs, size_t progress, size_t max) {
+	m_progress = cs;
+	onProgressUpdate(getProgress(cs, progress, max));
+}
+
+size_t CalibMan::getProgress(CalibState cs, size_t progress, size_t max) {
+	if (cs == CalibState::Overview) // 0-40
+		return 40 * progress / max;
+	else if (cs == CalibState::Steps) // 40-90
+		return (50 * progress / max) + 40;
+	else if (cs == CalibState::Steps) // 90-100
+		return (10 * progress / max) + 90;
+	else
+		return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -121,10 +141,8 @@ void CalibMan::xnStepWriteError(void*, void*) {
 }
 
 void CalibMan::coDone() {
-	// Move from phase "Getting basic data" to phase "Calibration"
-	//m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
-	//onLocoSpeedChanged(0);
-
+	// Phase 2: move from phase "Getting basic data" to phase "Calibration"
+	updateProg(CalibState::Steps, 0, 1);
 	calibrateNextStep();
 }
 
@@ -184,7 +202,23 @@ void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	csSigConnect();
 
 	// Phase 0: set to use speed table
+	updateProg(CalibState::Overview, 0, 1);
 	useSpeedTable();
+}
+
+void CalibMan::stop() {
+	if (m_progress == CalibState::Overview) {
+		co.stop();
+	} else if (m_progress == CalibState::Steps) {
+		cs.stop();
+	} else if (m_progress == CalibState::Interpolation) {
+		m_thisIPstep = Xn::_STEPS_CNT;
+	}
+
+	csSigDisconnect();
+	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
+	onLocoSpeedChanged(0);
+	updateProg(CalibState::Stopped, 0, 1);
 }
 
 void CalibMan::calibrateNextStep() {
@@ -195,7 +229,8 @@ void CalibMan::calibrateNextStep() {
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
 		onLocoSpeedChanged(0);
 
-		// Interpolate the rest of the steps
+		// Phase 3: Interpolate the rest of the steps
+		updateProg(CalibState::Interpolation, 0, 1);
 		interpolateAll();
 
 		return;
@@ -269,8 +304,11 @@ void CalibMan::interpolateAll() {
 
 void CalibMan::xnIPWritten(void*, void*) {
 	state[m_thisIPstep] = StepState::Calibred;
-	m_thisIPstep++;
-	interpolateNext();
+
+	if (m_thisIPstep < Xn::_STEPS_CNT) {
+		m_thisIPstep++;
+		interpolateNext();
+	}
 }
 
 void CalibMan::interpolateNext() {
@@ -358,6 +396,7 @@ void CalibMan::useSpeedTable() {
 
 void CalibMan::xnSTWritten(void*, void*) {
 	// Phase 1: make an overview of mapping steps to speed
+	updateProg(CalibState::Overview, 0, 1);
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), Co::_OVERVIEW_STEP, direction);
 	onLocoSpeedChanged(Co::_OVERVIEW_STEP);
 	co.makeOverview(m_locoAddr);

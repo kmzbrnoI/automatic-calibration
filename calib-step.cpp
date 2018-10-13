@@ -120,4 +120,8 @@ void CalibStep::wsm_lt_error() {
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 }
 
+void CalibStep::stop() {
+	wsm_lt_error();
+}
+
 }//end namespace
