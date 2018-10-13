@@ -973,6 +973,41 @@ void MainWindow::a_loco_load(bool) {
 		tr("Save Xml"), ".",
 		tr("Xml files (*.xml)")
 	);
+
+	if (filename == "")
+		return;
+
+	m_pm.clear();
+
+	QXmlStreamReader xr;
+	QFile file(filename);
+	if (!file.open(QFile::ReadOnly | QFile::Text))
+	{
+		show_error("Cannot read file " + filename);
+		return;
+	}
+
+	xr.setDevice(&file);
+	xr.readNext();
+
+	while(!xr.atEnd()) {
+		if (xr.isStartElement()) {
+			if (xr.name() == "powerToSpeed") {
+				xr.readNext();
+				while(xr.name() != "powerToSpeed") {
+					if (xr.name() == "record" && xr.attributes().hasAttribute("power") &&
+					    xr.attributes().hasAttribute("speed")) {
+						int power = xr.attributes().value("power").toInt();
+						float speed = xr.attributes().value("speed").toFloat();
+						m_pm.addOrUpdate(power, speed);
+					}
+					xr.readNext();
+				}
+			}
+		}
+
+		xr.readNext();
+	}
 }
 
 void MainWindow::a_loco_save(bool) {
@@ -981,6 +1016,9 @@ void MainWindow::a_loco_save(bool) {
 		tr("Save Xml"), ".",
 		tr("Xml files (*.xml)")
 	);
+
+	if (filename == "")
+		return;
 
 	QFile file(filename);
 	file.open(QIODevice::WriteOnly);
