@@ -1005,6 +1005,8 @@ void MainWindow::a_loco_load(bool) {
 				}
 			} else if (xr.name() == "dcclocoaddress" && xr.attributes().hasAttribute("number")) {
 				ui.sb_loco->setValue(xr.attributes().value("number").toInt());
+			} else if (xr.name() == "locomotive" && xr.attributes().hasAttribute("maxSpeed")) {
+				ui.sb_max_speed->setValue(xr.attributes().value("maxSpeed").toInt());
 			}
 		}
 
@@ -1034,6 +1036,7 @@ void MainWindow::a_loco_save(bool) {
 	xw.writeStartElement("locomotive");
 	xw.writeAttribute("id", QString::number(ui.sb_loco->value()));
 	xw.writeAttribute("dccAddress", QString::number(ui.sb_loco->value()));
+	xw.writeAttribute("maxSpeed", QString::number(ui.sb_max_speed->value()));
 
 	// We must save decoder model, otherwise JMRI crashes at start
 	xw.writeStartElement("decoder");
