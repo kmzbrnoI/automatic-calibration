@@ -960,9 +960,17 @@
      <string>Power graph</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuLoco">
+    <property name="title">
+     <string>Loco</string>
+    </property>
+    <addaction name="a_loco_load"/>
+    <addaction name="a_loco_save"/>
+   </widget>
    <addaction name="m_xn"/>
    <addaction name="m_wsm"/>
    <addaction name="m_power_graph"/>
+   <addaction name="menuLoco"/>
   </widget>
   <widget class="QStatusBar" name="sb_main"/>
   <action name="a_xn_connect">
@@ -1015,6 +1023,16 @@
    </property>
    <property name="text">
     <string>DCC Stop</string>
+   </property>
+  </action>
+  <action name="a_loco_load">
+   <property name="text">
+    <string>Load profile</string>
+   </property>
+  </action>
+  <action name="a_loco_save">
+   <property name="text">
+    <string>Save profile</string>
    </property>
   </action>
  </widget>

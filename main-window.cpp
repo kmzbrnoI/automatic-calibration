@@ -1,5 +1,8 @@
 #include <QMessageBox>
 #include <QSlider>
+#include <QFileDialog>
+#include <QXmlStreamWriter>
+#include <utility>
 
 #include "main-window.h"
 #include "ui_main-window.h"
@@ -72,6 +75,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_wsm_lt, SIGNAL(released()), this, SLOT(b_wsm_lt_handle()));
 
 	QObject::connect(ui.m_power_graph, SIGNAL(aboutToShow()), this, SLOT(a_power_graph()));
+	QObject::connect(ui.a_loco_load, SIGNAL(triggered(bool)), this, SLOT(a_loco_load(bool)));
+	QObject::connect(ui.a_loco_save, SIGNAL(triggered(bool)), this, SLOT(a_loco_save(bool)));
 
 	// WSM init
 	wsm.scale = s.wsm.scale;
@@ -959,5 +964,89 @@ void MainWindow::b_test2_handle() {
 }
 
 void MainWindow::b_test3_handle() {}
+
+//////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::a_loco_load(bool) {
+	QString filename = QFileDialog::getOpenFileName(
+		this,
+		tr("Save Xml"), ".",
+		tr("Xml files (*.xml)")
+	);
+}
+
+void MainWindow::a_loco_save(bool) {
+	QString filename = QFileDialog::getSaveFileName(
+		this,
+		tr("Save Xml"), ".",
+		tr("Xml files (*.xml)")
+	);
+
+	QFile file(filename);
+	file.open(QIODevice::WriteOnly);
+
+	QXmlStreamWriter xw(&file);
+	xw.setAutoFormatting(true);
+	xw.writeStartDocument();
+	xw.writeDTD("<!DOCTYPE locomotive-config SYSTEM \"/xml/DTD/locomotive-config.dtd\">");
+
+	xw.writeStartElement("locomotive-config");
+	xw.writeStartElement("locomotive");
+	xw.writeAttribute("id", QString::number(ui.sb_loco->value()));
+	xw.writeAttribute("dccAddress", QString::number(ui.sb_loco->value()));
+
+	// We must save decoder model, otherwise JMRI crashes at start
+	xw.writeStartElement("decoder");
+	xw.writeAttribute("model", "MX658N18 version 32+"); // TODO: save decoder nicely?
+	xw.writeEndElement();
+
+	xw.writeStartElement("locoaddress");
+	xw.writeStartElement("dcclocoaddress");
+	xw.writeAttribute("number", QString::number(ui.sb_loco->value()));
+	xw.writeAttribute("longaddress", "yes");
+	xw.writeEndElement();
+	xw.writeTextElement("number", QString::number(ui.sb_loco->value()));
+	xw.writeTextElement("protocol", "dcc_long");
+	xw.writeEndElement();
+
+	xw.writeStartElement("values");
+	xw.writeStartElement("decoderDef");
+
+	QString steps = "";
+	for(size_t i = 0; i < Xn::_STEPS_CNT; i++)
+		steps += QString::number(ui_steps[i].slider->value()) + ",";
+
+	std::vector<std::pair<QString, QString>> values = {
+		std::make_pair<QString, QString>("Acceleration Rate", QString::number(ui.sb_accel->value())),
+		std::make_pair<QString, QString>("Deceleration Rate", QString::number(ui.sb_decel->value())),
+		std::make_pair<QString, QString>("Use Speed Table", "1"),
+		std::make_pair<QString, QString>("Speed Table", std::move(steps)),
+	};
+
+	for (const auto& val : values) {
+		xw.writeStartElement("varValue");
+		xw.writeAttribute("item", val.first);
+		xw.writeAttribute("value", val.second);
+		xw.writeEndElement();
+	}
+
+	xw.writeEndElement();
+	xw.writeEndElement();
+
+	xw.writeStartElement("powerToSpeed");
+	for(size_t i = 0; i < Pm::_STEPS_CNT; i++) {
+		if (nullptr != m_pm.speed(i)) {
+			xw.writeStartElement("record");
+			xw.writeAttribute("power", QString::number(i));
+			xw.writeAttribute("speed", QString::number(*m_pm.speed(i)));
+			xw.writeEndElement();
+		}
+	}
+	xw.writeEndElement();
+
+	xw.writeEndElement();
+	xw.writeEndElement();
+	file.close();
+}
 
 //////////////////////////////////////////////////////////////////////////////

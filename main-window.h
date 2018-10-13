@@ -100,6 +100,8 @@ private slots:
 	void a_power_graph();
 	void vs_steps_moved(int);
 	void b_calibrate_handle();
+	void a_loco_load(bool);
+	void a_loco_save(bool);
 
 	void mc_speedRead(double speed, uint16_t speed_raw);
 	void mc_onError(QString error);
