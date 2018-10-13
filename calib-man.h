@@ -17,6 +17,7 @@ namespace Cm {
 enum class StepState {
 	Calibred,
 	Uncalibred,
+	SetManually,
 };
 
 enum class CmError {
@@ -40,7 +41,7 @@ public:
 	void calibrateAll(unsigned locoAddr,  Xn::XnDirection dir);
 	void reset();
 	void interpolateAll();
-	void setStep(unsigned step, unsigned power);
+	void setStepManually(unsigned step, unsigned power);
 
 private:
 	Ssm::StepsToSpeedMap& m_ssm;

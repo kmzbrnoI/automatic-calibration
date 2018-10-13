@@ -23,7 +23,7 @@ void CalibMan::reset() {
 void CalibMan::csDone(unsigned step, unsigned power) {
 	onStepDone(step, power);
 	step = step - 1; // convert step to step index
-	setStep(step, power);
+	state[step] = StepState::Calibred;
 
 	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
 		if (nullptr != m_ssm[i] && i != step && *(m_ssm[i]) == *(m_ssm[step]) &&
@@ -234,9 +234,23 @@ unsigned CalibMan::getIPpower(unsigned left, unsigned right, unsigned step) {
 void CalibMan::interpolateAll() {
 	// Find first interval to interpolate.
 	m_thisIPleft = 0;
-	while (m_thisIPleft < Xn::_STEPS_CNT-1 && state[m_thisIPleft] == StepState::Uncalibred)
+	while (m_thisIPleft < Xn::_STEPS_CNT-1 && (state[m_thisIPleft] == StepState::Uncalibred ||
+	       state[m_thisIPleft+1] != StepState::Uncalibred))
 		m_thisIPleft++;
-	m_thisIPstep = m_thisIPright = m_thisIPleft;
+	if (m_thisIPleft == Xn::_STEPS_CNT-1) {
+		onDone();
+		return;
+	}
+	m_thisIPstep = m_thisIPleft + 1;
+	m_thisIPright = m_thisIPstep;
+	while (m_thisIPright < Xn::_STEPS_CNT && state[m_thisIPright] == StepState::Uncalibred)
+		m_thisIPright++;
+
+	if (m_thisIPright == Xn::_STEPS_CNT) {
+		// Cannot interpolate without right boundary
+		onDone();
+		return;
+	}
 
 	interpolateNext();
 }
@@ -251,7 +265,7 @@ void CalibMan::interpolateNext() {
 	// Find next number or interval to interpolate speed.
 	if (m_thisIPstep == m_thisIPright) {
 		// Find next interval
-		while (m_thisIPstep < Xn::_STEPS_CNT-1 && state[m_thisIPstep] == StepState::Calibred) {
+		while (m_thisIPstep < Xn::_STEPS_CNT-1 && state[m_thisIPstep] != StepState::Uncalibred) {
 			m_thisIPleft = m_thisIPstep;
 			m_thisIPstep++;
 		}
@@ -294,19 +308,19 @@ void CalibMan::xnsIPError(void* s, void* d) { static_cast<CalibMan*>(d)->xnIPErr
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void CalibMan::setStep(unsigned step, unsigned power) {
-	state[step] = StepState::Calibred;
+void CalibMan::setStepManually(unsigned step, unsigned power) {
+	state[step] = StepState::SetManually;
 	this->power[step] = power;
 
 	// Set interpolated steps to Uncalibred
 	int i = step+1;
-	while (i < static_cast<int>(Xn::_STEPS_CNT) && nullptr == m_ssm[i]) {
+	while (i < static_cast<int>(Xn::_STEPS_CNT) && nullptr == m_ssm[i] && state[i] != StepState::SetManually) {
 		state[i] = StepState::Uncalibred;
 		i++;
 	}
 
 	i = step-1;
-	while (i >= 0 && nullptr == m_ssm[i]) {
+	while (i >= 0 && nullptr == m_ssm[i] && state[i] != StepState::SetManually) {
 		state[i] = StepState::Uncalibred;
 		i--;
 	}

@@ -851,13 +851,14 @@ void MainWindow::b_calibrate_handle() {
 	unsigned stepi = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt();
 
 	if (xn.connected() && !ui.sb_loco->isEnabled()) {
+		ui_steps[stepi].selected->setChecked(true);
 		log("Setting power of step " + QString::number(stepi+1) + " manually.");
 		xn.PomWriteCv(
 			Xn::LocoAddr(ui.sb_loco->value()),
 			Cs::_CV_START + stepi,
 			ui_steps[stepi].slider->value()
 		);
-		cm.setStep(stepi, ui_steps[stepi].slider->value());
+		cm.setStepManually(stepi, ui_steps[stepi].slider->value());
 	}
 }
 
@@ -953,11 +954,7 @@ void MainWindow::b_ad_write_handle() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::b_test1_handle() {
-	for(size_t i = 0; i < _STEPS_CNT; i++) {
-		//cm.setStep(i+1, ui_steps[i].slider->value());
-	}
-}
+void MainWindow::b_test1_handle() {}
 
 void MainWindow::b_test2_handle() {
 	cm.interpolateAll();
@@ -979,8 +976,10 @@ void MainWindow::a_loco_load(bool) {
 
 	m_pm.clear();
 	cm.reset();
-	for(size_t i = 0; i < Xn::_STEPS_CNT; i++)
+	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
 		ui_steps[i].slider->setValue(0);
+		ui_steps[i].selected->setChecked(false);
+	}
 
 	QXmlStreamReader xr;
 	QFile file(filename);
