@@ -39,6 +39,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.chb_f2, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.b_calib_start, SIGNAL(released()), this, SLOT(b_calib_start_handle()));
 
+	ui.sb_loco->setKeyboardTracking(false);
+	QObject::connect(ui.sb_loco, SIGNAL(valueChanged(int)), this, SLOT(sb_loco_changed(int)));
+
 	QObject::connect(ui.b_test1, SIGNAL(released()), this, SLOT(b_test1_handle()));
 	QObject::connect(ui.b_test2, SIGNAL(released()), this, SLOT(b_test2_handle()));
 	QObject::connect(ui.b_test3, SIGNAL(released()), this, SLOT(b_test3_handle()));
@@ -605,6 +608,10 @@ void MainWindow::b_addr_set_handle() {
 
 	xn.getLocoInfo(Xn::LocoAddr(ui.sb_loco->value()), &xns_gotLocoInfo,
 	               std::make_unique<Xn::XnCb>(&xns_onLocoInfoError));
+}
+
+void MainWindow::sb_loco_changed(int) {
+	b_addr_set_handle();
 }
 
 void MainWindow::b_addr_release_handle() {
