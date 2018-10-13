@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_wsm_disconnect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_disconnect(bool)));
 	QObject::connect(ui.b_wsm_lt, SIGNAL(released()), this, SLOT(b_wsm_lt_handle()));
 
-	QObject::connect(ui.m_power_graph, SIGNAL(aboutToShow()), this, SLOT(a_power_graph()));
+	QObject::connect(ui.a_power_graph, SIGNAL(triggered(bool)), this, SLOT(a_power_graph(bool)));
 	QObject::connect(ui.a_loco_load, SIGNAL(triggered(bool)), this, SLOT(a_loco_load(bool)));
 	QObject::connect(ui.a_loco_save, SIGNAL(triggered(bool)), this, SLOT(a_loco_save(bool)));
 
@@ -790,7 +790,7 @@ void MainWindow::b_wsm_lt_handle() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::a_power_graph() {
+void MainWindow::a_power_graph(bool) {
 	w_pg.move(ui.centralwidget->pos().x() + ui.centralwidget->size().width(),
 	          ui.centralwidget->pos().y() - ui.mb_main->size().height());
 	w_pg.show();

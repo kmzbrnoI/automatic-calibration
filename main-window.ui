@@ -959,6 +959,7 @@
     <property name="title">
      <string>Power graph</string>
     </property>
+    <addaction name="a_power_graph"/>
    </widget>
    <widget class="QMenu" name="menuLoco">
     <property name="title">
@@ -1022,6 +1023,9 @@
    <property name="text">
     <string>DCC Go</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
   </action>
   <action name="a_xn_dcc_stop">
    <property name="enabled">
@@ -1029,6 +1033,9 @@
    </property>
    <property name="text">
     <string>DCC Stop</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+T</string>
    </property>
   </action>
   <action name="a_loco_load">
@@ -1045,6 +1052,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="a_power_graph">
+   <property name="text">
+    <string>Power graph</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>

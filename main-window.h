@@ -97,7 +97,7 @@ private slots:
 	void a_wsm_connect(bool);
 	void a_wsm_disconnect(bool);
 
-	void a_power_graph();
+	void a_power_graph(bool);
 	void vs_steps_moved(int);
 	void b_calibrate_handle();
 	void a_loco_load(bool);
