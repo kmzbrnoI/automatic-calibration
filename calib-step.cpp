@@ -27,7 +27,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 		return;
 	}
 
-	m_xn.PomWriteCv(
+	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + m_step,
 		m_last_power,
@@ -81,7 +81,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	}
 	m_last_power = new_power;
 
-	m_xn.PomWriteCv(
+	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + m_step,
 		m_last_power,

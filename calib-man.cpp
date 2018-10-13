@@ -44,7 +44,7 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 		    state[i] == StepState::Uncalibred) {
 			m_step_writing = i;
 			m_step_power = power;
-			m_xn.PomWriteCv(
+			m_xn.pomWriteCv(
 				Xn::LocoAddr(m_locoAddr),
 				Cs::_CV_START + i,
 				power,
@@ -100,7 +100,7 @@ void CalibMan::xnStepWritten(void*, void*) {
 		if (nullptr != m_ssm[i] && *(m_ssm[i]) == *(m_ssm[m_step_writing]) &&
 			state[i] == StepState::Uncalibred) {
 			m_step_writing = i;
-			m_xn.PomWriteCv(
+			m_xn.pomWriteCv(
 				Xn::LocoAddr(m_locoAddr),
 				Cs::_CV_START + i,
 				m_step_power,
@@ -302,7 +302,7 @@ void CalibMan::interpolateNext() {
 
 	unsigned power = getIPpower(m_thisIPleft, m_thisIPright, m_thisIPstep);
 
-	m_xn.PomWriteCv(
+	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_locoAddr),
 		Cs::_CV_START + m_thisIPstep,
 		power,

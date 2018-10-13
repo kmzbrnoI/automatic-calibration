@@ -512,7 +512,7 @@ void MainWindow::xn_adWriteError(void*, void*) {
 }
 
 void MainWindow::xn_accelWritten(void*, void*) {
-	xn.PomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_DECEL, ui.sb_decel->value(),
+	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_DECEL, ui.sb_decel->value(),
 	              std::make_unique<Xn::XnCb>(&xns_decelWritten),
 	              std::make_unique<Xn::XnCb>(&xns_adWriteError));
 }
@@ -858,7 +858,7 @@ void MainWindow::b_calibrate_handle() {
 	if (xn.connected() && !ui.sb_loco->isEnabled()) {
 		ui_steps[stepi].selected->setChecked(true);
 		log("Setting power of step " + QString::number(stepi+1) + " manually.");
-		xn.PomWriteCv(
+		xn.pomWriteCv(
 			Xn::LocoAddr(ui.sb_loco->value()),
 			Cs::_CV_START + stepi,
 			ui_steps[stepi].slider->value()
@@ -966,7 +966,7 @@ void MainWindow::b_ad_write_handle() {
 
 	ui.gb_ad->setEnabled(false);
 
-	xn.PomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_ACCEL, ui.sb_accel->value(),
+	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_ACCEL, ui.sb_accel->value(),
 	              std::make_unique<Xn::XnCb>(&xns_accelWritten),
 	              std::make_unique<Xn::XnCb>(&xns_adWriteError));
 }

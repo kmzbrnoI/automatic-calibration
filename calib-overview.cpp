@@ -62,7 +62,7 @@ void CalibOverview::do_next_step() {
 	}
 	m_last_power = *next;
 
-	m_xn.PomWriteCv(
+	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + _OVERVIEW_STEP,
 		m_last_power,
@@ -116,7 +116,7 @@ void CalibOverview::wsm_lt_error() {
 }
 
 void CalibOverview::reset_step() {
-	m_xn.PomWriteCv(
+	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + _OVERVIEW_STEP,
 		_OVERVIEW_DEFAULT
