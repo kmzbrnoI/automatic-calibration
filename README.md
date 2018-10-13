@@ -22,6 +22,7 @@ Howto build:
 
 ```
 $ uic main-window.ui > ui_main-window.h
+$ uic power-graph-window.ui > ui_power-graph-window.h
 $ mkdir build
 $ cd build
 $ qmake ..
