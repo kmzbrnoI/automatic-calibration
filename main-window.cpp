@@ -1003,6 +1003,8 @@ void MainWindow::a_loco_load(bool) {
 					}
 					xr.readNext();
 				}
+			} else if (xr.name() == "dcclocoaddress" && xr.attributes().hasAttribute("number")) {
+				ui.sb_loco->setValue(xr.attributes().value("number").toInt());
 			}
 		}
 
