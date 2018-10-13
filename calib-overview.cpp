@@ -110,6 +110,7 @@ void CalibOverview::xn_pom_err(void*, void*) {
 }
 
 void CalibOverview::wsm_lt_error() {
+	t_sp_adapt.stop();
 	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 	reset_step();

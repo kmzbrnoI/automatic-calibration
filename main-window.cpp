@@ -604,6 +604,9 @@ void MainWindow::log(QString message) {
 // Speed settings
 
 void MainWindow::b_addr_set_handle() {
+	if (!xn.connected())
+		return;
+
 	ui.b_addr_set->setEnabled(false);
 	ui.sb_loco->setEnabled(false);
 	ui.b_addr_read->setEnabled(false);
@@ -757,7 +760,7 @@ void MainWindow::mc_distanceRead(double distance, uint32_t distance_raw) {
 }
 
 void MainWindow::mc_onError(QString error) {
-	if (!t_wsm_disconnect.isActive()) {
+	if (!t_wsm_disconnect.isActive() && wsm.connected()) {
 		t_wsm_disconnect.start(100);
 		show_error("WSM serial port error: " + error + "!");
 	}
