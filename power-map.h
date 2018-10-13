@@ -11,7 +11,7 @@ namespace Pm {
 
 // This class uses stepindex everywhere!
 
-const size_t _STEPS_CNT = 256;
+const size_t _POWER_CNT = 256;
 struct ENoMap : public QStrException {
 	ENoMap(const QString str) : QStrException(str) {}
 };
@@ -23,17 +23,17 @@ public:
 	PowerToSpeedMap(QObject *parent = nullptr);
 
 	void clear();
-	void addOrUpdate(unsigned step, float speed);
-	unsigned steps(float speed);
-	bool isRecord(unsigned step);
-	float* speed(unsigned step);
+	void addOrUpdate(unsigned power, float speed);
+	unsigned power(float speed);
+	bool isRecord(unsigned power);
+	float* speed(unsigned power);
 
 signals:
-	void onAddOrUpdate(unsigned step, float speed);
+	void onAddOrUpdate(unsigned power, float speed);
 	void onClear();
 
 private:
-	std::unique_ptr<float> map[_STEPS_CNT];
+	std::unique_ptr<float> map[_POWER_CNT];
 };
 
 }//end namespace

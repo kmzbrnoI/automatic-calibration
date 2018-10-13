@@ -20,7 +20,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 	m_diff_count = 0;
 
 	try {
-		m_last_power = m_pm.steps(m_target_speed);
+		m_last_power = m_pm.power(m_target_speed);
 	}
 	catch (const Pm::ENoMap&) {
 		on_error(CsError::NoStep, m_step);
@@ -65,7 +65,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 
 	unsigned new_power;
 	try {
-		new_power = m_pm.steps(m_target_speed);
+		new_power = m_pm.power(m_target_speed);
 	}
 	catch (const Pm::ENoMap&) {
 		on_error(CsError::NoStep, m_step);

@@ -1034,7 +1034,7 @@ void MainWindow::a_loco_save(bool) {
 	xw.writeEndElement();
 
 	xw.writeStartElement("powerToSpeed");
-	for(size_t i = 0; i < Pm::_STEPS_CNT; i++) {
+	for(size_t i = 0; i < Pm::_POWER_CNT; i++) {
 		if (nullptr != m_pm.speed(i)) {
 			xw.writeStartElement("record");
 			xw.writeAttribute("power", QString::number(i));
