@@ -109,8 +109,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	m_ssm.load("speed.csv");
-	for(size_t i = 0; i < _STEPS_CNT; i++)
-		ui_steps[i].calibrate->setEnabled(nullptr != m_ssm[i]);
 
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
 
@@ -845,14 +843,16 @@ void MainWindow::vs_steps_moved(int value) {
 }
 
 void MainWindow::b_calibrate_handle() {
-	unsigned step = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt() + 1;
+	unsigned stepi = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt();
 
-	cm.setStep(step-1, ui_steps[step-1].slider->value());
-	return;
-
-	if (nullptr != m_ssm[step-1]) {
-		cm.cs.calibrate(ui.sb_loco->value(), step, *(m_ssm[step-1]));
-		log("Starting calibration of step " + QString::number(step));
+	if (xn.connected() && !ui.sb_loco->isEnabled()) {
+		log("Setting power of step " + QString::number(stepi+1) + " manually.");
+		xn.PomWriteCv(
+			Xn::LocoAddr(ui.sb_loco->value()),
+			Cs::_CV_START + stepi,
+			ui_steps[stepi].slider->value()
+		);
+		cm.setStep(stepi, ui_steps[stepi].slider->value());
 	}
 }
 
