@@ -218,6 +218,8 @@ void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
 		item->setText(1, "Debug");
 
 	item->setText(2, message);
+	if (ui.tw_xn_log->topLevelItemCount() > 300)
+		ui.tw_xn_log->clear();
 	ui.tw_xn_log->addTopLevelItem(item);
 }
 
@@ -582,6 +584,8 @@ void MainWindow::a_dcc_stop(bool) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::log(QString message) {
+	if (ui.lv_log->count() > 200)
+		ui.lv_log->clear();
 	ui.lv_log->insertItem(0, QTime::currentTime().toString("hh:mm:ss") + ": " + message);
 }
 
