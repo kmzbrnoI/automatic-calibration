@@ -188,7 +188,7 @@
           <x>820</x>
           <y>10</y>
           <width>211</width>
-          <height>421</height>
+          <height>391</height>
          </rect>
         </property>
         <property name="title">
@@ -198,7 +198,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>340</y>
+           <y>310</y>
            <width>191</width>
            <height>41</height>
           </rect>
@@ -224,7 +224,7 @@
            <x>20</x>
            <y>60</y>
            <width>51</width>
-           <height>161</height>
+           <height>131</height>
           </rect>
          </property>
          <property name="maximum">
@@ -267,7 +267,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>390</y>
+           <y>360</y>
            <width>81</width>
            <height>22</height>
           </rect>
@@ -280,7 +280,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>390</y>
+           <y>360</y>
            <width>81</width>
            <height>22</height>
           </rect>
@@ -293,7 +293,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>310</y>
+           <y>280</y>
            <width>91</width>
            <height>16</height>
           </rect>
@@ -315,7 +315,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>286</y>
+           <y>256</y>
            <width>191</width>
            <height>20</height>
           </rect>
@@ -328,7 +328,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>260</y>
+           <y>230</y>
            <width>71</width>
            <height>22</height>
           </rect>
@@ -367,7 +367,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>310</y>
+           <y>280</y>
            <width>81</width>
            <height>22</height>
           </rect>
@@ -450,32 +450,11 @@
           <bool>false</bool>
          </property>
         </widget>
-        <widget class="QLabel" name="l_speed_status">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>240</y>
-           <width>21</width>
-           <height>31</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>20</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>●</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
         <widget class="QPushButton" name="b_loco_idle">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>230</y>
+           <y>200</y>
            <width>71</width>
            <height>22</height>
           </rect>
@@ -638,15 +617,15 @@
          </rect>
         </property>
         <property name="title">
-         <string>Calibration Settings</string>
+         <string>Calibration Management</string>
         </property>
         <widget class="QPushButton" name="b_calib_start">
          <property name="geometry">
           <rect>
-           <x>60</x>
-           <y>280</y>
-           <width>131</width>
-           <height>22</height>
+           <x>10</x>
+           <y>80</y>
+           <width>181</width>
+           <height>31</height>
           </rect>
          </property>
          <property name="text">
@@ -658,7 +637,7 @@
           <rect>
            <x>10</x>
            <y>50</y>
-           <width>101</width>
+           <width>181</width>
            <height>23</height>
           </rect>
          </property>
@@ -686,8 +665,8 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>90</y>
-           <width>81</width>
+           <y>280</y>
+           <width>51</width>
            <height>22</height>
           </rect>
          </property>
@@ -698,9 +677,9 @@
         <widget class="QPushButton" name="b_test2">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>120</y>
-           <width>81</width>
+           <x>70</x>
+           <y>280</y>
+           <width>61</width>
            <height>22</height>
           </rect>
          </property>
@@ -711,9 +690,9 @@
         <widget class="QPushButton" name="b_test3">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>150</y>
-           <width>81</width>
+           <x>140</x>
+           <y>280</y>
+           <width>51</width>
            <height>22</height>
           </rect>
          </property>
@@ -721,17 +700,69 @@
           <string>test3</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="b_decel_measure">
+        <widget class="Line" name="line_2">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>160</y>
+           <width>181</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+        <widget class="QProgressBar" name="pb_progress">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>200</y>
+           <width>181</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_13">
          <property name="geometry">
           <rect>
            <x>10</x>
            <y>180</y>
-           <width>131</width>
-           <height>22</height>
+           <width>59</width>
+           <height>14</height>
           </rect>
          </property>
          <property name="text">
-          <string>Measure dec. dist.</string>
+          <string>Progress:</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_calib_stop">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>120</y>
+           <width>181</width>
+           <height>31</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Stop calibration</string>
+         </property>
+        </widget>
+        <widget class="Line" name="line_3">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>230</y>
+           <width>181</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </widget>
@@ -742,9 +773,9 @@
         <property name="geometry">
          <rect>
           <x>820</x>
-          <y>440</y>
+          <y>410</y>
           <width>211</width>
-          <height>131</height>
+          <height>161</height>
          </rect>
         </property>
         <property name="title">
@@ -826,6 +857,19 @@
          </property>
          <property name="text">
           <string>Read</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_decel_measure">
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>130</y>
+           <width>131</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Measure dec. dist.</string>
          </property>
         </widget>
        </widget>
