@@ -28,7 +28,8 @@ SOURCES += \
 	speed-map.cpp \
 	calib-step.cpp \
 	calib-man.cpp \
-	calib-overview.cpp
+	calib-overview.cpp \
+	calib-range.cpp
 
 HEADERS += \
 	main-window.h \
@@ -42,7 +43,8 @@ HEADERS += \
 	speed-map.h \
 	calib-step.h \
 	calib-man.h \
-	calib-overview.h
+	calib-overview.h \
+	calib-range.h
 
 FORMS += \
 	main-window.ui \

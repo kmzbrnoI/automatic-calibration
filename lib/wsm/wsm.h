@@ -34,6 +34,8 @@ public:
 	void distanceReset();
 	void startLongTermMeasure(unsigned count);
 	bool isSpeedOk() const;
+	uint32_t distRaw() const;
+	double calcDist(uint32_t rawDelta) const;
 
 	void connect(QString portname);
 	void disconnect();

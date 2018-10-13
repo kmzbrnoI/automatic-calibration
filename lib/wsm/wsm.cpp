@@ -114,9 +114,7 @@ void Wsm::parseMessage(QByteArray message) {
 					(static_cast<uint8_t>(message[6]) & 0x7F);
 
 			uint32_t distDelta = m_dist - m_distStart;
-			double distRealDelta = (distDelta * static_cast<double>(M_PI) * wheelDiameter) / (1000 * HOLE_COUNT);
-			distanceRead(distRealDelta, distDelta);
-
+			distanceRead(calcDist(distDelta), distDelta);
 		}
 	} else if (type == MSG_BATTERY) {
 		uint16_t measured = (static_cast<uint8_t>(message[1] & 0x07) << 7) | (static_cast<uint8_t>(message[2]) & 0x7F);
@@ -172,6 +170,14 @@ void Wsm::recordLt(double speed) {
 		m_lt_measuring = false;
 		longTermMeasureDone(m_lt_sum / m_lt_count, std::abs(m_lt_min-m_lt_max));
 	}
+}
+
+uint32_t Wsm::distRaw() const {
+	return m_dist - m_distStart;
+}
+
+double Wsm::calcDist(uint32_t rawDelta) const {
+	return (rawDelta * static_cast<double>(M_PI) * wheelDiameter) / (1000 * HOLE_COUNT);
 }
 
 }//end namespace
