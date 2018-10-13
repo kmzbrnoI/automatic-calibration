@@ -326,4 +326,8 @@ void CalibMan::setStepManually(unsigned step, unsigned power) {
 	}
 }
 
+void CalibMan::unsetStep(unsigned step) {
+	state[step] = StepState::Uncalibred;
+}
+
 }//end namespace

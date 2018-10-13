@@ -42,6 +42,7 @@ public:
 	void reset();
 	void interpolateAll();
 	void setStepManually(unsigned step, unsigned power);
+	void unsetStep(unsigned step);
 
 private:
 	Ssm::StepsToSpeedMap& m_ssm;

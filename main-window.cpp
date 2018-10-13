@@ -217,6 +217,7 @@ void MainWindow::xn_onConnect() {
 	ui.a_xn_dcc_go->setEnabled(true);
 	ui.a_xn_dcc_stop->setEnabled(true);
 	ui.gb_speed->setEnabled(true);
+	ui.gb_cal_graph->setEnabled(true);
 
 	ui.vs_speed->setEnabled(false);
 	ui.sb_speed->setEnabled(false);
@@ -256,6 +257,7 @@ void MainWindow::xn_onDisconnect() {
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_release->setEnabled(false);
 	ui.gb_ad->setEnabled(false);
+	ui.gb_cal_graph->setEnabled(false);
 	loco_released();
 	log("Disconnected from XpressNET");
 }
@@ -820,6 +822,7 @@ void MainWindow::init_calib_graph() {
 		slider->setMinimum(0);
 		slider->setMaximum(255);
 		slider->setProperty("step", static_cast<uint>(i));
+		slider->setEnabled(false);
 		QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(vs_steps_moved(int)));
 		ui_steps[i].slider = slider;
 		ui.l_cal_graph->addWidget(slider, 3, i);
@@ -827,6 +830,7 @@ void MainWindow::init_calib_graph() {
 		QCheckBox* selected = new QCheckBox(ui.gb_cal_graph);
 		selected->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].selected = selected;
+		QObject::connect(selected, SIGNAL(clicked(bool)), this, SLOT(chb_step_selected_clicked(bool)));
 		ui.l_cal_graph->addWidget(selected, 4, i);
 
 		QLabel* step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
@@ -836,6 +840,7 @@ void MainWindow::init_calib_graph() {
 
 		QPushButton* calibrate = new QPushButton("C", ui.gb_cal_graph);
 		calibrate->setProperty("step", static_cast<uint>(i));
+		calibrate->setEnabled(false);
 		ui_steps[i].calibrate = calibrate;
 		QObject::connect(calibrate, SIGNAL(released()), this, SLOT(b_calibrate_handle()));
 		ui.l_cal_graph->addWidget(calibrate, 6, i);
@@ -860,6 +865,16 @@ void MainWindow::b_calibrate_handle() {
 		);
 		cm.setStepManually(stepi, ui_steps[stepi].slider->value());
 	}
+}
+
+void MainWindow::chb_step_selected_clicked(bool checked) {
+	unsigned stepi = qobject_cast<QCheckBox*>(QObject::sender())->property("step").toUInt();
+
+	ui_steps[stepi].calibrate->setEnabled(checked);
+	ui_steps[stepi].slider->setEnabled(checked);
+
+	if (!checked)
+		cm.unsetStep(stepi);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

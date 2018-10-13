@@ -486,6 +486,9 @@
         </widget>
        </widget>
        <widget class="QGroupBox" name="gb_cal_graph">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>220</x>

@@ -100,6 +100,7 @@ private slots:
 	void a_power_graph(bool);
 	void vs_steps_moved(int);
 	void b_calibrate_handle();
+	void chb_step_selected_clicked(bool);
 	void a_loco_load(bool);
 	void a_loco_save(bool);
 
