@@ -978,6 +978,9 @@ void MainWindow::a_loco_load(bool) {
 		return;
 
 	m_pm.clear();
+	cm.reset();
+	for(size_t i = 0; i < Xn::_STEPS_CNT; i++)
+		ui_steps[i].slider->setValue(0);
 
 	QXmlStreamReader xr;
 	QFile file(filename);
