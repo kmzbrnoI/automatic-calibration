@@ -44,8 +44,15 @@ void CalibRange::wsm_dist_read(double, uint32_t dist_raw) {
 
 void CalibRange::wsm_speed_read(double speed, uint16_t) {
 	// Reding distance when decelarating
-	if (speed > 0)
+	if (speed > 0 || m_end_dist != m_wsm.distRaw()) {
+		m_stop_counter = 0;
+		m_end_dist = m_wsm.distRaw();
 		return;
+	}
+	if (m_stop_counter < _STOP_MIN) {
+		m_stop_counter++;
+		return;
+	}
 
 	// Loco stopped
 	QObject::disconnect(&m_wsm, SIGNAL(speedRead(double, uint16_t)), this, SLOT(wsm_speed_read(double, uint16_t)));

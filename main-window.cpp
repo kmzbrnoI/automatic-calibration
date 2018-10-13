@@ -11,7 +11,7 @@ const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 MainWindow* wref = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent), xn(this), s(_CONFIG_FN), cm(xn, m_pm, wsm, m_ssm) {
+	QMainWindow(parent), xn(this), s(_CONFIG_FN), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
 	wref = this;
 
@@ -56,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	QObject::connect(ui.b_ad_read, SIGNAL(released()), this, SLOT(b_ad_read_handle()));
 	QObject::connect(ui.b_ad_write, SIGNAL(released()), this, SLOT(b_ad_write_handle()));
+
+	QObject::connect(ui.b_decel_measure, SIGNAL(released()), this, SLOT(b_decel_measure_handle()));
 
 	// UI set defaults
 	widget_set_color(*(ui.l_xn), Qt::red);
@@ -117,6 +119,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	m_ssm.load("speed.csv");
+
+	// Range Calibration
+	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError, unsigned)), this, SLOT(cr_error(Cr::CrError, unsigned)));
+	QObject::connect(&cr, SIGNAL(measured(double)), this, SLOT(cr_measured(double)));
 
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
 
@@ -1129,3 +1135,22 @@ void MainWindow::a_loco_save(bool) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// Range measuring:
+
+void MainWindow::cr_measured(double distance) {
+	log("Range measured: " + QString::number(distance*100) + " cm");
+}
+
+void MainWindow::cr_error(Cr::CrError ce, unsigned) {
+	log("Range calibration error!");
+
+	if (ce == Cr::CrError::XnNoResponse)
+		log("No response from XpressNET!");
+}
+
+void MainWindow::b_decel_measure_handle() {
+	if (!wsm.connected() || !wsm.isSpeedOk() || !xn.connected())
+		return;
+
+	cr.measure(ui.sb_loco->value(), 15, static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
+}

@@ -14,6 +14,7 @@ enum class CrError {
 };
 
 const unsigned _SP_ADAPT_TIMEOUT = 2000; // 2s
+const unsigned _STOP_MIN = 10; // we must measure 10 times 0 kmph to determnine that loco has stopped
 
 class CalibRange : public QObject {
 	Q_OBJECT
@@ -30,6 +31,8 @@ private:
 	unsigned m_step;
 	QTimer t_sp_adapt;
 	uint32_t m_start_dist;
+	uint32_t m_end_dist;
+	unsigned m_stop_counter;
 
 	static void xns_speed_ok(void*, void*);
 	static void xns_speed_err(void*, void*);

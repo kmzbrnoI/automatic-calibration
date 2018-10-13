@@ -721,6 +721,19 @@
           <string>test3</string>
          </property>
         </widget>
+        <widget class="QPushButton" name="b_decel_measure">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>180</y>
+           <width>131</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Measure dec. dist.</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="gb_ad">
         <property name="enabled">

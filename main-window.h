@@ -16,6 +16,7 @@
 #include "power-map.h"
 #include "calib-step.h"
 #include "calib-man.h"
+#include "calib-range.h"
 
 const QString _CONFIG_FN = "config.ini";
 const unsigned _STEPS_CNT = 28;
@@ -86,6 +87,7 @@ private slots:
 	void sb_speed_changed(int value);
 	void lv_log_dblclick(QListWidgetItem*);
 	void tw_xn_log_dblclick(QTreeWidgetItem*, int column);
+	void b_decel_measure_handle();
 
 	void b_test1_handle();
 	void b_test2_handle();
@@ -126,6 +128,9 @@ private slots:
 	void cm_done();
 	void cm_step_power_changed(unsigned step, unsigned power);
 
+	void cr_measured(double distance);
+	void cr_error(Cr::CrError, unsigned step);
+
 private:
 	Ui::MainWindow ui;
 	Xn::XpressNet xn;
@@ -143,6 +148,7 @@ private:
 	Pm::PowerToSpeedMap m_pm;
 	Ssm::StepsToSpeedMap m_ssm;
 	Cm::CalibMan cm;
+	Cr::CalibRange cr;
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);
