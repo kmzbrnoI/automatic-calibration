@@ -967,15 +967,18 @@
     <addaction name="a_loco_load"/>
     <addaction name="a_loco_save"/>
    </widget>
+   <addaction name="menuLoco"/>
    <addaction name="m_xn"/>
    <addaction name="m_wsm"/>
    <addaction name="m_power_graph"/>
-   <addaction name="menuLoco"/>
   </widget>
   <widget class="QStatusBar" name="sb_main"/>
   <action name="a_xn_connect">
    <property name="text">
     <string>Connect</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+X</string>
    </property>
   </action>
   <action name="a_xn_disconnect">
@@ -994,6 +997,9 @@
   <action name="a_wsm_connect">
    <property name="text">
     <string>Connect</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="a_wsm_disconnect">
@@ -1029,10 +1035,16 @@
    <property name="text">
     <string>Load profile</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="a_loco_save">
    <property name="text">
     <string>Save profile</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
    </property>
   </action>
  </widget>
