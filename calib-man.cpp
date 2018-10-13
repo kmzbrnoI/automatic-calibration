@@ -17,6 +17,20 @@ void CalibMan::reset() {
 		s = 0;
 }
 
+bool CalibMan::inProgress() {
+	return m_calib_in_progress;
+}
+
+void CalibMan::done() {
+	m_calib_in_progress = false;
+	onDone();
+}
+
+void CalibMan::error(Cm::CmError e, unsigned step) {
+	m_calib_in_progress = false;
+	onStepError(e, step);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Calibration Step events:
 
@@ -51,13 +65,13 @@ void CalibMan::csError(Cs::CsError cs, unsigned step) {
 	csSigDisconnect();
 
 	if (cs == Cs::CsError::LargeDiffusion)
-		onStepError(CmError::LargeDiffusion, step);
+		error(CmError::LargeDiffusion, step);
 	else if (cs == Cs::CsError::XnNoResponse)
-		onStepError(CmError::XnNoResponse, step);
+		error(CmError::XnNoResponse, step);
 	else if (cs == Cs::CsError::LocoStopped)
-		onStepError(CmError::LocoStopped, step);
+		error(CmError::LocoStopped, step);
 	else if (cs == Cs::CsError::NoStep)
-		onStepError(CmError::NoStep, step);
+		error(CmError::NoStep, step);
 }
 
 void CalibMan::coError(Co::CoError co, unsigned step) {
@@ -65,9 +79,9 @@ void CalibMan::coError(Co::CoError co, unsigned step) {
 	csSigDisconnect();
 
 	if (co == Co::CoError::LargeDiffusion)
-		onStepError(CmError::LargeDiffusion, step);
+		error(CmError::LargeDiffusion, step);
 	else if (co == Co::CoError::XnNoResponse)
-		onStepError(CmError::XnNoResponse, step);
+		error(CmError::XnNoResponse, step);
 }
 
 void CalibMan::cStepPowerChanged(unsigned step, unsigned power) {
@@ -103,7 +117,7 @@ void CalibMan::xnStepWritten(void*, void*) {
 }
 
 void CalibMan::xnStepWriteError(void*, void*) {
-	onStepError(CmError::XnNoResponse, m_step_writing);
+	error(CmError::XnNoResponse, m_step_writing);
 }
 
 void CalibMan::coDone() {
@@ -238,7 +252,7 @@ void CalibMan::interpolateAll() {
 	       state[m_thisIPleft+1] != StepState::Uncalibred))
 		m_thisIPleft++;
 	if (m_thisIPleft == Xn::_STEPS_CNT-1) {
-		onDone();
+		done();
 		return;
 	}
 	m_thisIPstep = m_thisIPleft + 1;
@@ -248,7 +262,7 @@ void CalibMan::interpolateAll() {
 
 	if (m_thisIPright == Xn::_STEPS_CNT) {
 		// Cannot interpolate without right boundary
-		onDone();
+		done();
 		return;
 	}
 
@@ -271,7 +285,7 @@ void CalibMan::interpolateNext() {
 		}
 
 		if (m_thisIPstep == Xn::_STEPS_CNT-1) {
-			onDone();
+			done();
 			return;
 		}
 
@@ -281,7 +295,7 @@ void CalibMan::interpolateNext() {
 
 		if (m_thisIPright == Xn::_STEPS_CNT) {
 			// Cannot interpolate without right boundary
-			onDone();
+			done();
 			return;
 		}
 	}
@@ -300,7 +314,7 @@ void CalibMan::interpolateNext() {
 }
 
 void CalibMan::xnIPError(void*, void*) {
-	onStepError(CmError::XnNoResponse, m_thisIPstep);
+	error(CmError::XnNoResponse, m_thisIPstep);
 }
 
 void CalibMan::xnsIPWritten(void* s, void* d) { static_cast<CalibMan*>(d)->xnIPWritten(s, d); }

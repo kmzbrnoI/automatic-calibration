@@ -43,6 +43,7 @@ public:
 	void interpolateAll();
 	void setStepManually(unsigned step, unsigned power);
 	void unsetStep(unsigned step);
+	bool inProgress();
 
 private:
 	Ssm::StepsToSpeedMap& m_ssm;
@@ -52,6 +53,7 @@ private:
 	unsigned m_locoAddr = 3;
 	unsigned m_step_writing;
 	unsigned m_step_power;
+	bool m_calib_in_progress = false;
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();
@@ -76,6 +78,9 @@ private:
 	void xnIPError(void*, void*);
 	static void xnsIPWritten(void*, void*);
 	static void xnsIPError(void*, void*);
+
+	void done();
+	void error(Cm::CmError, unsigned step);
 
 private slots:
 	void csDone(unsigned step, unsigned power);

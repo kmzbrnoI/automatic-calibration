@@ -917,6 +917,7 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 		log("No suitable power step for this speed!");
 
 	ui.b_calib_start->setEnabled(true);
+	ui.sb_max_speed->setEnabled(true);
 	ui.gb_cal_graph->setEnabled(true);
 	ui.gb_ad->setEnabled(true);
 	ui.b_wsm_lt->setEnabled(true);
@@ -931,20 +932,23 @@ void MainWindow::cm_locoSpeedChanged(unsigned step) {
 void MainWindow::cm_done() {
 	log("Calibration done :)");
 	ui.b_calib_start->setEnabled(true);
+	ui.sb_max_speed->setEnabled(true);
 	ui.gb_cal_graph->setEnabled(true);
 	ui.gb_ad->setEnabled(true);
 	ui.b_wsm_lt->setEnabled(true);
 }
 
 void MainWindow::b_calib_start_handle() {
-	if (wsm.connected() && wsm.isSpeedOk() && xn.connected()) {
-		ui.b_calib_start->setEnabled(false);
-		ui.gb_cal_graph->setEnabled(false);
-		ui.gb_ad->setEnabled(false);
-		ui.b_wsm_lt->setEnabled(false);
-		cm.calibrateAll(ui.sb_loco->value(),
-		                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
-		}
+	if (!wsm.connected() || !wsm.isSpeedOk() || !xn.connected())
+		return;
+
+	ui.b_calib_start->setEnabled(false);
+	ui.sb_max_speed->setEnabled(false);
+	ui.gb_cal_graph->setEnabled(false);
+	ui.gb_ad->setEnabled(false);
+	ui.b_wsm_lt->setEnabled(false);
+	cm.calibrateAll(ui.sb_loco->value(),
+					static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
