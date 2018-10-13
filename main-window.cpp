@@ -44,6 +44,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_test3, SIGNAL(released()), this, SLOT(b_test3_handle()));
 
 	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_max_speed_changed(int)));
+	QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(lv_log_dblclick(QListWidgetItem*)));
+	QObject::connect(ui.tw_xn_log, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
+	                 this, SLOT(tw_xn_log_dblclick(QTreeWidgetItem*, int)));
 
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
@@ -177,6 +180,14 @@ void MainWindow::b_start_handle() {
 		if (!wsm.connected())
 			a_wsm_connect(true);
 	}
+}
+
+void MainWindow::lv_log_dblclick(QListWidgetItem*) {
+	ui.lv_log->clear();
+}
+
+void MainWindow::tw_xn_log_dblclick(QTreeWidgetItem*, int) {
+	ui.tw_xn_log->clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

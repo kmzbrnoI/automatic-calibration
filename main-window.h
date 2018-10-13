@@ -84,6 +84,8 @@ private slots:
 	void b_calib_start_handle();
 	void sb_max_speed_changed(int value);
 	void sb_speed_changed(int value);
+	void lv_log_dblclick(QListWidgetItem*);
+	void tw_xn_log_dblclick(QTreeWidgetItem*, int column);
 
 	void b_test1_handle();
 	void b_test2_handle();
