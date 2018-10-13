@@ -183,10 +183,8 @@ void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	direction = dir;
 	csSigConnect();
 
-	// Phase 1: make an overview of mapping steps to speed
-	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), Co::_OVERVIEW_STEP, direction);
-	onLocoSpeedChanged(Co::_OVERVIEW_STEP);
-	co.makeOverview(locoAddr);
+	// Phase 0: set to use speed table
+	useSpeedTable();
 }
 
 void CalibMan::calibrateNextStep() {
@@ -343,5 +341,33 @@ void CalibMan::setStepManually(unsigned step, unsigned power) {
 void CalibMan::unsetStep(unsigned step) {
 	state[step] = StepState::Uncalibred;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+// Speed Table
+
+void CalibMan::useSpeedTable() {
+	m_xn.pomWriteBit(
+		Xn::LocoAddr(m_locoAddr),
+		_CV_CONFIG,
+		_CV_CONFIG_BIT_SPEED_TABLE,
+		_CV_CONFIG_SPEED_TABLE_VALUE,
+		std::make_unique<Xn::XnCb>(&xnsSTWritten, this),
+		std::make_unique<Xn::XnCb>(&xnsSTError, this)
+	);
+}
+
+void CalibMan::xnSTWritten(void*, void*) {
+	// Phase 1: make an overview of mapping steps to speed
+	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), Co::_OVERVIEW_STEP, direction);
+	onLocoSpeedChanged(Co::_OVERVIEW_STEP);
+	co.makeOverview(m_locoAddr);
+}
+
+void CalibMan::xnSTError(void*, void*) {
+	error(CmError::XnNoResponse, 0);
+}
+
+void CalibMan::xnsSTWritten(void* s, void* d) {static_cast<CalibMan*>(d)->xnSTWritten(s, d); }
+void CalibMan::xnsSTError(void* s, void* d) { static_cast<CalibMan*>(d)->xnSTError(s, d); }
 
 }//end namespace

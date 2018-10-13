@@ -27,6 +27,10 @@ enum class CmError {
 	NoStep,
 };
 
+const unsigned _CV_CONFIG = 29;
+const unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
+const bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
+
 class CalibMan : public QObject {
 	Q_OBJECT
 
@@ -81,6 +85,12 @@ private:
 
 	void done();
 	void error(Cm::CmError, unsigned step);
+
+	void useSpeedTable();
+	void xnSTWritten(void*, void*);
+	void xnSTError(void*, void*);
+	static void xnsSTWritten(void*, void*);
+	static void xnsSTError(void*, void*);
 
 private slots:
 	void csDone(unsigned step, unsigned power);
