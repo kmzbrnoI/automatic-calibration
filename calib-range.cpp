@@ -79,4 +79,4 @@ void CalibRange::wsm_error() {
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_error()));
 }
 
-}//end namespace
+}//namespace Cr

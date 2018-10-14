@@ -78,4 +78,4 @@ void StepsToSpeedMap::setMaxSpeed(unsigned new_speed) {
 	m_max_speed = new_speed;
 }
 
-}//end namespace
+}//namespace Ssm

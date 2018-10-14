@@ -180,4 +180,4 @@ double Wsm::calcDist(uint32_t rawDelta) const {
 	return (rawDelta * static_cast<double>(M_PI) * wheelDiameter) / (1000 * HOLE_COUNT);
 }
 
-}//end namespace
+}//namespace Wsm

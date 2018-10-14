@@ -64,6 +64,6 @@ signals:
 	void step_power_changed(unsigned step, unsigned power);
 };
 
-}//end namespace
+}//namespace Co
 
 #endif

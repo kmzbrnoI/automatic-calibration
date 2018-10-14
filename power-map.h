@@ -36,6 +36,6 @@ private:
 	std::unique_ptr<float> map[_POWER_CNT];
 };
 
-}//end namespace
+}//namespace Pm
 
 #endif

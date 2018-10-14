@@ -78,6 +78,6 @@ private:
 	void recordLt(double speed);
 };
 
-}//end namespace
+}//namespace Wsm
 
 #endif

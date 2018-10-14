@@ -39,6 +39,12 @@ $ make
     rfcomm connect /dev/rfcomm0 hc-05-hw-address 2
     ```
 
+## Style checking
+
+```
+$ clang-tidy -extra-arg-before=-x -extra-arg-before=c++ -extra-arg=-std=c++14
+```
+
 ## Authors
 
  * Jan Horacek ([jan.horacek@kmz-brno.cz](mailto:jan.horacek@kmz-brno.cz))

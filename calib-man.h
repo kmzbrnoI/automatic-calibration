@@ -118,6 +118,6 @@ signals:
 	void onProgressUpdate(size_t val); // value 0-100
 };
 
-}//end namespace
+}//namespace Cm
 
 #endif

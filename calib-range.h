@@ -48,6 +48,6 @@ signals:
 	void measured(double distance);
 };
 
-}//end namespace
+}//namespace Cr
 
 #endif

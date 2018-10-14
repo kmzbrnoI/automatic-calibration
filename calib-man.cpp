@@ -400,4 +400,4 @@ void CalibMan::xnSTError(void*, void*) {
 	error(CmError::XnNoResponse, 0);
 }
 
-}//end namespace
+}//namespace Cm

@@ -46,4 +46,4 @@ float* PowerToSpeedMap::speed(unsigned power) {
 	return map[power].get();
 }
 
-}//end namespace
+}//namespace Pm

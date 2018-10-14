@@ -29,7 +29,7 @@ public:
 	void addOrUpdate(unsigned step, unsigned speed);
 
 	unsigned maxSpeed() const;
-	void setMaxSpeed(unsigned speed);
+	void setMaxSpeed(unsigned new_speed);
 
 	unsigned* at(const int index);
 	unsigned* operator[] (const int index);
@@ -39,6 +39,6 @@ signals:
 	void onClear();
 };
 
-}//end namespace
+}//namespace Ssm
 
 #endif
