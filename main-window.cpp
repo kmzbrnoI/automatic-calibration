@@ -543,7 +543,7 @@ void MainWindow::a_xn_connect(bool) {
 		log("Connecting to XN...");
 		xn.connect(s.xn.portname, s.xn.br, s.xn.fc);
 	} catch (const QStrException& e) {
-		show_error(e.str());
+		show_error("XN connect error while opening serial port '" + s.xn.portname + "':\n" + e);
 	}
 }
 
@@ -557,7 +557,7 @@ void MainWindow::a_xn_disconnect(bool) {
 		if (cm.inProgress())
 			b_calib_stop_handle();
 	} catch (const QStrException& e) {
-		show_error(e.str());
+		show_error("XN disconnect error:\n" + e.str());
 	}
 }
 
@@ -726,7 +726,7 @@ void MainWindow::a_wsm_connect(bool) {
 
 		log("Connected to WSM");
 	} catch (const Wsm::EOpenError& e) {
-		show_error("Error while opening serial port '" + s.wsm.portname + "':\n" + e);
+		show_error("WSM connect error while opening serial port '" + s.wsm.portname + "':\n" + e);
 	}
 }
 
