@@ -304,13 +304,11 @@ void MainWindow::xn_onTrkStatusChanged(Xn::XnTrkStatus status) {
 	}
 }
 
-void MainWindow::xn_onDccGoError(void *sender, void *data) {
-	(void)sender; (void)data;
+void MainWindow::xn_onDccGoError(void*, void*) {
 	show_response_error("DCC GO");
 }
 
-void MainWindow::xn_onDccStopError(void *sender, void *data) {
-	(void)sender; (void)data;
+void MainWindow::xn_onDccStopError(void*, void*) {
 	show_response_error("DCC STOP");
 }
 
@@ -324,8 +322,7 @@ void MainWindow::show_response_error(QString command) {
 	);
 }
 
-void MainWindow::xn_onLIVersionError(void *sender, void *data) {
-	(void)sender; (void)data;
+void MainWindow::xn_onLIVersionError(void*, void*) {
 	m_starting = false;
 	log("LI did not respond to version request!");
 	QMessageBox m(
@@ -336,8 +333,7 @@ void MainWindow::xn_onLIVersionError(void *sender, void *data) {
 	);
 }
 
-void MainWindow::xn_onCSVersionError(void *sender, void *data) {
-	(void)sender; (void)data;
+void MainWindow::xn_onCSVersionError(void*, void*) {
 	log("Coomand station did not respond to version request!");
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
@@ -349,14 +345,12 @@ void MainWindow::xn_onCSVersionError(void *sender, void *data) {
 	m_starting = false;
 }
 
-void MainWindow::xn_onCSStatusError(void *sender, void *data) {
-	(void)sender; (void)data;
+void MainWindow::xn_onCSStatusError(void*, void*) {
 	show_response_error("STATUS");
 	m_starting = false;
 }
 
-void MainWindow::xn_onCSStatusOk(void *sender, void *data) {
-	(void)sender; (void)data;
+void MainWindow::xn_onCSStatusOk(void*, void*) {
 	if (m_starting) {
 		m_starting = false;
 		log("Succesfully connected to Command station");
@@ -670,8 +664,7 @@ void MainWindow::vs_speed_slider_moved(int value) {
 	ui.sb_speed->setValue(value);
 }
 
-void MainWindow::rb_direction_toggled(bool backward) {
-	(void)backward;
+void MainWindow::rb_direction_toggled(bool) {
 	b_speed_set_handle();
 }
 
@@ -716,8 +709,7 @@ void MainWindow::wsm_status_blink() {
 		widget_set_color(*(ui.l_wsm_alive), Qt::green);
 }
 
-void MainWindow::a_wsm_connect(bool a) {
-	(void)a;
+void MainWindow::a_wsm_connect(bool) {
 	log("Connecting to WSM...");
 
 	try {
@@ -733,9 +725,7 @@ void MainWindow::a_wsm_connect(bool a) {
 	}
 }
 
-void MainWindow::a_wsm_disconnect(bool a) {
-	(void)a;
-
+void MainWindow::a_wsm_disconnect(bool) {
 	wsm.disconnect();
 	ui.l_wsm_speed->setText("??.?");
 	ui.l_wsm_bat_voltage->setText("?.?? V");
