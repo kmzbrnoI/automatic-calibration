@@ -12,6 +12,10 @@ const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent), xn(this), s(_CONFIG_FN), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
+	QString text;
+	text.sprintf("Automatic Claibration v%d.%d", VERSION_MAJOR, VERSION_MINOR);
+	this->setWindowTitle(text);
+	this->setFixedSize(this->size());
 
 	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
