@@ -79,8 +79,6 @@ private:
 
 	void xnStepWritten(void*, void*);
 	void xnStepWriteError(void*, void*);
-	static void xnsStepWritten(void*, void*);
-	static void xnsStepWriteError(void*, void*);
 
 	// Steps interpolation = IP
 	unsigned m_thisIPleft;
@@ -91,8 +89,6 @@ private:
 	void interpolateNext();
 	void xnIPWritten(void*, void*);
 	void xnIPError(void*, void*);
-	static void xnsIPWritten(void*, void*);
-	static void xnsIPError(void*, void*);
 
 	void done();
 	void error(Cm::CmError, unsigned step);
@@ -100,8 +96,6 @@ private:
 	void useSpeedTable();
 	void xnSTWritten(void*, void*);
 	void xnSTError(void*, void*);
-	static void xnsSTWritten(void*, void*);
-	static void xnsSTError(void*, void*);
 
 private slots:
 	void csDone(unsigned step, unsigned power);

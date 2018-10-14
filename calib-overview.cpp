@@ -66,8 +66,8 @@ void CalibOverview::do_next_step() {
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + _OVERVIEW_STEP,
 		m_last_power,
-		std::make_unique<Xn::XnCb>(&xns_pom_ok, this),
-		std::make_unique<Xn::XnCb>(&xns_pom_err, this)
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_ok(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_err(s, d); })
 	);
 	step_power_changed(_OVERVIEW_STEP, m_last_power);
 }
@@ -96,9 +96,6 @@ void CalibOverview::t_sp_adapt_tick() {
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 	m_wsm.startLongTermMeasure(_MEASURE_COUNT);
 }
-
-void CalibOverview::xns_pom_ok(void* s, void* d) { static_cast<CalibOverview*>(d)->xn_pom_ok(s, d); }
-void CalibOverview::xns_pom_err(void* s, void* d) { static_cast<CalibOverview*>(d)->xn_pom_err(s, d); }
 
 void CalibOverview::xn_pom_ok(void*, void*) {
 	// Insert 'waiting of mark' here when neccessarry

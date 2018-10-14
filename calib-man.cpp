@@ -68,8 +68,8 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 				Xn::LocoAddr(m_locoAddr),
 				Cs::_CV_START + i,
 				power,
-				std::make_unique<Xn::XnCb>(&xnsStepWritten, this),
-				std::make_unique<Xn::XnCb>(&xnsStepWriteError, this)
+				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnStepWritten(s, d); }),
+				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnStepWriteError(s, d); })
 			);
 			this->power[i] = m_step_power;
 			onStepPowerChanged(i+1, power);
@@ -109,9 +109,6 @@ void CalibMan::cStepPowerChanged(unsigned step, unsigned power) {
 	onStepPowerChanged(step, power);
 }
 
-void CalibMan::xnsStepWritten(void* s, void* d) { static_cast<CalibMan*>(d)->xnStepWritten(s, d); }
-void CalibMan::xnsStepWriteError(void* s, void* d) { static_cast<CalibMan*>(d)->xnStepWriteError(s, d); }
-
 void CalibMan::xnStepWritten(void*, void*) {
 	state[m_step_writing] = StepState::Calibred;
 	onStepDone(m_step_writing+1, m_step_power);
@@ -124,8 +121,8 @@ void CalibMan::xnStepWritten(void*, void*) {
 				Xn::LocoAddr(m_locoAddr),
 				Cs::_CV_START + i,
 				m_step_power,
-				std::make_unique<Xn::XnCb>(&xnsStepWritten, this),
-				std::make_unique<Xn::XnCb>(&xnsStepWriteError, this)
+				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnStepWritten(s, d); }),
+				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnStepWriteError(s, d); })
 			);
 			power[i] = m_step_power;
 			onStepPowerChanged(i+1, m_step_power);
@@ -342,8 +339,8 @@ void CalibMan::interpolateNext() {
 		Xn::LocoAddr(m_locoAddr),
 		Cs::_CV_START + m_thisIPstep,
 		power,
-		std::make_unique<Xn::XnCb>(&xnsIPWritten, this),
-		std::make_unique<Xn::XnCb>(&xnsIPError, this)
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnIPWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnIPError(s, d); })
 	);
 	this->power[m_thisIPstep] = power;
 	onStepPowerChanged(m_thisIPstep+1, power);
@@ -352,9 +349,6 @@ void CalibMan::interpolateNext() {
 void CalibMan::xnIPError(void*, void*) {
 	error(CmError::XnNoResponse, m_thisIPstep);
 }
-
-void CalibMan::xnsIPWritten(void* s, void* d) { static_cast<CalibMan*>(d)->xnIPWritten(s, d); }
-void CalibMan::xnsIPError(void* s, void* d) { static_cast<CalibMan*>(d)->xnIPError(s, d);}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -389,8 +383,8 @@ void CalibMan::useSpeedTable() {
 		_CV_CONFIG,
 		_CV_CONFIG_BIT_SPEED_TABLE,
 		_CV_CONFIG_SPEED_TABLE_VALUE,
-		std::make_unique<Xn::XnCb>(&xnsSTWritten, this),
-		std::make_unique<Xn::XnCb>(&xnsSTError, this)
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnSTWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnSTError(s, d); })
 	);
 }
 
@@ -405,8 +399,5 @@ void CalibMan::xnSTWritten(void*, void*) {
 void CalibMan::xnSTError(void*, void*) {
 	error(CmError::XnNoResponse, 0);
 }
-
-void CalibMan::xnsSTWritten(void* s, void* d) {static_cast<CalibMan*>(d)->xnSTWritten(s, d); }
-void CalibMan::xnsSTError(void* s, void* d) { static_cast<CalibMan*>(d)->xnSTError(s, d); }
 
 }//end namespace

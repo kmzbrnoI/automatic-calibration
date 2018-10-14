@@ -31,8 +31,8 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + m_step,
 		m_last_power,
-		std::make_unique<Xn::XnCb>(&xns_pom_ok, this),
-		std::make_unique<Xn::XnCb>(&xns_pom_err, this)
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_ok(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_err(s, d); })
 	);
 	step_power_changed(m_step, m_last_power);
 }
@@ -85,8 +85,8 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + m_step,
 		m_last_power,
-		std::make_unique<Xn::XnCb>(&xns_pom_ok, this),
-		std::make_unique<Xn::XnCb>(&xns_pom_err, this)
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_ok(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_err(s, d); })
 	);
 
 	step_power_changed(m_step, m_last_power);
@@ -97,9 +97,6 @@ void CalibStep::t_sp_adapt_tick() {
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 	m_wsm.startLongTermMeasure(_MEASURE_COUNT);
 }
-
-void CalibStep::xns_pom_ok(void* s, void* d) { static_cast<CalibStep*>(d)->xn_pom_ok(s, d); }
-void CalibStep::xns_pom_err(void* s, void* d) { static_cast<CalibStep*>(d)->xn_pom_err(s, d); }
 
 void CalibStep::xn_pom_ok(void* source, void* data) {
 	(void)source;

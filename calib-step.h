@@ -47,8 +47,6 @@ private:
 	unsigned m_last_power;
 	unsigned m_diff_count;
 
-	static void xns_pom_ok(void*, void*);
-	static void xns_pom_err(void*, void*);
 	void xn_pom_ok(void*, void*);
 	void xn_pom_err(void*, void*);
 

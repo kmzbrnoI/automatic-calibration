@@ -8,12 +8,10 @@
 #include "ui_main-window.h"
 
 const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
-MainWindow* wref = nullptr;
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent), xn(this), s(_CONFIG_FN), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
-	wref = this;
 
 	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
@@ -263,7 +261,10 @@ void MainWindow::xn_onConnect() {
 	log("Connected to XpressNET.");
 
 	try {
-		xn.getLIVersion(&xns_gotLIVersion, std::make_unique<Xn::XnCb>(&xns_onLIVersionError));
+		xn.getLIVersion(
+			[this](void* s, unsigned hw, unsigned sw) { xn_gotLIVersion(s, hw, sw); },
+			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onLIVersionError(s, d); })
+		);
 	}
 	catch (const QStrException& e) {
 		show_error(e.str());
@@ -296,32 +297,11 @@ void MainWindow::xn_onTrkStatusChanged(Xn::XnTrkStatus status) {
 	} else if (status == Xn::XnTrkStatus::On) {
 		widget_set_color(*(ui.l_dcc), Qt::green);
 		log("CS status: On");
-	}else if (status == Xn::XnTrkStatus::Programming) {
+	} else if (status == Xn::XnTrkStatus::Programming) {
 		widget_set_color(*(ui.l_dcc), Qt::yellow);
 		log("CS status: Programming");
 	}
 }
-
-void MainWindow::xns_onDccGoError(void* s, void* d) { wref->xn_onDccGoError(s, d); }
-void MainWindow::xns_onDccStopError(void* s, void* d) { wref->xn_onDccStopError(s, d); }
-void MainWindow::xns_onLIVersionError(void* s, void* d) { wref->xn_onLIVersionError(s, d); }
-void MainWindow::xns_onCSVersionError(void* s, void* d) { wref->xn_onCSVersionError(s, d); }
-void MainWindow::xns_onCSStatusError(void* s, void* d) { wref->xn_onCSStatusError(s, d); }
-void MainWindow::xns_onCSStatusOk(void* s, void* d) { wref->xn_onCSStatusOk(s, d); }
-void MainWindow::xns_gotLIVersion(void* s, unsigned hw, unsigned sw) { wref->xn_gotLIVersion(s, hw, sw); }
-void MainWindow::xns_gotCSVersion(void* s, unsigned major, unsigned minor) { wref->xn_gotCSVersion(s, major, minor); }
-void MainWindow::xns_gotLocoInfo(void* s, bool used, Xn::XnDirection direction, unsigned speed, Xn::XnFA fa, Xn::XnFB fb) {
-	wref->xn_gotLocoInfo(s, used, direction, speed, fa, fb);
-}
-void MainWindow::xns_onLocoInfoError(void* s, void* d) { wref->xn_onLocoInfoError(s, d); }
-void MainWindow::xns_addrReadError(void* s, void* d) { wref->xn_addrReadError(s, d); }
-void MainWindow::xns_adReadError(void* s, void* d) { wref->xn_adReadError(s, d); }
-void MainWindow::xns_cvRead(void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) {
-	wref->xn_cvRead(s, st, cv, value);
-}
-void MainWindow::xns_adWriteError(void* s, void* d) { wref->xn_adWriteError(s, d); }
-void MainWindow::xns_accelWritten(void* s, void* d) { wref->xn_accelWritten(s, d); }
-void MainWindow::xns_decelWritten(void* s, void* d) { wref->xn_decelWritten(s, d); }
 
 void MainWindow::xn_onDccGoError(void* sender, void* data) {
 	(void)sender; (void)data;
@@ -387,8 +367,10 @@ void MainWindow::xn_onCSStatusOk(void* sender, void* data) {
 void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
 	log("Got LI version. HW: " + QString::number(hw) + ", SW: " + QString::number(sw));
 	try {
-		xn.getCommandStationStatus(std::make_unique<Xn::XnCb>(xns_onCSStatusOk),
-		                           std::make_unique<Xn::XnCb>(xns_onCSStatusError));
+		xn.getCommandStationStatus(
+			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onCSStatusOk(s, d); }),
+			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onCSStatusError(s, d); })
+		);
 	}
 	catch (const QStrException& e) {
 		show_error(e.str());
@@ -508,7 +490,11 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 		catch (const Xn::EInvalidAddr&) {
 			show_error("Invalid address!");
 		}
-		xn.readCVdirect(_CV_ADDR_HI, &xns_cvRead, std::make_unique<Xn::XnCb>(&xns_addrReadError));
+		xn.readCVdirect(
+			_CV_ADDR_HI,
+			[this](void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_addrReadError(s, d); })
+		);
 	} else if (cv == _CV_ADDR_HI) {
 		try {
 			ui.sb_loco->setValue(Xn::LocoAddr(ui.sb_loco->value(), value));
@@ -522,7 +508,10 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 		a_dcc_go(true);
 	} else if (cv == _CV_ACCEL) {
 		ui.sb_accel->setValue(value);
-		xn.readCVdirect(_CV_DECEL, &xns_cvRead, std::make_unique<Xn::XnCb>(&xns_adReadError));
+		xn.readCVdirect(_CV_DECEL,
+			[this](void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_adReadError(s, d); })
+		);
 	} else if (cv == _CV_DECEL) {
 		ui.sb_decel->setValue(value);
 		ui.gb_ad->setEnabled(true);
@@ -537,8 +526,8 @@ void MainWindow::xn_adWriteError(void*, void*) {
 
 void MainWindow::xn_accelWritten(void*, void*) {
 	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_DECEL, ui.sb_decel->value(),
-	              std::make_unique<Xn::XnCb>(&xns_decelWritten),
-	              std::make_unique<Xn::XnCb>(&xns_adWriteError));
+	              std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_decelWritten(s, d); }),
+	              std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_adWriteError(s, d); }));
 }
 
 void MainWindow::xn_decelWritten(void*, void*) {
@@ -575,8 +564,10 @@ void MainWindow::a_xn_disconnect(bool) {
 void MainWindow::a_dcc_go(bool) {
 	try {
 		if (xn.connected())
-			xn.setTrkStatus(Xn::XnTrkStatus::On, nullptr,
-			                std::make_unique<Xn::XnCb>(&xns_onDccGoError));
+			xn.setTrkStatus(
+				Xn::XnTrkStatus::On, nullptr,
+				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onDccGoError(s, d); })
+			);
 	} catch (const QStrException& e) {
 		show_error(e.str());
 	}
@@ -585,8 +576,10 @@ void MainWindow::a_dcc_go(bool) {
 void MainWindow::a_dcc_stop(bool) {
 	try {
 		if (xn.connected())
-			xn.setTrkStatus(Xn::XnTrkStatus::Off, nullptr,
-			                std::make_unique<Xn::XnCb>(&xns_onDccStopError));
+			xn.setTrkStatus(
+				Xn::XnTrkStatus::Off, nullptr,
+				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onDccStopError(s, d); })
+			);
 	} catch (const QStrException& e) {
 		show_error(e.str());
 	}
@@ -611,8 +604,13 @@ void MainWindow::b_addr_set_handle() {
 	ui.sb_loco->setEnabled(false);
 	ui.b_addr_read->setEnabled(false);
 
-	xn.getLocoInfo(Xn::LocoAddr(ui.sb_loco->value()), &xns_gotLocoInfo,
-	               std::make_unique<Xn::XnCb>(&xns_onLocoInfoError));
+	xn.getLocoInfo(
+		Xn::LocoAddr(ui.sb_loco->value()),
+		[this](void* s, bool used, Xn::XnDirection dir, unsigned speed, Xn::XnFA fa, Xn::XnFB fb) {
+			xn_gotLocoInfo(s, used, dir, speed, fa, fb);
+		},
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onLocoInfoError(s, d); })
+	);
 }
 
 void MainWindow::sb_loco_changed(int) {
@@ -631,7 +629,11 @@ void MainWindow::b_addr_read_handle() {
 	ui.sb_loco->setEnabled(false);
 	ui.b_addr_set->setEnabled(false);
 	ui.b_addr_read->setEnabled(false);
-	xn.readCVdirect(_CV_ADDR_LO, &xns_cvRead, std::make_unique<Xn::XnCb>(&xns_addrReadError));
+	xn.readCVdirect(
+		_CV_ADDR_LO,
+		[this](void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_addrReadError(s, d); })
+	);
 }
 
 void MainWindow::b_speed_set_handle() {
@@ -1010,7 +1012,11 @@ void MainWindow::b_calib_stop_handle() {
 
 void MainWindow::b_ad_read_handle() {
 	ui.gb_ad->setEnabled(false);
-	xn.readCVdirect(_CV_ACCEL, &xns_cvRead, std::make_unique<Xn::XnCb>(&xns_adReadError));
+	xn.readCVdirect(
+		_CV_ACCEL,
+		[this](void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_adReadError(s, d); })
+	);
 }
 
 void MainWindow::b_ad_write_handle() {
@@ -1021,9 +1027,11 @@ void MainWindow::b_ad_write_handle() {
 
 	ui.gb_ad->setEnabled(false);
 
-	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_ACCEL, ui.sb_accel->value(),
-	              std::make_unique<Xn::XnCb>(&xns_accelWritten),
-	              std::make_unique<Xn::XnCb>(&xns_adWriteError));
+	xn.pomWriteCv(Xn::LocoAddr(
+		ui.sb_loco->value()), _CV_ACCEL, ui.sb_accel->value(),
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_accelWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_adWriteError(s, d); })
+	);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

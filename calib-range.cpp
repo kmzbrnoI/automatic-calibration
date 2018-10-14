@@ -22,8 +22,8 @@ void CalibRange::measure(const unsigned loco_addr, const unsigned step,
 		Xn::LocoAddr(loco_addr),
 		step,
 		dir,
-		std::make_unique<Xn::XnCb>(&xns_speed_ok, this),
-		std::make_unique<Xn::XnCb>(&xns_speed_err, this)
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_speed_ok(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_speed_err(s, d); })
 	);
 }
 
@@ -37,7 +37,7 @@ void CalibRange::wsm_dist_read(double, uint32_t dist_raw) {
 		0,
 		m_dir,
 		nullptr,
-		std::make_unique<Xn::XnCb>(&xns_speed_err, this)
+		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_speed_err(s, d); })
 	);
 	m_start_dist = dist_raw;
 }
@@ -64,9 +64,6 @@ void CalibRange::wsm_speed_read(double speed, uint16_t) {
 void CalibRange::t_sp_adapt_tick() {
 	QObject::connect(&m_wsm, SIGNAL(distanceRead(double, uint32_t)), this, SLOT(wsm_dist_read(double, uint32_t)));
 }
-
-void CalibRange::xns_speed_ok(void* s, void* d) { static_cast<CalibRange*>(d)->xn_speed_ok(s, d); }
-void CalibRange::xns_speed_err(void* s, void* d) { static_cast<CalibRange*>(d)->xn_speed_err(s, d); }
 
 void CalibRange::xn_speed_ok(void*, void*) {
 	// Insert 'waiting of mark' here when neccessarry

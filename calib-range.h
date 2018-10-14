@@ -34,8 +34,6 @@ private:
 	uint32_t m_end_dist;
 	unsigned m_stop_counter;
 
-	static void xns_speed_ok(void*, void*);
-	static void xns_speed_err(void*, void*);
 	void xn_speed_ok(void*, void*);
 	void xn_speed_err(void*, void*);
 

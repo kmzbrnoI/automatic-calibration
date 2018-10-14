@@ -161,25 +161,6 @@ private:
 	void loco_released();
 	void init_calib_graph();
 	void reset();
-
-	static void xns_onDccGoError(void*, void*);
-	static void xns_onDccStopError(void*, void*);
-	static void xns_onLIVersionError(void*, void*);
-	static void xns_onCSVersionError(void*, void*);
-	static void xns_onCSStatusError(void*, void*);
-	static void xns_onCSStatusOk(void*, void*);
-	static void xns_gotLIVersion(void*, unsigned hw, unsigned sw);
-	static void xns_gotCSVersion(void*, unsigned major, unsigned minor);
-	static void xns_gotLocoInfo(void*, unsigned major, unsigned minor);
-	static void xns_gotLocoInfo(void*, bool used, Xn::XnDirection direction,
-	                            unsigned speed, Xn::XnFA, Xn::XnFB);
-	static void xns_onLocoInfoError(void*, void*);
-	static void xns_addrReadError(void*, void*);
-	static void xns_adReadError(void*, void*);
-	static void xns_cvRead(void*, Xn::XnReadCVStatus, uint8_t cv, uint8_t value);
-	static void xns_adWriteError(void*, void*);
-	static void xns_accelWritten(void*, void*);
-	static void xns_decelWritten(void*, void*);
 };
 
 #endif // MAINWINDOW_H
