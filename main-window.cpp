@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.chb_f2, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.b_calib_start, SIGNAL(released()), this, SLOT(b_calib_start_handle()));
 	QObject::connect(ui.b_calib_stop, SIGNAL(released()), this, SLOT(b_calib_stop_handle()));
+	QObject::connect(ui.b_reset, SIGNAL(released()), this, SLOT(b_reset_handle()));
 
 	ui.sb_loco->setKeyboardTracking(false);
 	QObject::connect(ui.sb_loco, SIGNAL(valueChanged(int)), this, SLOT(sb_loco_changed(int)));
@@ -158,13 +159,8 @@ void MainWindow::t_xn_disconnect_tick() {
 	log("XN error, disconnecting from XpressNET...");
 	a_xn_disconnect(true);
 
-	QMessageBox m(
-		QMessageBox::Icon::Warning,
-		"Error!",
-		"XN serial port error, more information in lo!",
-		QMessageBox::Ok
-	);
-	m.exec();
+	QMessageBox::warning(this, "Error!",
+		"XN serial port error, more information in lo!", QMessageBox::Ok);
 }
 
 void MainWindow::cb_xn_ll_index_changed(int index) {
@@ -174,14 +170,7 @@ void MainWindow::cb_xn_ll_index_changed(int index) {
 
 void MainWindow::show_error(const QString error) {
 	log(error);
-
-	QMessageBox m(
-		QMessageBox::Icon::Warning,
-		"Error!",
-		error,
-		QMessageBox::Ok
-	);
-	m.exec();
+	QMessageBox::warning(this, "Error!", error, QMessageBox::Ok);
 }
 
 void MainWindow::b_start_handle() {
@@ -317,34 +306,22 @@ void MainWindow::xn_onDccStopError(void*, void*) {
 
 void MainWindow::show_response_error(QString command) {
 	log("Command station did not respond to " + command + " command!");
-	QMessageBox m(
-		QMessageBox::Icon::Warning,
-		"Error!",
-		"Command station did not respond to " + command + " command!",
-		QMessageBox::Ok
-	);
+	QMessageBox::warning(this, "Error!",
+		"Command station did not respond to " + command + " command!");
 }
 
 void MainWindow::xn_onLIVersionError(void*, void*) {
 	m_starting = false;
 	log("LI did not respond to version request!");
-	QMessageBox m(
-		QMessageBox::Icon::Warning,
-		"Error!",
-		"LI did not respond to version request, are you really connected to the LI?!",
-		QMessageBox::Ok
-	);
+	QMessageBox::warning(this, "Error!",
+		"LI did not respond to version request, are you really connected to the LI?!");
 }
 
 void MainWindow::xn_onCSVersionError(void*, void*) {
 	log("Coomand station did not respond to version request!");
-	QMessageBox m(
-		QMessageBox::Icon::Warning,
-		"Error!",
+	QMessageBox::warning(this, "Error!",
 		"Command station did not respond to version request"
-		", is the LI really connected to the command station?!",
-		QMessageBox::Ok
-	);
+		", is the LI really connected to the command station?!");
 	m_starting = false;
 }
 
@@ -780,13 +757,8 @@ void MainWindow::mc_batteryRead(double voltage, uint16_t voltage_raw) {
 }
 
 void MainWindow::mc_batteryCritical() {
-	QMessageBox m(
-		QMessageBox::Icon::Warning,
-		"Warning",
-		"Battery level critical, device is shutting down!",
-		QMessageBox::Ok
-	);
-	m.exec();
+	QMessageBox::warning(this, "Warning",
+		"Battery level critical, device is shutting down!");
 
 	if (!t_wsm_disconnect.isActive())
 		t_wsm_disconnect.start(0);
@@ -1022,7 +994,16 @@ void MainWindow::cm_done_gui() {
 void MainWindow::b_reset_handle() {
 	if (cm.inProgress())
 		return;
+
+	QMessageBox::StandardButton reply;
+	reply = QMessageBox::question(this, "Question", "Reaaly erase all measured data?",
+	                              QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
+	if (reply != QMessageBox::Yes)
+		return;
+
 	reset();
+
+	QMessageBox::information(this, "Info", "All measured data have been erased.");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
