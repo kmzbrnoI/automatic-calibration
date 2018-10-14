@@ -981,8 +981,20 @@ void MainWindow::cm_progress_update(size_t val) {
 }
 
 void MainWindow::b_calib_start_handle() {
-	if (!wsm.connected() || !wsm.isSpeedOk() || !xn.connected())
+	if (!xn.connected()) {
+		show_error("Not connected to XpressNET!");
 		return;
+	}
+
+	if (!wsm.connected()) {
+		show_error("Not connected to WSM!");
+		return;
+	}
+
+	if (!wsm.isSpeedOk()) {
+		show_error("No data from WSM!");
+		return;
+	}
 
 	ui.b_calib_start->setEnabled(false);
 	ui.b_calib_stop->setEnabled(true);
