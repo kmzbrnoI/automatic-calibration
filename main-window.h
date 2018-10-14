@@ -110,6 +110,8 @@ private slots:
 	void chb_step_selected_clicked(bool);
 	void a_loco_load(bool);
 	void a_loco_save(bool);
+	void a_config_load(bool);
+	void a_config_save(bool);
 
 	void mc_speedRead(double speed, uint16_t speed_raw);
 	void mc_onError(QString error);

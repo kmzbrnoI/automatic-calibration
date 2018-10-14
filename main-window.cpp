@@ -92,6 +92,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_power_graph, SIGNAL(triggered(bool)), this, SLOT(a_power_graph(bool)));
 	QObject::connect(ui.a_loco_load, SIGNAL(triggered(bool)), this, SLOT(a_loco_load(bool)));
 	QObject::connect(ui.a_loco_save, SIGNAL(triggered(bool)), this, SLOT(a_loco_save(bool)));
+	QObject::connect(ui.a_config_load, SIGNAL(triggered(bool)), this, SLOT(a_config_load(bool)));
+	QObject::connect(ui.a_config_save, SIGNAL(triggered(bool)), this, SLOT(a_config_save(bool)));
 
 	// WSM init
 	wsm.scale = s.wsm.scale;
@@ -138,7 +140,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
 
 	ui.tw_main->setCurrentIndex(0);
-	log("Application launched");
+	log("Application launched, loaded config from " + _CONFIG_FN);
 }
 
 MainWindow::~MainWindow() {
@@ -1203,3 +1205,17 @@ void MainWindow::reset() {
 	}
 	ui.pb_progress->setValue(0);
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::a_config_load(bool) {
+	s.load(_CONFIG_FN);
+	log("Loaded config from " + _CONFIG_FN);
+}
+
+void MainWindow::a_config_save(bool) {
+	s.save(_CONFIG_FN);
+	log("Saved config to " + _CONFIG_FN);
+}
+
+//////////////////////////////////////////////////////////////////////////////

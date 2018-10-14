@@ -1013,11 +1013,8 @@
     <property name="title">
      <string>XpressNET</string>
     </property>
-    <addaction name="separator"/>
     <addaction name="a_xn_connect"/>
     <addaction name="a_xn_disconnect"/>
-    <addaction name="separator"/>
-    <addaction name="a_xn_settings"/>
     <addaction name="separator"/>
     <addaction name="a_xn_dcc_go"/>
     <addaction name="a_xn_dcc_stop"/>
@@ -1028,8 +1025,6 @@
     </property>
     <addaction name="a_wsm_connect"/>
     <addaction name="a_wsm_disconnect"/>
-    <addaction name="separator"/>
-    <addaction name="a_wsm_settings"/>
    </widget>
    <widget class="QMenu" name="m_power_graph">
     <property name="title">
@@ -1039,10 +1034,13 @@
    </widget>
    <widget class="QMenu" name="menuLoco">
     <property name="title">
-     <string>Loco</string>
+     <string>File</string>
     </property>
     <addaction name="a_loco_load"/>
     <addaction name="a_loco_save"/>
+    <addaction name="separator"/>
+    <addaction name="a_config_load"/>
+    <addaction name="a_config_save"/>
    </widget>
    <addaction name="menuLoco"/>
    <addaction name="m_xn"/>
@@ -1066,9 +1064,9 @@
     <string>Disconnect</string>
    </property>
   </action>
-  <action name="a_xn_settings">
+  <action name="a_config_load">
    <property name="text">
-    <string>Settings</string>
+    <string>Load config</string>
    </property>
   </action>
   <action name="a_wsm_connect">
@@ -1085,11 +1083,6 @@
    </property>
    <property name="text">
     <string>Disconnect</string>
-   </property>
-  </action>
-  <action name="a_wsm_settings">
-   <property name="text">
-    <string>Settings</string>
    </property>
   </action>
   <action name="a_xn_dcc_go">
@@ -1116,7 +1109,7 @@
   </action>
   <action name="a_loco_load">
    <property name="text">
-    <string>Load profile</string>
+    <string>Load loco profile</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -1124,7 +1117,7 @@
   </action>
   <action name="a_loco_save">
    <property name="text">
-    <string>Save profile</string>
+    <string>Save loco profile</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -1136,6 +1129,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="a_config_save">
+   <property name="text">
+    <string>Save config</string>
    </property>
   </action>
  </widget>
