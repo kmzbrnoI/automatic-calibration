@@ -53,6 +53,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
 
+	t_wsm_disconnect.setSingleShot(true);
+	QObject::connect(&t_wsm_disconnect, SIGNAL(timeout()), this, SLOT(t_mc_disconnect_tick()));
+
 	t_slider.start(100);
 	QObject::connect(&t_slider, SIGNAL(timeout()), this, SLOT(t_slider_tick()));
 
@@ -153,7 +156,7 @@ void MainWindow::widget_set_color(QWidget& widget, const QColor color) {
 
 void MainWindow::t_xn_disconnect_tick() {
 	log("XN error, disconnecting from XpressNET...");
-	xn.disconnect();
+	a_xn_disconnect(true);
 
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
@@ -551,6 +554,8 @@ void MainWindow::a_xn_disconnect(bool) {
 	try {
 		log("Disconnecting from XN...");
 		xn.disconnect();
+		if (cm.inProgress())
+			b_calib_stop_handle();
 	} catch (const QStrException& e) {
 		show_error(e.str());
 	}
@@ -727,6 +732,10 @@ void MainWindow::a_wsm_connect(bool) {
 
 void MainWindow::a_wsm_disconnect(bool) {
 	wsm.disconnect();
+
+	if (cm.inProgress())
+		b_calib_stop_handle();
+
 	ui.l_wsm_speed->setText("??.?");
 	ui.l_wsm_bat_voltage->setText("?.?? V");
 	widget_set_color(*(ui.l_wsm_alive), ui.l_wsm_speed->palette().color(QPalette::WindowText));
@@ -780,12 +789,12 @@ void MainWindow::mc_batteryCritical() {
 	m.exec();
 
 	if (!t_wsm_disconnect.isActive())
-		t_wsm_disconnect.start(100);
+		t_wsm_disconnect.start(0);
 }
 
 void MainWindow::t_mc_disconnect_tick() {
 	log("WSM error, disconnecting...");
-	wsm.disconnect();
+	a_wsm_disconnect(true);
 }
 
 void MainWindow::mc_speedReceiveTimeout() {
