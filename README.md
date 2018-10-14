@@ -29,6 +29,15 @@ $ qmake ..
 $ make
 ```
 
+To make debug binary, run:
+
+```
+qmake CONFIG+=debug ..
+make
+```
+
+You may use [this script](https://serverfault.com/questions/61659/can-you-get-any-program-in-linux-to-print-a-stack-trace-if-it-segfaults) do debug segfaults.
+
 ## Connecting to WSM
 
  * Windows: pair it with HC-05 module, serial port should be added
