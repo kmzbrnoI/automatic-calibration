@@ -951,12 +951,7 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 	else if (ce == Cm::CmError::NoStep)
 		log("No suitable power step for this speed!");
 
-	ui.b_calib_start->setEnabled(true);
-	ui.b_calib_stop->setEnabled(false);
-	ui.sb_max_speed->setEnabled(true);
-	ui.gb_cal_graph->setEnabled(true);
-	ui.gb_ad->setEnabled(true);
-	ui.b_wsm_lt->setEnabled(true);
+	cm_done_gui();
 }
 
 void MainWindow::cm_locoSpeedChanged(unsigned step) {
@@ -968,12 +963,7 @@ void MainWindow::cm_locoSpeedChanged(unsigned step) {
 void MainWindow::cm_done() {
 	log("Calibration done :)");
 	ui.pb_progress->setValue(100);
-	ui.b_calib_start->setEnabled(true);
-	ui.b_calib_stop->setEnabled(false);
-	ui.sb_max_speed->setEnabled(true);
-	ui.gb_cal_graph->setEnabled(true);
-	ui.gb_ad->setEnabled(true);
-	ui.b_wsm_lt->setEnabled(true);
+	cm_done_gui();
 }
 
 void MainWindow::cm_progress_update(size_t val) {
@@ -1003,6 +993,8 @@ void MainWindow::b_calib_start_handle() {
 	ui.gb_ad->setEnabled(false);
 	ui.b_wsm_lt->setEnabled(false);
 	ui.pb_progress->setValue(0);
+	ui.a_loco_load->setEnabled(false);
+	ui.b_reset->setEnabled(false);
 	cm.calibrateAll(ui.sb_loco->value(),
 	                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 }
@@ -1012,12 +1004,25 @@ void MainWindow::b_calib_stop_handle() {
 		return;
 
 	cm.stop();
+	log("Calibration manually interrupted!");
+	cm_done_gui();
+}
+
+void MainWindow::cm_done_gui() {
 	ui.b_calib_start->setEnabled(true);
 	ui.b_calib_stop->setEnabled(false);
 	ui.sb_max_speed->setEnabled(true);
 	ui.gb_cal_graph->setEnabled(true);
 	ui.gb_ad->setEnabled(true);
 	ui.b_wsm_lt->setEnabled(true);
+	ui.a_loco_load->setEnabled(true);
+	ui.b_reset->setEnabled(true);
+}
+
+void MainWindow::b_reset_handle() {
+	if (cm.inProgress())
+		return;
+	reset();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

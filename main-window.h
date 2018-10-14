@@ -90,6 +90,7 @@ private slots:
 	void lv_log_dblclick(QListWidgetItem*);
 	void tw_xn_log_dblclick(QTreeWidgetItem*, int column);
 	void b_decel_measure_handle();
+	void b_reset_handle();
 
 	void b_test1_handle();
 	void b_test2_handle();
@@ -130,6 +131,7 @@ private slots:
 	void cm_done();
 	void cm_step_power_changed(unsigned step, unsigned power);
 	void cm_progress_update(size_t val);
+	void cm_done_gui();
 
 	void cr_measured(double distance);
 	void cr_error(Cr::CrError, unsigned step);
