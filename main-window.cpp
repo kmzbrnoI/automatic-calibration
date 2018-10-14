@@ -210,6 +210,9 @@ void MainWindow::xn_onError(QString error) {
 }
 
 void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
+	if (ui.tw_xn_log->topLevelItemCount() > 300)
+		ui.tw_xn_log->clear();
+
 	QTreeWidgetItem *item = new QTreeWidgetItem(ui.tw_xn_log);
 	item->setText(0, QTime::currentTime().toString("hh:mm:ss"));
 
@@ -227,8 +230,6 @@ void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
 		item->setText(1, "Debug");
 
 	item->setText(2, message);
-	if (ui.tw_xn_log->topLevelItemCount() > 300)
-		ui.tw_xn_log->clear();
 	ui.tw_xn_log->addTopLevelItem(item);
 }
 
