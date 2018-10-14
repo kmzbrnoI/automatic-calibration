@@ -68,8 +68,8 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 				Xn::LocoAddr(m_locoAddr),
 				Cs::_CV_START + i,
 				power,
-				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnStepWritten(s, d); }),
-				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnStepWriteError(s, d); })
+				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnStepWritten(s, d); }),
+				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
 			this->power[i] = m_step_power;
 			onStepPowerChanged(i+1, power);
@@ -121,8 +121,8 @@ void CalibMan::xnStepWritten(void*, void*) {
 				Xn::LocoAddr(m_locoAddr),
 				Cs::_CV_START + i,
 				m_step_power,
-				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnStepWritten(s, d); }),
-				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnStepWriteError(s, d); })
+				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnStepWritten(s, d); }),
+				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
 			power[i] = m_step_power;
 			onStepPowerChanged(i+1, m_step_power);
@@ -339,8 +339,8 @@ void CalibMan::interpolateNext() {
 		Xn::LocoAddr(m_locoAddr),
 		Cs::_CV_START + m_thisIPstep,
 		power,
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnIPWritten(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnIPError(s, d); })
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnIPWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnIPError(s, d); })
 	);
 	this->power[m_thisIPstep] = power;
 	onStepPowerChanged(m_thisIPstep+1, power);
@@ -383,8 +383,8 @@ void CalibMan::useSpeedTable() {
 		_CV_CONFIG,
 		_CV_CONFIG_BIT_SPEED_TABLE,
 		_CV_CONFIG_SPEED_TABLE_VALUE,
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnSTWritten(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xnSTError(s, d); })
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnSTWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnSTError(s, d); })
 	);
 }
 

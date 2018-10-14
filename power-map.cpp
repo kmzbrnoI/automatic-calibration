@@ -42,7 +42,7 @@ bool PowerToSpeedMap::isRecord(unsigned power) {
 	return (nullptr != map[power]);
 }
 
-float* PowerToSpeedMap::speed(unsigned power) {
+float *PowerToSpeedMap::speed(unsigned power) {
 	return map[power].get();
 }
 

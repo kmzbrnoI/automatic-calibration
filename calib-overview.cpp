@@ -15,7 +15,7 @@ CalibOverview::CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Ws
 std::unique_ptr<unsigned> CalibOverview::next_step() {
 	size_t step = _START_STEP;
 
-	float* speed = m_pm.speed(step);
+	float *speed = m_pm.speed(step);
 	while (nullptr == speed || *speed == 0) {
 		if (nullptr == speed)
 			return std::make_unique<unsigned>(step);
@@ -66,8 +66,8 @@ void CalibOverview::do_next_step() {
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + _OVERVIEW_STEP,
 		m_last_power,
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_ok(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_err(s, d); })
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
 	step_power_changed(_OVERVIEW_STEP, m_last_power);
 }

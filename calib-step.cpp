@@ -31,8 +31,8 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + m_step,
 		m_last_power,
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_ok(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_err(s, d); })
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
 	step_power_changed(m_step, m_last_power);
 }
@@ -85,8 +85,8 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		Xn::LocoAddr(m_loco_addr),
 		_CV_START - 1 + m_step,
 		m_last_power,
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_ok(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_pom_err(s, d); })
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
 
 	step_power_changed(m_step, m_last_power);
@@ -98,7 +98,7 @@ void CalibStep::t_sp_adapt_tick() {
 	m_wsm.startLongTermMeasure(_MEASURE_COUNT);
 }
 
-void CalibStep::xn_pom_ok(void* source, void* data) {
+void CalibStep::xn_pom_ok(void *source, void *data) {
 	(void)source;
 	(void)data;
 
@@ -106,7 +106,7 @@ void CalibStep::xn_pom_ok(void* source, void* data) {
 	t_sp_adapt.start(_SP_ADAPT_TIMEOUT);
 }
 
-void CalibStep::xn_pom_err(void* source, void* data) {
+void CalibStep::xn_pom_err(void *source, void *data) {
 	(void)source;
 	(void)data;
 	on_error(CsError::XnNoResponse, m_step);

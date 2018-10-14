@@ -51,11 +51,11 @@ void StepsToSpeedMap::addOrUpdate(unsigned step, unsigned speed) {
 	onAddOrUpdate(step, speed);
 }
 
-unsigned* StepsToSpeedMap::operator[] (const int index) {
+unsigned *StepsToSpeedMap::operator[] (const int index) {
 	return at(index);
 }
 
-unsigned* StepsToSpeedMap::at(const int index) {
+unsigned *StepsToSpeedMap::at(const int index) {
 	if (nullptr == m_map[index])
 		return m_map[index].get();
 	if (*m_map[index] >= m_max_speed)

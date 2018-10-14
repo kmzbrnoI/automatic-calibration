@@ -210,7 +210,7 @@ void MainWindow::xn_onError(QString error) {
 }
 
 void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
-	QTreeWidgetItem* item = new QTreeWidgetItem(ui.tw_xn_log);
+	QTreeWidgetItem *item = new QTreeWidgetItem(ui.tw_xn_log);
 	item->setText(0, QTime::currentTime().toString("hh:mm:ss"));
 
 	if (loglevel == Xn::XnLogLevel::None)
@@ -262,8 +262,8 @@ void MainWindow::xn_onConnect() {
 
 	try {
 		xn.getLIVersion(
-			[this](void* s, unsigned hw, unsigned sw) { xn_gotLIVersion(s, hw, sw); },
-			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onLIVersionError(s, d); })
+			[this](void *s, unsigned hw, unsigned sw) { xn_gotLIVersion(s, hw, sw); },
+			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onLIVersionError(s, d); })
 		);
 	}
 	catch (const QStrException& e) {
@@ -303,12 +303,12 @@ void MainWindow::xn_onTrkStatusChanged(Xn::XnTrkStatus status) {
 	}
 }
 
-void MainWindow::xn_onDccGoError(void* sender, void* data) {
+void MainWindow::xn_onDccGoError(void *sender, void *data) {
 	(void)sender; (void)data;
 	show_response_error("DCC GO");
 }
 
-void MainWindow::xn_onDccStopError(void* sender, void* data) {
+void MainWindow::xn_onDccStopError(void *sender, void *data) {
 	(void)sender; (void)data;
 	show_response_error("DCC STOP");
 }
@@ -323,7 +323,7 @@ void MainWindow::show_response_error(QString command) {
 	);
 }
 
-void MainWindow::xn_onLIVersionError(void* sender, void* data) {
+void MainWindow::xn_onLIVersionError(void *sender, void *data) {
 	(void)sender; (void)data;
 	m_starting = false;
 	log("LI did not respond to version request!");
@@ -335,7 +335,7 @@ void MainWindow::xn_onLIVersionError(void* sender, void* data) {
 	);
 }
 
-void MainWindow::xn_onCSVersionError(void* sender, void* data) {
+void MainWindow::xn_onCSVersionError(void *sender, void *data) {
 	(void)sender; (void)data;
 	log("Coomand station did not respond to version request!");
 	QMessageBox m(
@@ -348,13 +348,13 @@ void MainWindow::xn_onCSVersionError(void* sender, void* data) {
 	m_starting = false;
 }
 
-void MainWindow::xn_onCSStatusError(void* sender, void* data) {
+void MainWindow::xn_onCSStatusError(void *sender, void *data) {
 	(void)sender; (void)data;
 	show_response_error("STATUS");
 	m_starting = false;
 }
 
-void MainWindow::xn_onCSStatusOk(void* sender, void* data) {
+void MainWindow::xn_onCSStatusOk(void *sender, void *data) {
 	(void)sender; (void)data;
 	if (m_starting) {
 		m_starting = false;
@@ -368,8 +368,8 @@ void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
 	log("Got LI version. HW: " + QString::number(hw) + ", SW: " + QString::number(sw));
 	try {
 		xn.getCommandStationStatus(
-			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onCSStatusOk(s, d); }),
-			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onCSStatusError(s, d); })
+			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onCSStatusOk(s, d); }),
+			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onCSStatusError(s, d); })
 		);
 	}
 	catch (const QStrException& e) {
@@ -492,8 +492,8 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 		}
 		xn.readCVdirect(
 			_CV_ADDR_HI,
-			[this](void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
-			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_addrReadError(s, d); })
+			[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_addrReadError(s, d); })
 		);
 	} else if (cv == _CV_ADDR_HI) {
 		try {
@@ -509,8 +509,8 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 	} else if (cv == _CV_ACCEL) {
 		ui.sb_accel->setValue(value);
 		xn.readCVdirect(_CV_DECEL,
-			[this](void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
-			std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_adReadError(s, d); })
+			[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_adReadError(s, d); })
 		);
 	} else if (cv == _CV_DECEL) {
 		ui.sb_decel->setValue(value);
@@ -526,8 +526,8 @@ void MainWindow::xn_adWriteError(void*, void*) {
 
 void MainWindow::xn_accelWritten(void*, void*) {
 	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_DECEL, ui.sb_decel->value(),
-	              std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_decelWritten(s, d); }),
-	              std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_adWriteError(s, d); }));
+	              std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_decelWritten(s, d); }),
+	              std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_adWriteError(s, d); }));
 }
 
 void MainWindow::xn_decelWritten(void*, void*) {
@@ -566,7 +566,7 @@ void MainWindow::a_dcc_go(bool) {
 		if (xn.connected())
 			xn.setTrkStatus(
 				Xn::XnTrkStatus::On, nullptr,
-				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onDccGoError(s, d); })
+				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onDccGoError(s, d); })
 			);
 	} catch (const QStrException& e) {
 		show_error(e.str());
@@ -578,7 +578,7 @@ void MainWindow::a_dcc_stop(bool) {
 		if (xn.connected())
 			xn.setTrkStatus(
 				Xn::XnTrkStatus::Off, nullptr,
-				std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onDccStopError(s, d); })
+				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onDccStopError(s, d); })
 			);
 	} catch (const QStrException& e) {
 		show_error(e.str());
@@ -606,10 +606,10 @@ void MainWindow::b_addr_set_handle() {
 
 	xn.getLocoInfo(
 		Xn::LocoAddr(ui.sb_loco->value()),
-		[this](void* s, bool used, Xn::XnDirection dir, unsigned speed, Xn::XnFA fa, Xn::XnFB fb) {
+		[this](void *s, bool used, Xn::XnDirection dir, unsigned speed, Xn::XnFA fa, Xn::XnFB fb) {
 			xn_gotLocoInfo(s, used, dir, speed, fa, fb);
 		},
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_onLocoInfoError(s, d); })
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onLocoInfoError(s, d); })
 	);
 }
 
@@ -631,8 +631,8 @@ void MainWindow::b_addr_read_handle() {
 	ui.b_addr_read->setEnabled(false);
 	xn.readCVdirect(
 		_CV_ADDR_LO,
-		[this](void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_addrReadError(s, d); })
+		[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_addrReadError(s, d); })
 	);
 }
 
@@ -835,25 +835,25 @@ void MainWindow::a_power_graph(bool) {
 
 void MainWindow::init_calib_graph() {
 	for(size_t i = 0; i < _STEPS_CNT; i++) {
-		QLabel* speed_want = new QLabel("-", ui.gb_cal_graph);
+		QLabel *speed_want = new QLabel("-", ui.gb_cal_graph);
 		speed_want->setFont(QFont("Sans Serif", 8));
 		speed_want->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].speed_want = speed_want;
 		ui.l_cal_graph->addWidget(speed_want, 0, i);
 
-		QLabel* speed_measured = new QLabel("??", ui.gb_cal_graph);
+		QLabel *speed_measured = new QLabel("??", ui.gb_cal_graph);
 		speed_measured->setFont(QFont("Sans Serif", 8));
 		speed_measured->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].speed_measured = speed_measured;
 		ui.l_cal_graph->addWidget(speed_measured, 1, i);
 
-		QLabel* value = new QLabel("0", ui.gb_cal_graph);
+		QLabel *value = new QLabel("0", ui.gb_cal_graph);
 		value->setFont(QFont("Sans Serif", 8));
 		value->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].value = value;
 		ui.l_cal_graph->addWidget(value, 2, i);
 
-		QSlider* slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
+		QSlider *slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
 		slider->setMinimum(0);
 		slider->setMaximum(255);
 		slider->setProperty("step", static_cast<uint>(i));
@@ -862,18 +862,18 @@ void MainWindow::init_calib_graph() {
 		ui_steps[i].slider = slider;
 		ui.l_cal_graph->addWidget(slider, 3, i);
 
-		QCheckBox* selected = new QCheckBox(ui.gb_cal_graph);
+		QCheckBox *selected = new QCheckBox(ui.gb_cal_graph);
 		selected->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].selected = selected;
 		QObject::connect(selected, SIGNAL(clicked(bool)), this, SLOT(chb_step_selected_clicked(bool)));
 		ui.l_cal_graph->addWidget(selected, 4, i);
 
-		QLabel* step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
+		QLabel *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
 		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].step = step;
 		ui.l_cal_graph->addWidget(step, 5, i);
 
-		QPushButton* calibrate = new QPushButton("C", ui.gb_cal_graph);
+		QPushButton *calibrate = new QPushButton("C", ui.gb_cal_graph);
 		calibrate->setProperty("step", static_cast<uint>(i));
 		calibrate->setEnabled(false);
 		ui_steps[i].calibrate = calibrate;
@@ -1014,8 +1014,8 @@ void MainWindow::b_ad_read_handle() {
 	ui.gb_ad->setEnabled(false);
 	xn.readCVdirect(
 		_CV_ACCEL,
-		[this](void* s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_adReadError(s, d); })
+		[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_adReadError(s, d); })
 	);
 }
 
@@ -1029,8 +1029,8 @@ void MainWindow::b_ad_write_handle() {
 
 	xn.pomWriteCv(Xn::LocoAddr(
 		ui.sb_loco->value()), _CV_ACCEL, ui.sb_accel->value(),
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_accelWritten(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void* s, void* d) { xn_adWriteError(s, d); })
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_accelWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_adWriteError(s, d); })
 	);
 }
 
