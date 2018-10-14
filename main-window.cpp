@@ -158,7 +158,7 @@ void MainWindow::t_xn_disconnect_tick() {
 	QMessageBox m(
 		QMessageBox::Icon::Warning,
 		"Error!",
-		"Serial port error!",
+		"XN serial port error, more information in lo!",
 		QMessageBox::Ok
 	);
 	m.exec();
@@ -206,7 +206,7 @@ void MainWindow::xn_onError(QString error) {
 	xn_onLog(error, Xn::XnLogLevel::Error);
 
 	if (!t_xn_disconnect.isActive() && xn.connected())
-		t_xn_disconnect.start(100);
+		t_xn_disconnect.start(0);
 }
 
 void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
@@ -764,7 +764,7 @@ void MainWindow::mc_distanceRead(double distance, uint32_t distance_raw) {
 
 void MainWindow::mc_onError(QString error) {
 	if (!t_wsm_disconnect.isActive() && wsm.connected()) {
-		t_wsm_disconnect.start(100);
+		t_wsm_disconnect.start(0);
 		show_error("WSM serial port error: " + error + "!");
 	}
 }
