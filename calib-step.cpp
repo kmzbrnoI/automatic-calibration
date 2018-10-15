@@ -63,23 +63,13 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		return;
 	}
 
-	unsigned new_power;
 	try {
-		new_power = m_pm.power(m_target_speed);
+		m_last_power = m_pm.power(m_target_speed);
 	}
 	catch (const Pm::ENoMap&) {
 		on_error(CsError::NoStep, m_step);
 		return;
 	}
-
-	// Manually increase step when step too small
-	if (std::abs(static_cast<int>(m_last_power)-static_cast<int>(new_power)) < 2) {
-		if (new_power < m_last_power)
-			new_power = m_last_power - 2;
-		else
-			new_power = m_last_power + 2;
-	}
-	m_last_power = new_power;
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
