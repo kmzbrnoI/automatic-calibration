@@ -81,6 +81,14 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 
+	if (speed < _MIN_SPEED) {
+		// When speed is too low, it may happen that it chnges between zero
+		// and some non/zero value. This causes low speed, but high diffusion.
+		// We ignore those low speeds.
+		do_next_step();
+		return;
+	}
+
 	if (diffusion > _MAX_DIFFUSION) {
 		if (m_diff_count >= _ADAPT_MAX_TICKS) {
 			on_error(CoError::LargeDiffusion, _OVERVIEW_STEP);

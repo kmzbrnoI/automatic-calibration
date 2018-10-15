@@ -20,6 +20,7 @@ const unsigned _SPEED_MAX = 120;
 const unsigned _START_STEP = 10;
 const unsigned _POWER_CNT = 256;
 const unsigned _CV_START = 67; // cv 67 = step 1
+const unsigned _MIN_SPEED = 5; // 5 kmph
 
 enum class CoError {
 	LargeDiffusion,
