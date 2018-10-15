@@ -41,8 +41,10 @@ void CalibMan::updateProg(CalibState cs, size_t progress, size_t max) {
 }
 
 size_t CalibMan::getProgress(CalibState cs, size_t progress, size_t max) {
-	if (cs == CalibState::Overview) // 0-40
-		return 40 * progress / max;
+	if (cs == CalibState::InitProg) // 0-10
+		return 10 * progress / max;
+	else if (cs == CalibState::Overview) // 10-40
+		return (30 * progress / max) + 10;
 	else if (cs == CalibState::Steps) // 40-90
 		return (50 * progress / max) + 40;
 	else if (cs == CalibState::Steps) // 90-100
@@ -199,7 +201,7 @@ void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	csSigConnect();
 
 	// Phase 0: set to use speed table
-	updateProg(CalibState::Overview, 0, 1);
+	updateProg(CalibState::InitProg, 1, 4);
 	useSpeedTable();
 }
 
@@ -389,6 +391,40 @@ void CalibMan::useSpeedTable() {
 }
 
 void CalibMan::xnSTWritten(void*, void*) {
+	// Phase 0.2: set accel & decel to zero
+	updateProg(CalibState::InitProg, 2, 4);
+	adToZero();
+}
+
+void CalibMan::xnSTError(void*, void*) {
+	error(CmError::XnNoResponse, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Acceleration & deceleration
+
+void CalibMan::adToZero() {
+	// Set acceleration & deceleration to zero
+	m_xn.pomWriteCv(
+		Xn::LocoAddr(m_locoAddr), _CV_ACCEL, 0,
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { accelWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { adError(s, d); })
+	);
+}
+
+void CalibMan::adError(void*, void*) {
+}
+
+void CalibMan::accelWritten(void*, void*) {
+	updateProg(CalibState::InitProg, 3, 4);
+	m_xn.pomWriteCv(
+		Xn::LocoAddr(m_locoAddr), _CV_DECEL, 0,
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { decelWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { adError(s, d); })
+	);
+}
+
+void CalibMan::decelWritten(void*, void*) {
 	// Phase 1: make an overview of mapping steps to speed
 	updateProg(CalibState::Overview, 0, 1);
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), Co::_OVERVIEW_STEP, direction);
@@ -396,8 +432,5 @@ void CalibMan::xnSTWritten(void*, void*) {
 	co.makeOverview(m_locoAddr);
 }
 
-void CalibMan::xnSTError(void*, void*) {
-	error(CmError::XnNoResponse, 0);
-}
 
 }//namespace Cm

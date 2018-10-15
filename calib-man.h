@@ -29,6 +29,7 @@ enum class CmError {
 
 enum class CalibState {
 	Stopped,
+	InitProg,
 	Overview,
 	Steps,
 	Interpolation,
@@ -37,6 +38,8 @@ enum class CalibState {
 const unsigned _CV_CONFIG = 29;
 const unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
 const bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
+const unsigned _CV_ACCEL = 3;
+const unsigned _CV_DECEL = 4;
 
 class CalibMan : public QObject {
 	Q_OBJECT
@@ -96,6 +99,11 @@ private:
 	void useSpeedTable();
 	void xnSTWritten(void*, void*);
 	void xnSTError(void*, void*);
+
+	void adToZero();
+	void adError(void*, void*);
+	void accelWritten(void*, void*);
+	void decelWritten(void*, void*);
 
 private slots:
 	void csDone(unsigned step, unsigned power);
