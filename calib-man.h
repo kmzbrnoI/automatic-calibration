@@ -79,6 +79,7 @@ private:
 	unsigned m_step_power;
 	CalibState m_progress = CalibState::Stopped;
 	unsigned m_init_cv_index = 0;
+	unsigned m_no_calibrated;
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();

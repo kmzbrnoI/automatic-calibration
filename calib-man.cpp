@@ -60,6 +60,8 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 	onStepDone(step, power);
 	step = step - 1; // convert step to step index
 	state[step] = StepState::Calibred;
+	m_no_calibrated++;
+	updateProg(CalibState::Steps, m_no_calibrated, m_ssm.noDifferentSpeeds());
 
 	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
 		if (nullptr != m_ssm[i] && i != step && *(m_ssm[i]) == *(m_ssm[step]) &&
@@ -200,6 +202,7 @@ void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	direction = dir;
 	csSigConnect();
 	co.max_speed = m_ssm.maxSpeed();
+	m_no_calibrated = 0;
 
 	// Phase 0: set CV defaults
 	updateProg(CalibState::InitProg, 1, 4);

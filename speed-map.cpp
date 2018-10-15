@@ -78,4 +78,15 @@ void StepsToSpeedMap::setMaxSpeed(unsigned new_speed) {
 	m_max_speed = new_speed;
 }
 
+unsigned StepsToSpeedMap::noDifferentSpeeds() const {
+	unsigned last = 0, count = 0;
+	for(size_t i = 0; i < _STEPS_CNT; i++) {
+		if (nullptr != m_map[i] && last != *m_map[i]) {
+			count++;
+			last = *m_map[i];
+		}
+	}
+	return count;
+}
+
 }//namespace Ssm

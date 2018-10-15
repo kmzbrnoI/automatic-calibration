@@ -27,6 +27,7 @@ public:
 	void save(QString filename);
 	void clear();
 	void addOrUpdate(unsigned step, unsigned speed);
+	unsigned noDifferentSpeeds() const;
 
 	unsigned maxSpeed() const;
 	void setMaxSpeed(unsigned new_speed);
