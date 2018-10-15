@@ -66,6 +66,7 @@ void CalibOverview::do_next_step() {
 		return;
 	}
 	m_last_power = *next;
+	progress_update(m_last_power, _POWER_CNT);
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),

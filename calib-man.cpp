@@ -147,6 +147,11 @@ void CalibMan::coDone() {
 	calibrateNextStep();
 }
 
+void CalibMan::coProgressUpdate(size_t progress, size_t max) {
+	if (this->progress() == CalibState::Overview)
+		updateProg(CalibState::Overview, progress, max);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 std::unique_ptr<unsigned> CalibMan::nextStep() {
@@ -255,6 +260,8 @@ void CalibMan::csSigConnect() {
 	QObject::connect(&co, SIGNAL(done()), this, SLOT(coDone()));
 	QObject::connect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                 this, SLOT(cStepPowerChanged(unsigned, unsigned)));
+	QObject::connect(&co, SIGNAL(progress_update(size_t, size_t)),
+	                 this, SLOT(coProgressUpdate(size_t, size_t)));
 }
 
 void CalibMan::csSigDisconnect() {
@@ -267,6 +274,8 @@ void CalibMan::csSigDisconnect() {
 	QObject::disconnect(&co, SIGNAL(done()), this, SLOT(coDone()));
 	QObject::disconnect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                    this, SLOT(cStepPowerChanged(unsigned, unsigned)));
+	QObject::disconnect(&co, SIGNAL(progress_update(size_t, size_t)),
+	                    this, SLOT(coProgressUpdate(size_t, size_t)));
 }
 
 ///////////////////////////////////////////////////////////////////////////////

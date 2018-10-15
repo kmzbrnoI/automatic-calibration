@@ -118,6 +118,7 @@ private slots:
 
 	void coDone();
 	void coError(Co::CoError, unsigned step);
+	void coProgressUpdate(size_t progress, size_t max);
 
 	void cStepPowerChanged(unsigned step, unsigned power);
 

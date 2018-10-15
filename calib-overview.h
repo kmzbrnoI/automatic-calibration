@@ -65,6 +65,7 @@ signals:
 	void on_error(Co::CoError, unsigned step);
 	void done();
 	void step_power_changed(unsigned step, unsigned power);
+	void progress_update(size_t progress, size_t max);
 };
 
 }//namespace Co
