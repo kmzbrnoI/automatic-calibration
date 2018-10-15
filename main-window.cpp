@@ -1117,6 +1117,9 @@ void MainWindow::a_loco_save(bool) {
 	if (filename == "")
 		return;
 
+	if (!filename.endsWith(".xml"))
+		filename += ".xml";
+
 	QFile file(filename);
 	file.open(QIODevice::WriteOnly);
 
