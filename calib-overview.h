@@ -1,6 +1,33 @@
 #ifndef _CALIB_OVERVIEW_H_
 #define _CALIB_OVERVIEW_H_
 
+/*
+This file defines a CalibOverview class which manages creating of a basic
+overview of power-to-speed mapping. This overview is generated at beginnging
+of the calibration process to make some basic knowledge of power-to-speed
+mapping of a specific vehicle. The process is started by callong makeOverview
+function. It could be manually stopped anytime by calling stop() function.
+The process ends either by calling done() XOR on_error() event.
+
+The whole process goes as followed:
+
+ 1) Set power.
+ 2) If spped > threshold, create new entry in power-to-speed graph.
+ 3) GOTO 1) (for another power).
+
+Powers are tested from lowest to highest based on this procedure:
+
+ 1) Start with _START_STEP and wait for speed to be >= _MIN_SPEED.
+    If speed is low, increase power _OVERVIEW_STEP-times.
+ 2) Once the power-to-speed map for low speed is measured, go to higher speeds.
+ 3) Test 64, 128, 192 and 255 power when the speed is < max_speed (we do not
+    need info about power-to-speed mapping for higher speeds [and it might
+    be dangerous to run vehicle too fast]).
+
+Conclusion: at the end of this procedure, we know the power of minimum speed
+of the loco and the power of maximum speed of the loco.
+*/
+
 #include <QObject>
 #include <QTimer>
 

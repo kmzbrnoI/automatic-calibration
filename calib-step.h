@@ -2,7 +2,7 @@
 #define _CALIB_STEP_H_
 
 /*
-This fule defines a CalibStepp class, which manages calibration of a single
+This fule defines a CalibStep class which manages calibration of a single
 step. Calibration is started by calling calibrate() function and ends either
 by calling done XOR on_error function. The process could be manually stopped
 wither by calling stop() function or stopping the locomotive manually.
