@@ -27,6 +27,11 @@ std::unique_ptr<unsigned> CalibOverview::next_step() {
 		speed = m_pm.speed(step);
 	}
 
+	if (!m_pm.isRecord(64))
+		return std::make_unique<unsigned>(64);
+	if (*m_pm.speed(64) >= max_speed)
+		return nullptr;
+
 	if (!m_pm.isRecord(128))
 		return std::make_unique<unsigned>(128);
 	if (*m_pm.speed(128) >= max_speed)
