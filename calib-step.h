@@ -1,6 +1,28 @@
 #ifndef _CALIB_STEP_H_
 #define _CALIB_STEP_H_
 
+/*
+This fule defines a CalibStepp class, which manages calibration of a single
+step. Calibration is started by calling calibrate() function and ends either
+by calling done XOR on_error function. The process could be manually stopped
+wither by calling stop() function or stopping the locomotive manually.
+Once speed=0 is measured, the process is interrupted and on_error event is
+called.
+
+The whole process is based on on-line updating of a speed-to-power graph
+(represented by Pm::PowerToSpeedMap instance).
+
+This class does NOT set speed step of a loco. Caller must set the calibrated
+speed step.
+
+ 1) Set power based on intended speed and power-to-speed graph.
+ 2) Wait for speed adaptation for some constant time.
+ 3) Wait for low-diffusion of a measured speed.
+ 4) Once diffusion is low, add new entry to power-to-speed graph.
+    (a) When the meaured speed is epsilon-close to target speed, end calibration.
+    (b) Otherwise, GOTO 1).
+*/
+
 #include <QObject>
 #include <QTimer>
 
