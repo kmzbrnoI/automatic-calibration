@@ -1,6 +1,20 @@
 #ifndef _CALIB_RANGE_H_
 #define _CALIB_RANGE_H_
 
+/*
+This unit defines a CalibRange class which allows user to measure distance
+while decelerating from 'step' addr.
+
+ 1) The loco spede step is set to 'step'.
+ 2) After _SP_ADAPT_TIMEOUT the loco`s speed is consireder as stabilized.
+    (beware of setting low acceleration!)
+ 3) When the distance fom WSM is measured, the 'IDLE' signal is sent to loco.
+ 4) Once ste speed of the WSM decreses to 0 and some other time is elapsed
+    (the loco may still very slowly move), the measured() event is called.
+
+When any error happens, on_error event is called.
+*/
+
 #include <QObject>
 #include <QTimer>
 
