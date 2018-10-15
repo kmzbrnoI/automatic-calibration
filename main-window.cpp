@@ -120,6 +120,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&cm, SIGNAL(onStepPowerChanged(unsigned, unsigned)),
 	                 this, SLOT(cm_step_power_changed(unsigned, unsigned)));
 	QObject::connect(&cm, SIGNAL(onProgressUpdate(size_t)), this, SLOT(cm_progress_update(size_t)));
+	QObject::connect(&cm, SIGNAL(onAccelChanged(unsigned)), this, SLOT(cm_accelChanged(unsigned)));
+	QObject::connect(&cm, SIGNAL(onDecelChanged(unsigned)), this, SLOT(cm_decelChanged(unsigned)));
 
 	// Connect power-to-map with GUI
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
@@ -580,7 +582,7 @@ void MainWindow::log(QString message) {
 // Speed settings
 
 void MainWindow::b_addr_set_handle() {
-	if (!xn.connected())
+	if (!xn.connected() || !ui.sb_loco->isEnabled())
 		return;
 
 	ui.b_addr_set->setEnabled(false);
@@ -946,6 +948,14 @@ void MainWindow::cm_done() {
 
 void MainWindow::cm_progress_update(size_t val) {
 	ui.pb_progress->setValue(val);
+}
+
+void MainWindow::cm_accelChanged(unsigned accel) {
+	ui.sb_accel->setValue(accel);
+}
+
+void MainWindow::cm_decelChanged(unsigned decel) {
+	ui.sb_decel->setValue(decel);
 }
 
 void MainWindow::b_calib_start_handle() {

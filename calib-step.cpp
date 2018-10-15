@@ -73,11 +73,11 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	}
 
 	// Manually increase step when step too small
-	if (std::abs(static_cast<int>(m_last_power)-static_cast<int>(new_power)) < 3) {
+	if (std::abs(static_cast<int>(m_last_power)-static_cast<int>(new_power)) < 2) {
 		if (new_power < m_last_power)
-			new_power = m_last_power - 3;
+			new_power = m_last_power - 2;
 		else
-			new_power = m_last_power + 3;
+			new_power = m_last_power + 2;
 	}
 	m_last_power = new_power;
 

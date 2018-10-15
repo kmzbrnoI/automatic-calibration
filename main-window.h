@@ -134,6 +134,8 @@ private slots:
 	void cm_step_power_changed(unsigned step, unsigned power);
 	void cm_progress_update(size_t val);
 	void cm_done_gui();
+	void cm_accelChanged(unsigned);
+	void cm_decelChanged(unsigned);
 
 	void cr_measured(double distance);
 	void cr_error(Cr::CrError, unsigned step);

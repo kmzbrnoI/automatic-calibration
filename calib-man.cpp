@@ -200,9 +200,9 @@ void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	direction = dir;
 	csSigConnect();
 
-	// Phase 0: set to use speed table
+	// Phase 0: set CV defaults
 	updateProg(CalibState::InitProg, 1, 4);
-	useSpeedTable();
+	initCVs();
 }
 
 void CalibMan::stop() {
@@ -379,58 +379,53 @@ void CalibMan::unsetStep(unsigned step) {
 ///////////////////////////////////////////////////////////////////////////////
 // Speed Table
 
-void CalibMan::useSpeedTable() {
+void CalibMan::initCVs() {
+	updateProg(CalibState::InitProg, 1, INIT_CVS.size() + 2);
+
 	m_xn.pomWriteBit(
 		Xn::LocoAddr(m_locoAddr),
 		_CV_CONFIG,
 		_CV_CONFIG_BIT_SPEED_TABLE,
 		_CV_CONFIG_SPEED_TABLE_VALUE,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnSTWritten(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnSTError(s, d); })
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initSTWritten(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsError(s, d); })
 	);
 }
 
-void CalibMan::xnSTWritten(void*, void*) {
-	// Phase 0.2: set accel & decel to zero
-	updateProg(CalibState::InitProg, 2, 4);
-	adToZero();
+void CalibMan::initSTWritten(void*, void*) {
+	updateProg(CalibState::InitProg, 2, INIT_CVS.size() + 2);
+	m_init_cv_index = 0;
+	initCVsWriteNext();
 }
 
-void CalibMan::xnSTError(void*, void*) {
+void CalibMan::initCVsWriteNext() {
+	updateProg(CalibState::InitProg, m_init_cv_index + 1, INIT_CVS.size() + 2);
+
+	if (m_init_cv_index >= INIT_CVS.size()) {
+		// Go to phase 1: make an overview of mapping steps to speed
+		updateProg(CalibState::Overview, 0, 1);
+		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), Co::_OVERVIEW_STEP, direction);
+		onLocoSpeedChanged(Co::_OVERVIEW_STEP);
+		co.makeOverview(m_locoAddr);
+		return;
+	}
+
+	m_xn.pomWriteCv(
+		Xn::LocoAddr(m_locoAddr),
+		INIT_CVS[m_init_cv_index].first,
+		INIT_CVS[m_init_cv_index].second,
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsOk(s, d); }),
+		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsError(s, d); })
+	);
+}
+
+void CalibMan::initCVsOk(void*, void*) {
+	m_init_cv_index++;
+	initCVsWriteNext();
+}
+
+void CalibMan::initCVsError(void*, void*) {
 	error(CmError::XnNoResponse, 0);
 }
-
-///////////////////////////////////////////////////////////////////////////////
-// Acceleration & deceleration
-
-void CalibMan::adToZero() {
-	// Set acceleration & deceleration to zero
-	m_xn.pomWriteCv(
-		Xn::LocoAddr(m_locoAddr), _CV_ACCEL, 0,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { accelWritten(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { adError(s, d); })
-	);
-}
-
-void CalibMan::adError(void*, void*) {
-}
-
-void CalibMan::accelWritten(void*, void*) {
-	updateProg(CalibState::InitProg, 3, 4);
-	m_xn.pomWriteCv(
-		Xn::LocoAddr(m_locoAddr), _CV_DECEL, 0,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { decelWritten(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { adError(s, d); })
-	);
-}
-
-void CalibMan::decelWritten(void*, void*) {
-	// Phase 1: make an overview of mapping steps to speed
-	updateProg(CalibState::Overview, 0, 1);
-	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), Co::_OVERVIEW_STEP, direction);
-	onLocoSpeedChanged(Co::_OVERVIEW_STEP);
-	co.makeOverview(m_locoAddr);
-}
-
 
 }//namespace Cm

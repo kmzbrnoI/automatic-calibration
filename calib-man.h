@@ -35,6 +35,14 @@ enum class CalibState {
 	Interpolation,
 };
 
+const std::vector<std::pair<unsigned, unsigned>> INIT_CVS = { // (cv, value)
+	std::make_pair<unsigned, unsigned>(2, 1),
+	std::make_pair<unsigned, unsigned>(3, 0),
+	std::make_pair<unsigned, unsigned>(4, 0),
+	std::make_pair<unsigned, unsigned>(5, 1),
+	std::make_pair<unsigned, unsigned>(6, 1),
+};
+
 const unsigned _CV_CONFIG = 29;
 const unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
 const bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
@@ -70,6 +78,7 @@ private:
 	unsigned m_step_writing;
 	unsigned m_step_power;
 	CalibState m_progress = CalibState::Stopped;
+	unsigned m_init_cv_index = 0;
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();
@@ -96,14 +105,11 @@ private:
 	void done();
 	void error(Cm::CmError, unsigned step);
 
-	void useSpeedTable();
-	void xnSTWritten(void*, void*);
-	void xnSTError(void*, void*);
-
-	void adToZero();
-	void adError(void*, void*);
-	void accelWritten(void*, void*);
-	void decelWritten(void*, void*);
+	void initCVs();
+	void initCVsOk(void*, void*);
+	void initCVsError(void*, void*);
+	void initCVsWriteNext();
+	void initSTWritten(void*, void*);
 
 private slots:
 	void csDone(unsigned step, unsigned power);
@@ -122,6 +128,8 @@ signals:
 	void onLocoSpeedChanged(unsigned step);
 	void onDone();
 	void onStepPowerChanged(unsigned step, unsigned power);
+	void onAccelChanged(unsigned accel);
+	void onDecelChanged(unsigned decel);
 
 	void onProgressUpdate(size_t val); // value 0-100
 };
