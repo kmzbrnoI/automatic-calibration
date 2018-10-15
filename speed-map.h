@@ -1,6 +1,19 @@
 #ifndef _SPEED_MAP_H_
 #define _SPEED_MAP_H_
 
+/*
+This file defines StepsToSpeedMap class which maps spped steps (0-28) to
+real speed of the train. It defines the goal of the calibration, it defines
+which real speed to assign to which speed step.
+
+The dependency could be loaded form a csv file in a format
+'step;speed' (speed is in kmph as plain number)
+(This is the same format as hJOPserver uses.)
+
+The mapping could me only patrial, unused mappings are intended to be
+interpolated.
+*/
+
 #include <stddef.h>
 #include <QObject>
 #include <memory>

@@ -1,6 +1,14 @@
 #ifndef _POWER_MAP_H_
 #define _POWER_MAP_H_
 
+/*
+This file defines power-to-speed mapping via PowerToSpeedMap class.
+
+ * It allows to assign 'float' speed to each power step (0-255).
+ * It allows to interpolate power based on the current records in the mapping.
+ * It allows to add new records to mapping dynamically.
+*/
+
 #include <stddef.h>
 #include <QObject>
 #include <memory>
