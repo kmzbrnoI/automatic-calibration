@@ -6,7 +6,7 @@ namespace Cm {
 
 CalibMan::CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
                    Ssm::StepsToSpeedMap& ssm, QObject *parent)
-	: QObject(parent), cs(xn, pm, wsm), co(xn, pm, wsm), m_ssm(ssm), m_xn(xn) {
+	: QObject(parent), cs(xn, pm, wsm), co(xn, pm, wsm, ssm.maxSpeed()), m_ssm(ssm), m_xn(xn) {
 	reset();
 }
 
@@ -199,6 +199,7 @@ void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
 	m_locoAddr = locoAddr;
 	direction = dir;
 	csSigConnect();
+	co.max_speed = m_ssm.maxSpeed();
 
 	// Phase 0: set CV defaults
 	updateProg(CalibState::InitProg, 1, 4);

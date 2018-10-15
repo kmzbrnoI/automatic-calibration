@@ -31,9 +31,11 @@ class CalibOverview : public QObject {
 
 public:
 	CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
-	              QObject *parent = nullptr);
+	              unsigned max_speed = _SPEED_MAX, QObject *parent = nullptr);
 	void makeOverview(const unsigned loco_addr);
 	void stop();
+
+	unsigned max_speed;
 
 private:
 	Xn::XpressNet& m_xn;

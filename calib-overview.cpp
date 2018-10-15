@@ -6,8 +6,8 @@
 namespace Co {
 
 CalibOverview::CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
-                     QObject *parent)
-	: QObject(parent), m_xn(xn), m_pm(pm), m_wsm(wsm) {
+                             unsigned max_speed, QObject *parent)
+	: QObject(parent), max_speed(max_speed), m_xn(xn), m_pm(pm), m_wsm(wsm) {
 	t_sp_adapt.setSingleShot(true);
 	QObject::connect(&t_sp_adapt, SIGNAL(timeout()), this, SLOT(t_sp_adapt_tick()));
 }
@@ -29,17 +29,17 @@ std::unique_ptr<unsigned> CalibOverview::next_step() {
 
 	if (!m_pm.isRecord(128))
 		return std::make_unique<unsigned>(128);
-	if (*m_pm.speed(128) >= _SPEED_MAX)
+	if (*m_pm.speed(128) >= max_speed)
 		return nullptr;
 
 	if (!m_pm.isRecord(192))
 		return std::make_unique<unsigned>(192);
-	if (*m_pm.speed(192) >= _SPEED_MAX)
+	if (*m_pm.speed(192) >= max_speed)
 		return nullptr;
 
 	if (!m_pm.isRecord(255))
 		return std::make_unique<unsigned>(255);
-	if (*m_pm.speed(255) >= _SPEED_MAX)
+	if (*m_pm.speed(255) >= max_speed)
 		return nullptr;
 
 	return nullptr;
