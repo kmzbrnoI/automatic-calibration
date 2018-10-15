@@ -1,6 +1,35 @@
 #ifndef _CALIB_MAN_H_
 #define _CALIB_MAN_H_
 
+/*
+This file defines CalibMan class, which serves as a Calibration Manager
+singleton. It manages the whole proess of calibration. It uses several
+calibration helper classes.
+
+ * It is intentionally separated from GUI and communicates with outer
+   environment with calls and events.
+ * The whole process is started by calling calibrateAll function.
+ * The process is divided into multiple stages, at the end exactly one of
+    (a) onDone or
+    (b) onError
+   events is always called.
+ * Calibration process could be stopped manually by calling stop() function.
+ * When calibration is run repeatedly, already-done parts are skipped, so you
+   could "resume" calibration by calling calibrateAll function again.
+ * reset() function causes the next call of calibrateAll() to do the whole
+   process again and not take already-done steps into account.
+
+Calibration stages:
+
+ 1) Set important CVs to default (accel, devel, Vmax, ...).
+ 2) Make "basci overview" of power-to-speed mapping = try some powers and
+    measure speed (calib-overview.h)
+ 3) Calibrate speed steps (calib-step.h).
+ 4) Interpolate the rest of the steps.
+
+All programming is done via POM (it is fast!).
+*/
+
 #include <QObject>
 #include <memory>
 #include <vector>
@@ -125,10 +154,11 @@ private slots:
 signals:
 	void onStepStart(unsigned step);
 	void onStepDone(unsigned step, unsigned power);
-	void onStepError(Cm::CmError, unsigned step);
+
+	void onDone();
+	void onError(Cm::CmError, unsigned step);
 
 	void onLocoSpeedChanged(unsigned step);
-	void onDone();
 	void onStepPowerChanged(unsigned step, unsigned power);
 	void onAccelChanged(unsigned accel);
 	void onDecelChanged(unsigned decel);

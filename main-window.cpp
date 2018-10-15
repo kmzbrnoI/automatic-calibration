@@ -112,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&cm, SIGNAL(onStepStart(unsigned)), this, SLOT(cm_stepStart(unsigned)));
 	QObject::connect(&cm, SIGNAL(onStepDone(unsigned, unsigned)),
 	                 this, SLOT(cm_stepDone(unsigned, unsigned)));
-	QObject::connect(&cm, SIGNAL(onStepError(Cm::CmError, unsigned)),
+	QObject::connect(&cm, SIGNAL(onError(Cm::CmError, unsigned)),
 	                 this, SLOT(cm_stepError(Cm::CmError, unsigned)));
 	QObject::connect(&cm, SIGNAL(onLocoSpeedChanged(unsigned)),
 	                 this, SLOT(cm_locoSpeedChanged(unsigned)));

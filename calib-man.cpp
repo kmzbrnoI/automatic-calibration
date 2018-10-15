@@ -32,7 +32,7 @@ void CalibMan::done() {
 
 void CalibMan::error(Cm::CmError e, unsigned step) {
 	updateProg(CalibState::Stopped, 0, 1);
-	onStepError(e, step);
+	onError(e, step);
 }
 
 void CalibMan::updateProg(CalibState cs, size_t progress, size_t max) {
