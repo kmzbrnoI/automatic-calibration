@@ -47,7 +47,7 @@ size_t CalibMan::getProgress(CalibState cs, size_t progress, size_t max) {
 		return (30 * progress / max) + 10;
 	else if (cs == CalibState::Steps) // 40-90
 		return (50 * progress / max) + 40;
-	else if (cs == CalibState::Steps) // 90-100
+	else if (cs == CalibState::Interpolation) // 90-100
 		return (10 * progress / max) + 90;
 	else
 		return 0;
@@ -238,7 +238,6 @@ void CalibMan::calibrateNextStep() {
 		onLocoSpeedChanged(0);
 
 		// Phase 3: Interpolate the rest of the steps
-		updateProg(CalibState::Interpolation, 0, 1);
 		interpolateAll();
 
 		return;
@@ -292,6 +291,8 @@ unsigned CalibMan::getIPpower(unsigned left, unsigned right, unsigned step) {
 
 void CalibMan::interpolateAll() {
 	// Find first interval to interpolate.
+	updateProg(CalibState::Interpolation, 0, 1);
+
 	m_thisIPleft = 0;
 	while (m_thisIPleft < Xn::_STEPS_CNT-1 && (state[m_thisIPleft] == StepState::Uncalibred ||
 	       state[m_thisIPleft+1] != StepState::Uncalibred))
@@ -324,6 +325,8 @@ void CalibMan::xnIPWritten(void*, void*) {
 }
 
 void CalibMan::interpolateNext() {
+	updateProg(CalibState::Interpolation, m_thisIPstep, Xn::_STEPS_CNT);
+
 	// Find next number or interval to interpolate speed.
 	if (m_thisIPstep == m_thisIPright) {
 		// Find next interval
