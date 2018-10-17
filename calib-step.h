@@ -50,7 +50,7 @@ class CalibStep : public QObject {
 	Q_OBJECT
 
 public:
-	double epsilon;
+	double epsilon = _DEFAULT_EPSILON;
 	double max_diffusion = _MAX_DIFFUSION;
 
 	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,

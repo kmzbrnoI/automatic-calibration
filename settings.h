@@ -20,10 +20,6 @@ const std::map<QString, std::map<QString, QVariant>> _DEFAULTS {
 		std::pair<QString, QVariant>("loglevel", 1),
 		std::pair<QString, QVariant>("port", "/dev/ttyUSB0"),
 	}),
-	std::pair<QString, std::map<QString, QVariant>>("CalibStep",
-	{
-		std::pair<QString, QVariant>("epsilon", 1),
-	}),
 };
 
 class Settings {

@@ -1227,7 +1227,15 @@ void MainWindow::a_config_load(bool) {
 
 	wsm.scale = s["WSM"]["scale"].toInt();
 	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();
-	cm.cs.epsilon = s["CalibStep"]["epsilon"].toDouble();
+	if (s["CalibStep"].find("epsilon") != s["CalibStep"].end())
+		cm.cs.epsilon = s["CalibStep"]["epsilon"].toDouble();
+	else
+		s["CalibStep"]["epsilon"] = cm.cs.epsilon;
+
+	if (s["CalibStep"].find("maxDiffusion") != s["CalibStep"].end())
+		cm.cs.max_diffusion = s["CalibStep"]["maxDiffusion"].toDouble();
+	else
+		s["CalibStep"]["maxDiffusion"] = cm.cs.max_diffusion;
 
 	log("Loaded config from " + _CONFIG_FN);
 }
