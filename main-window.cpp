@@ -984,6 +984,7 @@ void MainWindow::b_calib_start_handle() {
 	ui.pb_progress->setValue(0);
 	ui.a_loco_load->setEnabled(false);
 	ui.b_reset->setEnabled(false);
+	ui.gb_speed->setEnabled(false);
 	cm.calibrateAll(ui.sb_loco->value(),
 	                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 }
@@ -1006,6 +1007,7 @@ void MainWindow::cm_done_gui() {
 	ui.b_wsm_lt->setEnabled(true);
 	ui.a_loco_load->setEnabled(true);
 	ui.b_reset->setEnabled(true);
+	ui.gb_speed->setEnabled(true);
 }
 
 void MainWindow::b_reset_handle() {
