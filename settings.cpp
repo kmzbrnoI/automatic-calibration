@@ -36,3 +36,19 @@ std::map<QString, QVariant>& Settings::at(const QString g) {
 std::map<QString, QVariant>& Settings::operator[] (const QString g) {
 	return at(g);
 }
+
+void Settings::cfgToUnsigned(std::map<QString, QVariant>& cfg, const QString section,
+                             unsigned& target) {
+	if (cfg.find(section) != cfg.end())
+		target = cfg[section].toInt();
+	else
+		cfg[section] = target;
+}
+
+void Settings::cfgToDouble(std::map<QString, QVariant>& cfg, const QString section,
+                           double& target) {
+	if (cfg.find(section) != cfg.end())
+		target = cfg[section].toDouble();
+	else
+		cfg[section] = target;
+}

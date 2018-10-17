@@ -37,17 +37,18 @@ of the loco and the power of maximum speed of the loco.
 
 namespace Co {
 
-const unsigned _SP_ADAPT_TIMEOUT = 2000; // 2 s
-const double _MAX_DIFFUSION = 3; // 3 kmph
-const unsigned _MEASURE_COUNT = 30; // measuring 30 values = 3 s
+const unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
+const double _DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
+const unsigned _DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
+const unsigned _DEFAULT_SPEED_MAX = 120;
+const unsigned _DEFAULT_OVERVIEW_STEP = 2;
+const unsigned _DEFAULT_OVERVIEW_START = 10;
+const unsigned _DEFAULT_MIN_SPEED = 5; // 5 kmph
+
+const unsigned _STEP_RESET_VALUE = 10;
 const unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
-const unsigned _OVERVIEW_STEP = 2;
-const unsigned _OVERVIEW_DEFAULT = 10;
-const unsigned _SPEED_MAX = 120;
-const unsigned _START_STEP = 10;
 const unsigned _POWER_CNT = 256;
 const unsigned _CV_START = 67; // cv 67 = step 1
-const unsigned _MIN_SPEED = 5; // 5 kmph
 
 enum class CoError {
 	LargeDiffusion,
@@ -58,8 +59,15 @@ class CalibOverview : public QObject {
 	Q_OBJECT
 
 public:
+	unsigned sp_adapt_timeout = _DEFAULT_SP_ADAPT_TIMEOUT;
+	double max_diffusion = _DEFAULT_MAX_DIFFUSION;
+	unsigned measure_count = _DEFAULT_MEASURE_COUNT;
+	unsigned overview_step = _DEFAULT_OVERVIEW_STEP;
+	unsigned overview_start = _DEFAULT_OVERVIEW_START;
+	unsigned min_speed = _DEFAULT_MIN_SPEED;
+
 	CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
-	              unsigned max_speed = _SPEED_MAX, QObject *parent = nullptr);
+	              unsigned max_speed = _DEFAULT_SPEED_MAX, QObject *parent = nullptr);
 	void makeOverview(const unsigned loco_addr);
 	void stop();
 

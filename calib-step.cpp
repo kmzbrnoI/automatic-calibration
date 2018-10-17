@@ -84,7 +84,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 void CalibStep::t_sp_adapt_tick() {
 	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
-	m_wsm.startLongTermMeasure(_MEASURE_COUNT);
+	m_wsm.startLongTermMeasure(measure_count);
 }
 
 void CalibStep::xn_pom_ok(void *source, void *data) {
@@ -92,7 +92,7 @@ void CalibStep::xn_pom_ok(void *source, void *data) {
 	(void)data;
 
 	// Insert 'waiting of mark' here when neccessarry
-	t_sp_adapt.start(_SP_ADAPT_TIMEOUT);
+	t_sp_adapt.start(sp_adapt_timeout);
 }
 
 void CalibStep::xn_pom_err(void *source, void *data) {

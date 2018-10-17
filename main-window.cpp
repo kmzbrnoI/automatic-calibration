@@ -1229,15 +1229,21 @@ void MainWindow::a_config_load(bool) {
 
 	wsm.scale = s["WSM"]["scale"].toInt();
 	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();
-	if (s["CalibStep"].find("epsilon") != s["CalibStep"].end())
-		cm.cs.epsilon = s["CalibStep"]["epsilon"].toDouble();
-	else
-		s["CalibStep"]["epsilon"] = cm.cs.epsilon;
 
-	if (s["CalibStep"].find("maxDiffusion") != s["CalibStep"].end())
-		cm.cs.max_diffusion = s["CalibStep"]["maxDiffusion"].toDouble();
-	else
-		s["CalibStep"]["maxDiffusion"] = cm.cs.max_diffusion;
+	auto& calcfg = s["Calibration"];
+
+	Settings::cfgToDouble(calcfg, "epsilon", cm.cs.epsilon);
+	Settings::cfgToDouble(calcfg, "maxDiffusion", cm.cs.max_diffusion);
+	Settings::cfgToDouble(calcfg, "maxDiffusion", cm.co.max_diffusion);
+	Settings::cfgToUnsigned(calcfg, "measureCount", cm.cs.measure_count);
+	Settings::cfgToUnsigned(calcfg, "measureCount", cm.co.measure_count);
+	Settings::cfgToUnsigned(calcfg, "spAdaptTimeout", cm.cs.sp_adapt_timeout);
+	Settings::cfgToUnsigned(calcfg, "spAdaptTimeout", cm.co.sp_adapt_timeout);
+	Settings::cfgToUnsigned(calcfg, "spAdaptTimeout", cr.sp_adapt_timeout);
+	Settings::cfgToUnsigned(calcfg, "overviewStep", cm.co.overview_step);
+	Settings::cfgToUnsigned(calcfg, "overviewStart", cm.co.overview_start);
+	Settings::cfgToUnsigned(calcfg, "overviewMinSpeed", cm.co.min_speed);
+	Settings::cfgToUnsigned(calcfg, "rangeStopMinTimes", cr.stop_min);
 
 	log("Loaded config from " + _CONFIG_FN);
 }

@@ -49,7 +49,7 @@ void CalibRange::wsm_speed_read(double speed, uint16_t) {
 		m_end_dist = m_wsm.distRaw();
 		return;
 	}
-	if (m_stop_counter < _STOP_MIN) {
+	if (m_stop_counter < stop_min) {
 		m_stop_counter++;
 		return;
 	}
@@ -67,7 +67,7 @@ void CalibRange::t_sp_adapt_tick() {
 
 void CalibRange::xn_speed_ok(void*, void*) {
 	// Insert 'waiting of mark' here when neccessarry
-	t_sp_adapt.start(_SP_ADAPT_TIMEOUT);
+	t_sp_adapt.start(sp_adapt_timeout);
 }
 
 void CalibRange::xn_speed_err(void*, void*) {

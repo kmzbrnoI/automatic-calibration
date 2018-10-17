@@ -13,7 +13,7 @@ CalibOverview::CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Ws
 }
 
 std::unique_ptr<unsigned> CalibOverview::next_step() {
-	size_t step = _START_STEP;
+	size_t step = overview_start;
 
 	float *speed = m_pm.speed(step);
 	while (nullptr == speed || *speed == 0) {
@@ -70,19 +70,19 @@ void CalibOverview::do_next_step() {
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
-		_CV_START - 1 + _OVERVIEW_STEP,
+		_CV_START - 1 + overview_step,
 		m_last_power,
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
-	step_power_changed(_OVERVIEW_STEP, m_last_power);
+	step_power_changed(overview_step, m_last_power);
 }
 
 void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 
-	if (speed < _MIN_SPEED) {
+	if (speed < min_speed) {
 		// When speed is too low, it may happen that it chnges between zero
 		// and some non/zero value. This causes low speed, but high diffusion.
 		// We ignore those low speeds.
@@ -90,9 +90,9 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 		return;
 	}
 
-	if (diffusion > _MAX_DIFFUSION) {
+	if (diffusion > max_diffusion) {
 		if (m_diff_count >= _ADAPT_MAX_TICKS) {
-			on_error(CoError::LargeDiffusion, _OVERVIEW_STEP);
+			on_error(CoError::LargeDiffusion, overview_step);
 			return;
 		}
 		// Wait for speed...
@@ -108,16 +108,16 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 void CalibOverview::t_sp_adapt_tick() {
 	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
-	m_wsm.startLongTermMeasure(_MEASURE_COUNT);
+	m_wsm.startLongTermMeasure(measure_count);
 }
 
 void CalibOverview::xn_pom_ok(void*, void*) {
 	// Insert 'waiting of mark' here when neccessarry
-	t_sp_adapt.start(_SP_ADAPT_TIMEOUT);
+	t_sp_adapt.start(sp_adapt_timeout);
 }
 
 void CalibOverview::xn_pom_err(void*, void*) {
-	on_error(CoError::XnNoResponse, _OVERVIEW_STEP);
+	on_error(CoError::XnNoResponse, overview_step);
 }
 
 void CalibOverview::wsm_lt_error() {
@@ -130,10 +130,10 @@ void CalibOverview::wsm_lt_error() {
 void CalibOverview::reset_step() {
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
-		_CV_START - 1 + _OVERVIEW_STEP,
-		_OVERVIEW_DEFAULT
+		_CV_START - 1 + overview_step,
+		_STEP_RESET_VALUE
 	);
-	step_power_changed(_OVERVIEW_STEP, _OVERVIEW_DEFAULT);
+	step_power_changed(overview_step, _STEP_RESET_VALUE);
 }
 
 void CalibOverview::stop() {

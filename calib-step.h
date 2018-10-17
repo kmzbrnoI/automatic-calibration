@@ -33,10 +33,11 @@ speed step.
 namespace Cs {
 
 const double _DEFAULT_EPSILON = 1; // +- 1 kmph
-const unsigned _SP_ADAPT_TIMEOUT = 2000; // 2 s
-const double _MAX_DIFFUSION = 3; // 3 kmph
+const double _DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
+const size_t _DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
+const unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
+
 const unsigned _CV_START = 67; // cv 67 = step 1
-const unsigned _MEASURE_COUNT = 30; // measuring 30 values = 3 s
 const unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
 
 enum class CsError {
@@ -51,7 +52,9 @@ class CalibStep : public QObject {
 
 public:
 	double epsilon = _DEFAULT_EPSILON;
-	double max_diffusion = _MAX_DIFFUSION;
+	double max_diffusion = _DEFAULT_MAX_DIFFUSION;
+	unsigned measure_count = _DEFAULT_MEASURE_COUNT;
+	unsigned sp_adapt_timeout = _DEFAULT_SP_ADAPT_TIMEOUT;
 
 	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	          QObject *parent = nullptr);

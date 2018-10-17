@@ -417,8 +417,8 @@ void CalibMan::initCVsWriteNext() {
 	if (m_init_cv_index >= INIT_CVS.size()) {
 		// Go to phase 1: make an overview of mapping steps to speed
 		updateProg(CalibState::Overview, 0, 1);
-		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), Co::_OVERVIEW_STEP, direction);
-		onLocoSpeedChanged(Co::_OVERVIEW_STEP);
+		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), co.overview_step, direction);
+		onLocoSpeedChanged(co.overview_step);
 		co.makeOverview(m_locoAddr);
 		return;
 	}
