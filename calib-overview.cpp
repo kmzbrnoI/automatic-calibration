@@ -86,6 +86,7 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 		// When speed is too low, it may happen that it chnges between zero
 		// and some non/zero value. This causes low speed, but high diffusion.
 		// We ignore those low speeds.
+		m_pm.addOrUpdate(m_last_power, 0);
 		do_next_step();
 		return;
 	}
