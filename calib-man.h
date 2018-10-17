@@ -64,19 +64,13 @@ enum class CalibState {
 	Interpolation,
 };
 
-const std::vector<std::pair<unsigned, unsigned>> INIT_CVS = { // (cv, value)
-	std::make_pair<unsigned, unsigned>(2, 1),
-	std::make_pair<unsigned, unsigned>(3, 0),
-	std::make_pair<unsigned, unsigned>(4, 0),
-	std::make_pair<unsigned, unsigned>(5, 1),
-	std::make_pair<unsigned, unsigned>(6, 1),
-};
-
 const unsigned _CV_CONFIG = 29;
 const unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
 const bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
 const unsigned _CV_ACCEL = 3;
 const unsigned _CV_DECEL = 4;
+const unsigned _DEFAULT_VMAX = 1;
+const unsigned _VMAX_CV = 5;
 
 class CalibMan : public QObject {
 	Q_OBJECT
@@ -85,6 +79,7 @@ public:
 	Cs::CalibStep cs;
 	Co::CalibOverview co;
 	Xn::XnDirection direction;
+	unsigned wmax = _DEFAULT_VMAX;
 
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
@@ -140,6 +135,14 @@ private:
 	void initCVsError(void*, void*);
 	void initCVsWriteNext();
 	void initSTWritten(void*, void*);
+
+	std::vector<std::pair<unsigned, unsigned>> init_cvs = { // (cv, value)
+		std::make_pair<unsigned, unsigned>(2, 1),
+		std::make_pair<unsigned, unsigned>(3, 0),
+		std::make_pair<unsigned, unsigned>(4, 0),
+		std::make_pair<unsigned, unsigned>(5, 1),
+		std::make_pair<unsigned, unsigned>(6, 1),
+	};
 
 private slots:
 	void csDone(unsigned step, unsigned power);

@@ -393,7 +393,7 @@ void CalibMan::unsetStep(unsigned step) {
 // Speed Table
 
 void CalibMan::initCVs() {
-	updateProg(CalibState::InitProg, 1, INIT_CVS.size() + 2);
+	updateProg(CalibState::InitProg, 1, init_cvs.size() + 2);
 
 	m_xn.pomWriteBit(
 		Xn::LocoAddr(m_locoAddr),
@@ -406,15 +406,15 @@ void CalibMan::initCVs() {
 }
 
 void CalibMan::initSTWritten(void*, void*) {
-	updateProg(CalibState::InitProg, 2, INIT_CVS.size() + 2);
+	updateProg(CalibState::InitProg, 2, init_cvs.size() + 2);
 	m_init_cv_index = 0;
 	initCVsWriteNext();
 }
 
 void CalibMan::initCVsWriteNext() {
-	updateProg(CalibState::InitProg, m_init_cv_index + 1, INIT_CVS.size() + 2);
+	updateProg(CalibState::InitProg, m_init_cv_index + 1, init_cvs.size() + 2);
 
-	if (m_init_cv_index >= INIT_CVS.size()) {
+	if (m_init_cv_index >= init_cvs.size()) {
 		// Go to phase 1: make an overview of mapping steps to speed
 		updateProg(CalibState::Overview, 0, 1);
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), co.overview_step, direction);
@@ -425,8 +425,8 @@ void CalibMan::initCVsWriteNext() {
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_locoAddr),
-		INIT_CVS[m_init_cv_index].first,
-		INIT_CVS[m_init_cv_index].second,
+		init_cvs[m_init_cv_index].first,
+		init_cvs[m_init_cv_index].second,
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsOk(s, d); }),
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsError(s, d); })
 	);
