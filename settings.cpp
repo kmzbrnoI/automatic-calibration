@@ -1,9 +1,5 @@
 #include "settings.h"
 
-Settings::Settings(QString filename) {
-	load(filename);
-}
-
 void Settings::load(QString filename) {
 	QSettings s(filename, QSettings::IniFormat);
 	data.clear();

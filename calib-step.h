@@ -50,21 +50,23 @@ class CalibStep : public QObject {
 	Q_OBJECT
 
 public:
+	double epsilon;
+	double max_diffusion = _MAX_DIFFUSION;
+
 	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	          QObject *parent = nullptr);
 	void calibrate(const unsigned loco_addr, const unsigned step,
-	               const double speed, const double epsilon = _DEFAULT_EPSILON);
+	               const double speed);
 	void stop();
 
 private:
 	Xn::XpressNet& m_xn;
 	Pm::PowerToSpeedMap& m_pm;
 	Wsm::Wsm& m_wsm;
-
 	unsigned m_loco_addr;
 	unsigned m_step;
 	double m_target_speed;
-	double m_epsilon;
+
 	QTimer t_sp_adapt;
 	unsigned m_last_power;
 	unsigned m_diff_count;

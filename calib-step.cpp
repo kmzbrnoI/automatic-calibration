@@ -12,11 +12,10 @@ CalibStep::CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 }
 
 void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
-                          const double speed, const double epsilon) {
+                          const double speed) {
 	m_loco_addr = loco_addr;
 	m_step = step;
 	m_target_speed = speed;
-	m_epsilon = epsilon;
 	m_diff_count = 0;
 
 	try {
@@ -41,7 +40,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 
-	if (diffusion > _MAX_DIFFUSION) {
+	if (diffusion > max_diffusion) {
 		if (m_diff_count >= _ADAPT_MAX_TICKS) {
 			on_error(CsError::LargeDiffusion, m_step);
 			return;
@@ -58,7 +57,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 
 	m_pm.addOrUpdate(m_last_power, speed);
 
-	if (std::abs(speed-m_target_speed) < m_epsilon) {
+	if (std::abs(speed-m_target_speed) < epsilon) {
 		done(m_step, m_last_power);
 		return;
 	}

@@ -10,12 +10,13 @@
 const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent), xn(this), s(_CONFIG_FN), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
+	QMainWindow(parent), xn(this), s(), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
 	QString text;
 	text.sprintf("Automatic Claibration v%d.%d", VERSION_MAJOR, VERSION_MINOR);
 	this->setWindowTitle(text);
 	this->setFixedSize(this->size());
+	a_config_load(true);
 
 	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
@@ -96,9 +97,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_config_save, SIGNAL(triggered(bool)), this, SLOT(a_config_save(bool)));
 
 	// WSM init
-	wsm.scale = s["WSM"]["scale"].toInt();
-	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();
-
 	QObject::connect(&wsm, SIGNAL(speedRead(double, uint16_t)), this, SLOT(mc_speedRead(double, uint16_t)));
 	QObject::connect(&wsm, SIGNAL(onError(QString)), this, SLOT(mc_onError(QString)));
 	QObject::connect(&wsm, SIGNAL(batteryRead(double, uint16_t)), this, SLOT(mc_batteryRead(double, uint16_t)));
@@ -142,12 +140,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
 
 	ui.tw_main->setCurrentIndex(0);
-	log("Application launched, loaded config from " + _CONFIG_FN);
+	log("Application launched.");
 }
 
 MainWindow::~MainWindow() {
 	try {
-		s.save(_CONFIG_FN);
+		a_config_save(true);
 	}
 	catch (...) {
 		// No exceptions in destructor!
@@ -1226,6 +1224,11 @@ void MainWindow::reset() {
 
 void MainWindow::a_config_load(bool) {
 	s.load(_CONFIG_FN);
+
+	wsm.scale = s["WSM"]["scale"].toInt();
+	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();
+	cm.cs.epsilon = s["CalibStep"]["epsilon"].toDouble();
+
 	log("Loaded config from " + _CONFIG_FN);
 }
 
