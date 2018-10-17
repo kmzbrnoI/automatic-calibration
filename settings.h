@@ -3,36 +3,35 @@
 
 #include <QSerialPort>
 #include <QSettings>
+#include <map>
 
 /* This file defines global settings of the application */
 
-struct WsmSettings {
-	QString portname;
-	unsigned int scale;
-	double wheelDiameter; // unit: mm
-
-	void load(QSettings&);
-	void save(QSettings&);
-};
-
-struct XnSettings {
-	QString portname;
-	uint32_t br;
-	QSerialPort::FlowControl fc;
-	uint32_t loglevel;
-
-	void load(QSettings&);
-	void save(QSettings&);
+const std::map<QString, std::map<QString, QVariant>> _DEFAULTS {
+	std::pair<QString, std::map<QString, QVariant>>("WSM",
+	{
+		std::pair<QString, QVariant>("scale", 120),
+		std::pair<QString, QVariant>("wheelDiameter", 8.0),
+	}),
+	std::pair<QString, std::map<QString, QVariant>>("XN",
+	{
+		std::pair<QString, QVariant>("baudrate", 19200),
+		std::pair<QString, QVariant>("flowcontrol", 1),
+		std::pair<QString, QVariant>("loglevel", 1),
+		std::pair<QString, QVariant>("port", "/dev/ttyUSB0"),
+	}),
 };
 
 class Settings {
 public:
-	WsmSettings wsm;
-	XnSettings xn;
+	std::map<QString, std::map<QString, QVariant>> data;
 
 	Settings(QString filename);
 	void load(QString filename);
 	void save(QString filename);
+
+	std::map<QString, QVariant>& at(const QString g);
+	std::map<QString, QVariant>& operator[] (const QString g);
 private:
 };
 

@@ -6,51 +6,37 @@ Settings::Settings(QString filename) {
 
 void Settings::load(QString filename) {
 	QSettings s(filename, QSettings::IniFormat);
+	data.clear();
 
-	s.beginGroup("WSM");
-	wsm.load(s);
-	s.endGroup();
+	for (const auto& g : s.childGroups()) {
+		s.beginGroup(g);
+		for (const auto& k : s.childKeys())
+			data[g][k] = s.value(k, "");
+		s.endGroup();
+	}
 
-	s.beginGroup("XN");
-	xn.load(s);
-	s.endGroup();
+	// Load default for non-loaded data
+	for (const auto& gm : _DEFAULTS)
+		for (const std::pair<QString, QVariant>& k : gm.second)
+			if (data[gm.first].find(k.first) == data[gm.first].end())
+				data[gm.first][k.first] = k.second;
 }
 
 void Settings::save(QString filename) {
 	QSettings s(filename, QSettings::IniFormat);
-	s.beginGroup("WSM");
-	wsm.save(s);
-	s.endGroup();
 
-	s.beginGroup("XN");
-	xn.save(s);
-	s.endGroup();
+	for (const auto& gm : data) {
+		s.beginGroup(gm.first);
+		for (const std::pair<QString, QVariant>& k : gm.second)
+			s.setValue(k.first, k.second);
+		s.endGroup();
+	}
 }
 
-
-void WsmSettings::load(QSettings& s) {
-	portname = s.value("port", "").toString();
-	scale = s.value("scale", 120).toInt();
-	wheelDiameter = s.value("wheelDiameter", 8.0).toDouble();
+std::map<QString, QVariant>& Settings::at(const QString g) {
+	return data[g];
 }
 
-void WsmSettings::save(QSettings& s) {
-	s.setValue("port", portname);
-	s.setValue("scale", scale);
-	s.setValue("wheelDiameter", wheelDiameter);
-}
-
-
-void XnSettings::load(QSettings& s) {
-	portname = s.value("port", "").toString();
-	br = s.value("baudrate", 9600).toInt();
-	fc = static_cast<QSerialPort::FlowControl>(s.value("flowcontrol", 1).toInt());
-	loglevel = s.value("loglevel", 1).toInt();
-}
-
-void XnSettings::save(QSettings& s) {
-	s.setValue("port", portname);
-	s.setValue("baudrate", br);
-	s.setValue("flowcontrol", static_cast<int>(fc));
-	s.setValue("loglevel", loglevel);
+std::map<QString, QVariant>& Settings::operator[] (const QString g) {
+	return at(g);
 }

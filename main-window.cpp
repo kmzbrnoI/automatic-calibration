@@ -76,8 +76,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	widget_set_color(*(ui.l_wsm_alive), Qt::gray);
 
 	// XN UI
-	ui.cb_xn_loglevel->setCurrentIndex(s.xn.loglevel);
-	xn.loglevel = static_cast<Xn::XnLogLevel>(s.xn.loglevel);
+	ui.cb_xn_loglevel->setCurrentIndex(s["XN"]["loglevel"].toInt());
+	xn.loglevel = static_cast<Xn::XnLogLevel>(s["XN"]["loglevel"].toInt());
 	QObject::connect(ui.cb_xn_loglevel, SIGNAL(currentIndexChanged(int)), this, SLOT(cb_xn_ll_index_changed(int)));
 
 	QObject::connect(ui.a_xn_connect, SIGNAL(triggered(bool)), this, SLOT(a_xn_connect(bool)));
@@ -96,8 +96,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_config_save, SIGNAL(triggered(bool)), this, SLOT(a_config_save(bool)));
 
 	// WSM init
-	wsm.scale = s.wsm.scale;
-	wsm.wheelDiameter = s.wsm.wheelDiameter;
+	wsm.scale = s["WSM"]["scale"].toInt();
+	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();
 
 	QObject::connect(&wsm, SIGNAL(speedRead(double, uint16_t)), this, SLOT(mc_speedRead(double, uint16_t)));
 	QObject::connect(&wsm, SIGNAL(onError(QString)), this, SLOT(mc_onError(QString)));
@@ -172,7 +172,7 @@ void MainWindow::t_xn_disconnect_tick() {
 }
 
 void MainWindow::cb_xn_ll_index_changed(int index) {
-	s.xn.loglevel = index;
+	s["XN"]["loglevel"] = index;
 	xn.loglevel = static_cast<Xn::XnLogLevel>(index);
 }
 
@@ -526,9 +526,11 @@ void MainWindow::a_xn_connect(bool) {
 
 	try {
 		log("Connecting to XN...");
-		xn.connect(s.xn.portname, s.xn.br, s.xn.fc);
+		xn.connect(s["XN"]["port"].toString(), s["XN"]["baudrate"].toInt(),
+		           static_cast<QSerialPort::FlowControl>(s["XN"]["flowcontrol"].toInt()));
 	} catch (const QStrException& e) {
-		show_error("XN connect error while opening serial port '" + s.xn.portname + "':\n" + e);
+		show_error("XN connect error while opening serial port '" +
+		           s["XN"]["port"].toString() + "':\n" + e);
 	}
 }
 
@@ -703,7 +705,7 @@ void MainWindow::a_wsm_connect(bool) {
 	log("Connecting to WSM...");
 
 	try {
-		wsm.connect(s.wsm.portname);
+		wsm.connect(s["WSM"]["port"].toString());
 
 		ui.a_wsm_connect->setEnabled(false);
 		ui.a_wsm_disconnect->setEnabled(true);
@@ -711,7 +713,8 @@ void MainWindow::a_wsm_connect(bool) {
 
 		log("Connected to WSM");
 	} catch (const Wsm::EOpenError& e) {
-		show_error("WSM connect error while opening serial port '" + s.wsm.portname + "':\n" + e);
+		show_error("WSM connect error while opening serial port '" +
+		           s["WSM"]["port"].toString() + "':\n" + e);
 	}
 }
 
