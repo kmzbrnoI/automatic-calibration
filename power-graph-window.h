@@ -1,6 +1,12 @@
 #ifndef POWERGRAPHWINDOW_H
 #define POWERGRAPHWINDOW_H
 
+/*
+This file defines a PowerGraphWindow class which manages Power Graph UI form.
+The main object at this form is QChart displaying mapping of real speed to
+power steps in decoder.
+*/
+
 #include <QMainWindow>
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>

@@ -922,6 +922,7 @@ void MainWindow::chb_step_selected_clicked(bool checked) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Steps-to-speed events:
 
 void MainWindow::ssm_onAddOrUpdate(unsigned step, unsigned speed) {
 	ui_steps[step].speed_want->setText(QString::number(speed));
@@ -933,6 +934,7 @@ void MainWindow::ssm_onClear() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Calibration Manager events & gui interaction:
 
 void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 	ui_steps[step-1].slider->setValue(power);
@@ -1074,6 +1076,7 @@ void MainWindow::t_calib_active_tick() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Acceleration & deceleration settings:
 
 void MainWindow::b_ad_read_handle() {
 	ui.gb_ad->setEnabled(false);
@@ -1110,6 +1113,7 @@ void MainWindow::b_test2_handle() {
 void MainWindow::b_test3_handle() {}
 
 //////////////////////////////////////////////////////////////////////////////
+// Loco file IO:
 
 void MainWindow::a_loco_load(bool) {
 	QString filename = QFileDialog::getOpenFileName(
@@ -1273,6 +1277,7 @@ void MainWindow::reset() {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+// Config IO:
 
 void MainWindow::a_config_load(bool) {
 	s.load(_CONFIG_FN);

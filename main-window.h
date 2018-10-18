@@ -1,6 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+/*
+This file defines MainWindow class which is associated with main form of
+the application.
+
+It handles all the UI communication. It also contains CalibrationManager
+instance. It also owns instances of Xn and Wsm library classes, which are
+forwarded to Calibration Manager as a references.
+*/
+
 #include <QMainWindow>
 #include <QSlider>
 #include <QLabel>
@@ -46,14 +55,16 @@ public:
 	~MainWindow();
 
 private slots:
+	// Signals from XpressNET library
 	void xn_onError(QString error);
 	void xn_onLog(QString, Xn::XnLogLevel);
 	void xn_onConnect();
 	void xn_onDisconnect();
 	void xn_onTrkStatusChanged(Xn::XnTrkStatus);
 
-	void t_xn_disconnect_tick();
-	void cb_xn_ll_index_changed(int index);
+	// Signals from GUI
+	void sb_loco_changed(int value);
+	void sb_speed_changed(int value);
 	void b_addr_set_handle();
 	void b_addr_release_handle();
 	void b_addr_read_handle();
@@ -63,43 +74,45 @@ private slots:
 	void vs_speed_slider_moved(int);
 	void rb_direction_toggled(bool);
 	void t_slider_tick();
-	void b_start_handle();
 	void chb_f_clicked(bool);
-	void b_ad_read_handle();
-	void b_ad_write_handle();
-	void b_wsm_lt_handle();
+
+	void b_start_handle();
 	void b_calib_start_handle();
 	void b_calib_stop_handle();
+	void b_ad_read_handle();
+	void b_ad_write_handle();
+	void b_decel_measure_handle();
+	void b_wsm_lt_handle();
 	void sb_max_speed_changed(int value);
-	void sb_speed_changed(int value);
-	void sb_loco_changed(int value);
 	void lv_log_dblclick(QListWidgetItem*);
 	void tw_xn_log_dblclick(QTreeWidgetItem*, int column);
-	void b_decel_measure_handle();
 	void b_reset_handle();
 	void t_calib_active_tick();
+	void vs_steps_moved(int);
+	void b_calibrate_handle();
+	void chb_step_selected_clicked(bool);
+	void t_xn_disconnect_tick();
+	void cb_xn_ll_index_changed(int index);
 
+	// Test buttons:
 	void b_test1_handle();
 	void b_test2_handle();
 	void b_test3_handle();
 
+	// GUI menu actions:
 	void a_xn_connect(bool);
 	void a_xn_disconnect(bool);
 	void a_dcc_go(bool);
 	void a_dcc_stop(bool);
-
 	void a_wsm_connect(bool);
 	void a_wsm_disconnect(bool);
-
 	void a_power_graph(bool);
-	void vs_steps_moved(int);
-	void b_calibrate_handle();
-	void chb_step_selected_clicked(bool);
 	void a_loco_load(bool);
 	void a_loco_save(bool);
 	void a_config_load(bool);
 	void a_config_save(bool);
 
+	// Wsm events:
 	void mc_speedRead(double speed, uint16_t speed_raw);
 	void mc_onError(QString error);
 	void mc_batteryRead(double voltage, uint16_t voltage_raw);
@@ -110,9 +123,11 @@ private slots:
 	void mc_speedReceiveRestore();
 	void mc_longTermMeasureDone(double speed, double diffusion);
 
+	// Steps-to-speed map events
 	void ssm_onAddOrUpdate(unsigned step, unsigned speed);
 	void ssm_onClear();
 
+	// Calibration manager events:
 	void cm_stepStart(unsigned step);
 	void cm_stepDone(unsigned step, unsigned power);
 	void cm_stepError(Cm::CmError, unsigned step);
@@ -124,6 +139,7 @@ private slots:
 	void cm_accelChanged(unsigned);
 	void cm_decelChanged(unsigned);
 
+	// Calibration range events:
 	void cr_measured(double distance);
 	void cr_error(Cr::CrError, unsigned step);
 
@@ -147,6 +163,7 @@ private:
 	Cm::CalibMan cm;
 	Cr::CalibRange cr;
 
+	// Callbacks from XpressNET library:
 	void xn_onDccGoError(void*, void*);
 	void xn_onDccStopError(void*, void*);
 	void xn_onLIVersionError(void*, void*);
