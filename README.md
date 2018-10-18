@@ -52,8 +52,8 @@ $ make
 To make debug binary, run:
 
 ```
-qmake CONFIG+=debug ..
-make
+$ qmake CONFIG+=debug ..
+$ make
 ```
 
 You may use [this script](https://serverfault.com/questions/61659/can-you-get-any-program-in-linux-to-print-a-stack-trace-if-it-segfaults) to debug segfaults.
@@ -65,7 +65,7 @@ You may use [this script](https://serverfault.com/questions/61659/can-you-get-an
  * Linux: pair it with HC-05 module and map it to new serial device:
 
     ```
-    rfcomm connect /dev/rfcomm0 hc-05-hw-address 2
+    $ rfcomm connect /dev/rfcomm0 hc-05-hw-address 2
     ```
 
 ## Project description
