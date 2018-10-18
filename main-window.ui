@@ -781,6 +781,27 @@
           <string>Reset</string>
          </property>
         </widget>
+        <widget class="QLabel" name="l_calib_state">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>180</y>
+           <width>101</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>100</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>▬</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="gb_ad">
         <property name="enabled">
