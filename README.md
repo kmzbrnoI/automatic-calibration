@@ -20,6 +20,14 @@ This SW was developed in `vim` using `make`. Downloads are available in
 
 Howto build:
 
+Clone this repository (including submodules!):
+
+```
+git clone --recurse-submodules https://github.com/kmzbrnoI/xn-lib-cpp-qt
+```
+
+And then build:
+
 ```
 $ uic main-window.ui > ui_main-window.h
 $ uic power-graph-window.ui > ui_power-graph-window.h
