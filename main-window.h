@@ -29,7 +29,7 @@ const unsigned _CV_BASIC = 29;
 
 struct UiStep {
 	QSlider *slider;
-	QLabel *step, *speed_want, *value, *speed_measured;
+	QLabel *step, *speed_want, *value;
 	QCheckBox *selected;
 	QPushButton *calibrate;
 };

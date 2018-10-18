@@ -822,17 +822,16 @@ void MainWindow::a_power_graph(bool) {
 
 void MainWindow::init_calib_graph() {
 	for(size_t i = 0; i < _STEPS_CNT; i++) {
+		QLabel *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
+		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+		ui_steps[i].step = step;
+		ui.l_cal_graph->addWidget(step, 0, i);
+
 		QLabel *speed_want = new QLabel("-", ui.gb_cal_graph);
 		speed_want->setFont(QFont("Sans Serif", 8));
 		speed_want->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].speed_want = speed_want;
-		ui.l_cal_graph->addWidget(speed_want, 0, i);
-
-		QLabel *speed_measured = new QLabel("??", ui.gb_cal_graph);
-		speed_measured->setFont(QFont("Sans Serif", 8));
-		speed_measured->setAlignment(Qt::AlignmentFlag::AlignHCenter);
-		ui_steps[i].speed_measured = speed_measured;
-		ui.l_cal_graph->addWidget(speed_measured, 1, i);
+		ui.l_cal_graph->addWidget(speed_want, 1, i);
 
 		QLabel *value = new QLabel("0", ui.gb_cal_graph);
 		value->setFont(QFont("Sans Serif", 8));
@@ -855,17 +854,12 @@ void MainWindow::init_calib_graph() {
 		QObject::connect(selected, SIGNAL(clicked(bool)), this, SLOT(chb_step_selected_clicked(bool)));
 		ui.l_cal_graph->addWidget(selected, 4, i);
 
-		QLabel *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
-		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
-		ui_steps[i].step = step;
-		ui.l_cal_graph->addWidget(step, 5, i);
-
 		QPushButton *calibrate = new QPushButton("C", ui.gb_cal_graph);
 		calibrate->setProperty("step", static_cast<uint>(i));
 		calibrate->setEnabled(false);
 		ui_steps[i].calibrate = calibrate;
 		QObject::connect(calibrate, SIGNAL(released()), this, SLOT(b_calibrate_handle()));
-		ui.l_cal_graph->addWidget(calibrate, 6, i);
+		ui.l_cal_graph->addWidget(calibrate, 5, i);
 	}
 }
 
