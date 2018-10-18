@@ -171,6 +171,7 @@ private:
 	void loco_released();
 	void init_calib_graph();
 	void reset();
+	void step_set_color(unsigned stepi, QColor color);
 };
 
 #endif // MAINWINDOW_H

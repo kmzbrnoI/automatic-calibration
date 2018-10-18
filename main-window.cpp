@@ -207,6 +207,12 @@ void MainWindow::tw_xn_log_dblclick(QTreeWidgetItem*, int) {
 	ui.tw_xn_log->clear();
 }
 
+void MainWindow::step_set_color(unsigned stepi, QColor color) {
+	widget_set_color(*ui_steps[stepi].step, color);
+	widget_set_color(*ui_steps[stepi].speed_want, color);
+	widget_set_color(*ui_steps[stepi].value, color);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // XN Events
 
@@ -523,6 +529,16 @@ void MainWindow::xn_accelWritten(void*, void*) {
 
 void MainWindow::xn_decelWritten(void*, void*) {
 	ui.gb_ad->setEnabled(true);
+}
+
+void MainWindow::xn_stepWritten(void*, void* d) {
+	unsigned stepi = reinterpret_cast<intptr_t>(d);
+	step_set_color(stepi, Qt::green);
+}
+
+void MainWindow::xn_stepWriteError(void*, void* d) {
+	unsigned stepi = reinterpret_cast<intptr_t>(d);
+	step_set_color(stepi, Qt::red);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -870,6 +886,7 @@ void MainWindow::init_calib_graph() {
 void MainWindow::vs_steps_moved(int value) {
 	unsigned stepi = qobject_cast<QSlider*>(QObject::sender())->property("step").toUInt();
 	ui_steps[stepi].value->setText(QString::number(value));
+	step_set_color(stepi, Qt::darkYellow);
 }
 
 void MainWindow::b_calibrate_handle() {
@@ -881,7 +898,9 @@ void MainWindow::b_calibrate_handle() {
 		xn.pomWriteCv(
 			Xn::LocoAddr(ui.sb_loco->value()),
 			Cs::_CV_START + stepi,
-			ui_steps[stepi].slider->value()
+			ui_steps[stepi].slider->value(),
+			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_stepWritten(s, d); }, reinterpret_cast<void*>(stepi)),
+			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_stepWriteError(s, d); }, reinterpret_cast<void*>(stepi))
 		);
 		cm.setStepManually(stepi, ui_steps[stepi].slider->value());
 	}
@@ -917,26 +936,18 @@ void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 
 void MainWindow::cm_stepDone(unsigned step, unsigned power) {
 	(void)power;
-	widget_set_color(*ui_steps[step-1].step, Qt::darkGreen);
-	widget_set_color(*ui_steps[step-1].speed_want, Qt::darkGreen);
-	widget_set_color(*ui_steps[step-1].value, Qt::darkGreen);
-
+	step_set_color(step-1, Qt::darkGreen);
 	log("Step " + QString::number(step) + " done");
 }
 
 void MainWindow::cm_stepStart(unsigned step) {
-	widget_set_color(*ui_steps[step-1].step, Qt::darkYellow);
-	widget_set_color(*ui_steps[step-1].speed_want, Qt::darkYellow);
-	widget_set_color(*ui_steps[step-1].value, Qt::darkYellow);
+	step_set_color(step-1, Qt::darkYellow);
 	log("Starting calibration of step " + QString::number(step));
 }
 
 void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
-	if (step != 0) {
-		widget_set_color(*ui_steps[step-1].step, Qt::red);
-		widget_set_color(*ui_steps[step-1].speed_want, Qt::red);
-		widget_set_color(*ui_steps[step-1].value, Qt::red);
-	}
+	if (step != 0)
+		step_set_color(step-1, Qt::red);
 	widget_set_color(*ui.l_calib_state, Qt::red);
 
 	log("Step " + QString::number(step) + " calibration error!");
@@ -1004,7 +1015,7 @@ void MainWindow::b_calib_start_handle() {
 	ui.a_loco_load->setEnabled(false);
 	ui.b_reset->setEnabled(false);
 	ui.gb_speed->setEnabled(false);
-	widget_set_color(*ui.l_calib_state, Qt::yellow);
+	widget_set_color(*ui.l_calib_state, Qt::darkYellow);
 	cm.calibrateAll(ui.sb_loco->value(),
 	                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 }
@@ -1248,13 +1259,9 @@ void MainWindow::reset() {
 	m_pm.clear();
 	cm.reset();
 	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
-		QColor def = ui_steps[i].step->palette().color(QPalette::WindowText);
-
 		ui_steps[i].slider->setValue(0);
 		ui_steps[i].selected->setChecked(false);
-		widget_set_color(*ui_steps[i].step, def);
-		widget_set_color(*ui_steps[i].speed_want, def);
-		widget_set_color(*ui_steps[i].value, def);
+		step_set_color(i, ui_steps[i].step->palette().color(QPalette::WindowText));
 	}
 	widget_set_color(*ui.l_calib_state, Qt::gray);
 	ui.pb_progress->setValue(0);
