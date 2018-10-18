@@ -23,7 +23,7 @@ Howto build:
 Clone this repository (including submodules!):
 
 ```
-git clone --recurse-submodules https://github.com/kmzbrnoI/xn-lib-cpp-qt
+git clone --recurse-submodules https://github.com/kmzbrnoI/automatic-calibration
 ```
 
 And then build:
