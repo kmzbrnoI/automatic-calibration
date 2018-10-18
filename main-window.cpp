@@ -47,6 +47,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui.sb_loco->setKeyboardTracking(false);
 	QObject::connect(ui.sb_loco, SIGNAL(valueChanged(int)), this, SLOT(sb_loco_changed(int)));
 
+	#ifdef QT_NO_DEBUG
+	ui.b_test1->setVisible(false);
+	ui.b_test2->setVisible(false);
+	ui.b_test3->setVisible(false);
+	#endif
+
 	QObject::connect(ui.b_test1, SIGNAL(released()), this, SLOT(b_test1_handle()));
 	QObject::connect(ui.b_test2, SIGNAL(released()), this, SLOT(b_test2_handle()));
 	QObject::connect(ui.b_test3, SIGNAL(released()), this, SLOT(b_test3_handle()));
