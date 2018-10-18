@@ -91,6 +91,7 @@ private slots:
 	void tw_xn_log_dblclick(QTreeWidgetItem*, int column);
 	void b_decel_measure_handle();
 	void b_reset_handle();
+	void t_calib_active_tick();
 
 	void b_test1_handle();
 	void b_test2_handle();
@@ -148,6 +149,7 @@ private:
 	QTimer t_xn_disconnect;
 	QTimer t_wsm_disconnect;
 	QTimer t_slider;
+	QTimer t_calib_active;
 	int m_sent_speed = 0;
 	QDateTime m_canBlink;
 	bool m_starting = false;

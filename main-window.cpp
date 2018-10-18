@@ -74,7 +74,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_ad_read, SIGNAL(released()), this, SLOT(b_ad_read_handle()));
 	QObject::connect(ui.b_ad_write, SIGNAL(released()), this, SLOT(b_ad_write_handle()));
 
+	t_calib_active.start(500);
+	QObject::connect(&t_calib_active, SIGNAL(timeout()), this, SLOT(t_calib_active_tick()));
 	QObject::connect(ui.b_decel_measure, SIGNAL(released()), this, SLOT(b_decel_measure_handle()));
+
+	widget_set_color(*ui.l_calib_state, Qt::gray);
 
 	// UI set defaults
 	widget_set_color(*(ui.l_xn), Qt::red);
@@ -933,6 +937,7 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 		widget_set_color(*ui_steps[step-1].speed_want, Qt::red);
 		widget_set_color(*ui_steps[step-1].value, Qt::red);
 	}
+	widget_set_color(*ui.l_calib_state, Qt::red);
 
 	log("Step " + QString::number(step) + " calibration error!");
 
@@ -956,6 +961,7 @@ void MainWindow::cm_locoSpeedChanged(unsigned step) {
 
 void MainWindow::cm_done() {
 	log("Calibration done :)");
+	widget_set_color(*ui.l_calib_state, Qt::green);
 	ui.pb_progress->setValue(100);
 	cm_done_gui();
 }
@@ -998,6 +1004,7 @@ void MainWindow::b_calib_start_handle() {
 	ui.a_loco_load->setEnabled(false);
 	ui.b_reset->setEnabled(false);
 	ui.gb_speed->setEnabled(false);
+	widget_set_color(*ui.l_calib_state, Qt::yellow);
 	cm.calibrateAll(ui.sb_loco->value(),
 	                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 }
@@ -1008,6 +1015,7 @@ void MainWindow::b_calib_stop_handle() {
 
 	cm.stop();
 	log("Calibration manually interrupted!");
+	widget_set_color(*ui.l_calib_state, Qt::red);
 	cm_done_gui();
 }
 
@@ -1036,6 +1044,17 @@ void MainWindow::b_reset_handle() {
 	reset();
 
 	QMessageBox::information(this, "Info", "All measured data have been erased.");
+}
+
+void MainWindow::t_calib_active_tick() {
+	if (cm.inProgress()) {
+		QPalette palette = ui.l_calib_state->palette();
+		QColor color = palette.color(QPalette::WindowText);
+		if (color == Qt::yellow)
+			widget_set_color(*(ui.l_calib_state), Qt::lightGray);
+		else
+			widget_set_color(*(ui.l_calib_state), Qt::yellow);
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1237,6 +1256,7 @@ void MainWindow::reset() {
 		widget_set_color(*ui_steps[i].speed_want, def);
 		widget_set_color(*ui_steps[i].value, def);
 	}
+	widget_set_color(*ui.l_calib_state, Qt::gray);
 	ui.pb_progress->setValue(0);
 }
 
