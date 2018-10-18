@@ -362,6 +362,7 @@ void CalibMan::interpolateNext() {
 	);
 	this->power[m_thisIPstep] = power;
 	onStepPowerChanged(m_thisIPstep+1, power);
+	onStepDone(m_thisIPstep+1, power);
 }
 
 void CalibMan::xnIPError(void*, void*) {
