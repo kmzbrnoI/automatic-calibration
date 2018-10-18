@@ -1158,6 +1158,40 @@
    </property>
   </action>
  </widget>
+ <tabstops>
+  <tabstop>tw_main</tabstop>
+  <tabstop>b_start</tabstop>
+  <tabstop>b_wsm_lt</tabstop>
+  <tabstop>sb_max_speed</tabstop>
+  <tabstop>b_calib_start</tabstop>
+  <tabstop>b_calib_stop</tabstop>
+  <tabstop>b_reset</tabstop>
+  <tabstop>b_test1</tabstop>
+  <tabstop>b_test2</tabstop>
+  <tabstop>b_test3</tabstop>
+  <tabstop>lv_log</tabstop>
+  <tabstop>b_addr_read</tabstop>
+  <tabstop>sb_loco</tabstop>
+  <tabstop>b_addr_set</tabstop>
+  <tabstop>b_addr_release</tabstop>
+  <tabstop>vs_speed</tabstop>
+  <tabstop>b_loco_idle</tabstop>
+  <tabstop>b_loco_stop</tabstop>
+  <tabstop>sb_speed</tabstop>
+  <tabstop>b_speed_set</tabstop>
+  <tabstop>rb_forward</tabstop>
+  <tabstop>rb_backward</tabstop>
+  <tabstop>chb_f0</tabstop>
+  <tabstop>chb_f1</tabstop>
+  <tabstop>chb_f2</tabstop>
+  <tabstop>sb_accel</tabstop>
+  <tabstop>sb_decel</tabstop>
+  <tabstop>b_ad_read</tabstop>
+  <tabstop>b_ad_write</tabstop>
+  <tabstop>b_decel_measure</tabstop>
+  <tabstop>cb_xn_loglevel</tabstop>
+  <tabstop>tw_xn_log</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
