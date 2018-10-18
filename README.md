@@ -56,6 +56,32 @@ You may use [this script](https://serverfault.com/questions/61659/can-you-get-an
     rfcomm connect /dev/rfcomm0 hc-05-hw-address 2
     ```
 
+## Project description
+
+This project consists of several C++ classes defined in header files and
+its implementations defined in `.cpp` files. All classes are described in
+diagram below:
+
+![Class diagram](doc/ac-class-structure.png)
+
+Squares are classes (in this project singletons), the arrow represents
+relationship *owns*. Red classes are Window classes, `MainWindow` basically
+owns everything, yellow classes are libraries, blue classes are managers and
+green classes are helpers.
+
+Basically all the managers use all the libraries and helpers. Helpers are
+connected to GUI to visualize its states. Libs and helpers are passed to
+managers as references.
+
+`CalibMan` manages whole process of calibration divided into two phases
+(`CalibOverview`, `CalibStep`), see [`calib-man.h`](calib-man.h) for more
+information.
+
+All visualized classes inherit from `QObject` and usually communicate with
+*outer world* by receiving function calls and calling Qt's signals.
+
+Each header file contains a docstring, so see it for more information.
+
 ## Style checking
 
 ```
