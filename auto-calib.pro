@@ -34,6 +34,8 @@ SOURCES += \
 HEADERS += \
 	main-window.h \
 	lib/q-str-exception.h \
+	lib/wsm/q-str-exception.h \
+	lib/xn/q-str-exception.h \
 	lib/wsm/wsm.h \
 	lib/xn/xn.h \
 	lib/xn/xn-typedefs.h \

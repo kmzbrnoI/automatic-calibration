@@ -282,7 +282,7 @@ void MainWindow::xn_onConnect() {
 			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onLIVersionError(s, d); })
 		);
 	}
-	catch (const QStrException& e) {
+	catch (const Xn::QStrException& e) {
 		show_error(e.str());
 	}
 }
@@ -370,7 +370,7 @@ void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
 			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onCSStatusError(s, d); })
 		);
 	}
-	catch (const QStrException& e) {
+	catch (const Xn::QStrException& e) {
 		show_error(e.str());
 	}
 }
@@ -550,10 +550,12 @@ void MainWindow::a_xn_connect(bool) {
 		return;
 
 	try {
+		widget_set_color(*(ui.l_xn), Qt::yellow);
 		log("Connecting to XN...");
 		xn.connect(s["XN"]["port"].toString(), s["XN"]["baudrate"].toInt(),
 		           static_cast<QSerialPort::FlowControl>(s["XN"]["flowcontrol"].toInt()));
-	} catch (const QStrException& e) {
+	} catch (const Xn::QStrException& e) {
+		widget_set_color(*(ui.l_xn), Qt::red);
 		show_error("XN connect error while opening serial port '" +
 		           s["XN"]["port"].toString() + "':\n" + e);
 	}
@@ -568,7 +570,7 @@ void MainWindow::a_xn_disconnect(bool) {
 		xn.disconnect();
 		if (cm.inProgress())
 			b_calib_stop_handle();
-	} catch (const QStrException& e) {
+	} catch (const Xn::QStrException& e) {
 		show_error("XN disconnect error:\n" + e.str());
 	}
 }
@@ -580,7 +582,7 @@ void MainWindow::a_dcc_go(bool) {
 				Xn::XnTrkStatus::On, nullptr,
 				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onDccGoError(s, d); })
 			);
-	} catch (const QStrException& e) {
+	} catch (const Xn::QStrException& e) {
 		show_error(e.str());
 	}
 }
@@ -592,7 +594,7 @@ void MainWindow::a_dcc_stop(bool) {
 				Xn::XnTrkStatus::Off, nullptr,
 				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_onDccStopError(s, d); })
 			);
-	} catch (const QStrException& e) {
+	} catch (const Xn::QStrException& e) {
 		show_error(e.str());
 	}
 }
@@ -655,7 +657,7 @@ void MainWindow::b_speed_set_handle() {
 		m_sent_speed = ui.sb_speed->value();
 		ui.vs_speed->setValue(ui.sb_speed->value());
 	}
-	catch (const QStrException& e) {
+	catch (const Xn::QStrException& e) {
 		show_error(e.str());
 	}
 }
@@ -667,7 +669,7 @@ void MainWindow::b_loco_stop_handle() {
 		ui.sb_speed->setValue(0);
 		xn.emergencyStop(Xn::LocoAddr(ui.sb_loco->value()));
 	}
-	catch (const QStrException& e) {
+	catch (const Xn::QStrException& e) {
 		show_error(e.str());
 	}
 }
@@ -693,7 +695,7 @@ void MainWindow::t_slider_tick() {
 			            static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 		}
 	}
-	catch (const QStrException& e) {
+	catch (const Xn::QStrException& e) {
 		show_error(e.str());
 	}
 }
@@ -730,6 +732,7 @@ void MainWindow::a_wsm_connect(bool) {
 	log("Connecting to WSM...");
 
 	try {
+		widget_set_color(*(ui.l_wsm), Qt::yellow);
 		wsm.connect(s["WSM"]["port"].toString());
 
 		ui.a_wsm_connect->setEnabled(false);
@@ -737,7 +740,9 @@ void MainWindow::a_wsm_connect(bool) {
 		widget_set_color(*(ui.l_wsm), Qt::green);
 
 		log("Connected to WSM");
+		widget_set_color(*(ui.l_wsm), Qt::green);
 	} catch (const Wsm::EOpenError& e) {
+		widget_set_color(*(ui.l_wsm), Qt::red);
 		show_error("WSM connect error while opening serial port '" +
 		           s["WSM"]["port"].toString() + "':\n" + e);
 	}
@@ -825,9 +830,8 @@ void MainWindow::b_wsm_lt_handle() {
 	if (wsm.connected()) {
 		try {
 			wsm.startLongTermMeasure(30); // 3 s
-
 		}
-		catch (const QStrException& e) {
+		catch (const Wsm::QStrException& e) {
 			show_error(e.str());
 		}
 		ui.b_wsm_lt->setEnabled(false);
