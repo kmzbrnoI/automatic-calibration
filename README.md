@@ -94,6 +94,27 @@ All visualized classes inherit from `QObject` and usually communicate with
 
 Each header file contains a docstring, so see it for more information.
 
+## Configuration
+
+The binary loads general configuration from `config.ini` file located in the
+directory where the binary is executed from. This file is created once the
+application is run for the first time. Inspect it and configure the app]
+according to your requirements. Configuration cannot be done from GUI, it
+is done just through the config file. Config could be reloaded at runtime.
+
+Loco-specific configuration could be loaded from & saved to `xml` file
+according to the format of loco of [JMRI](http://jmri.sourceforge.net/).
+
+Speed table is loaded from `speed.csv` file, where each line is of format
+`step:speed`:
+
+```
+6;10
+15;40
+17;50
+...
+```
+
 ## Style checking
 
 ```
