@@ -913,14 +913,27 @@ void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 
 void MainWindow::cm_stepDone(unsigned step, unsigned power) {
 	(void)power;
+	widget_set_color(*ui_steps[step-1].step, Qt::darkGreen);
+	widget_set_color(*ui_steps[step-1].speed_want, Qt::darkGreen);
+	widget_set_color(*ui_steps[step-1].value, Qt::darkGreen);
+
 	log("Step " + QString::number(step) + " done");
 }
 
 void MainWindow::cm_stepStart(unsigned step) {
+	widget_set_color(*ui_steps[step-1].step, Qt::darkYellow);
+	widget_set_color(*ui_steps[step-1].speed_want, Qt::darkYellow);
+	widget_set_color(*ui_steps[step-1].value, Qt::darkYellow);
 	log("Starting calibration of step " + QString::number(step));
 }
 
 void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
+	if (step != 0) {
+		widget_set_color(*ui_steps[step-1].step, Qt::red);
+		widget_set_color(*ui_steps[step-1].speed_want, Qt::red);
+		widget_set_color(*ui_steps[step-1].value, Qt::red);
+	}
+
 	log("Step " + QString::number(step) + " calibration error!");
 
 	if (ce == Cm::CmError::LargeDiffusion)
@@ -1216,8 +1229,13 @@ void MainWindow::reset() {
 	m_pm.clear();
 	cm.reset();
 	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
+		QColor def = ui_steps[i].step->palette().color(QPalette::WindowText);
+
 		ui_steps[i].slider->setValue(0);
 		ui_steps[i].selected->setChecked(false);
+		widget_set_color(*ui_steps[i].step, def);
+		widget_set_color(*ui_steps[i].speed_want, def);
+		widget_set_color(*ui_steps[i].value, def);
 	}
 	ui.pb_progress->setValue(0);
 }
