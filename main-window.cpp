@@ -817,7 +817,8 @@ void MainWindow::mc_speedReceiveRestore() {
 
 void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
 	ui.b_wsm_lt->setEnabled(true);
-	log("WSM long term done: sp=" + QString::number(speed) + ", diff=" + QString::number(diffusion));
+	log("WSM long term done: sp=" + QString::number(speed, 'f', 1) +
+	    ", diff=" + QString::number(diffusion, 'f', 1));
 }
 
 void MainWindow::b_wsm_lt_handle() {
@@ -1242,7 +1243,7 @@ void MainWindow::a_loco_save(bool) {
 // Range measuring:
 
 void MainWindow::cr_measured(double distance) {
-	log("Range measured: " + QString::number(distance*100) + " cm");
+	log("Range measured: " + QString::number(distance*100, 'f', 1) + " cm");
 }
 
 void MainWindow::cr_error(Cr::CrError ce, unsigned) {
