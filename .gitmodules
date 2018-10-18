@@ -1,3 +1,6 @@
 [submodule "lib/xn"]
 	path = lib/xn
 	url = https://github.com/kmzbrnoI/xn-lib-cpp-qt
+[submodule "lib/wsm"]
+	path = lib/wsm
+	url = https://github.com/kmzbrnoI/wsm-lib-cpp-qt
