@@ -140,8 +140,8 @@ private:
 		std::make_pair<unsigned, unsigned>(2, 1),
 		std::make_pair<unsigned, unsigned>(3, 0),
 		std::make_pair<unsigned, unsigned>(4, 0),
-		std::make_pair<unsigned, unsigned>(5, 1),
-		std::make_pair<unsigned, unsigned>(6, 1),
+		std::make_pair<unsigned, unsigned>(5, 255),
+		std::make_pair<unsigned, unsigned>(6, 60),
 	};
 
 private slots:
