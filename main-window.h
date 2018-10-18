@@ -41,24 +41,6 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 
-	void xn_onDccGoError(void*, void*);
-	void xn_onDccStopError(void*, void*);
-	void xn_onLIVersionError(void*, void*);
-	void xn_onCSVersionError(void*, void*);
-	void xn_onCSStatusError(void*, void*);
-	void xn_onCSStatusOk(void*, void*);
-	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
-	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
-	void xn_gotLocoInfo(void*, bool used, Xn::XnDirection direction, unsigned speed,
-	                    Xn::XnFA, Xn::XnFB);
-	void xn_onLocoInfoError(void*, void*);
-	void xn_addrReadError(void*, void*);
-	void xn_adReadError(void*, void*);
-	void xn_cvRead(void*, Xn::XnReadCVStatus, uint8_t cv, uint8_t value);
-	void xn_adWriteError(void*, void*);
-	void xn_accelWritten(void*, void*);
-	void xn_decelWritten(void*, void*);
-
 private slots:
 	void xn_onError(QString error);
 	void xn_onLog(QString, Xn::XnLogLevel);
@@ -160,6 +142,26 @@ private:
 	Ssm::StepsToSpeedMap m_ssm;
 	Cm::CalibMan cm;
 	Cr::CalibRange cr;
+
+	void xn_onDccGoError(void*, void*);
+	void xn_onDccStopError(void*, void*);
+	void xn_onLIVersionError(void*, void*);
+	void xn_onCSVersionError(void*, void*);
+	void xn_onCSStatusError(void*, void*);
+	void xn_onCSStatusOk(void*, void*);
+	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
+	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
+	void xn_gotLocoInfo(void*, bool used, Xn::XnDirection direction, unsigned speed,
+	                    Xn::XnFA, Xn::XnFB);
+	void xn_onLocoInfoError(void*, void*);
+	void xn_addrReadError(void*, void*);
+	void xn_adReadError(void*, void*);
+	void xn_cvRead(void*, Xn::XnReadCVStatus, uint8_t cv, uint8_t value);
+	void xn_adWriteError(void*, void*);
+	void xn_accelWritten(void*, void*);
+	void xn_decelWritten(void*, void*);
+	void xn_stepWritten(void*, void*);
+	void xn_stepWriteError(void*, void*);
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);
