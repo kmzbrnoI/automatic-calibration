@@ -1263,7 +1263,7 @@ void MainWindow::reset() {
 	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
 		ui_steps[i].slider->setValue(0);
 		ui_steps[i].selected->setChecked(false);
-		step_set_color(i, ui_steps[i].step->palette().color(QPalette::WindowText));
+		step_set_color(i, Qt::black);
 	}
 	widget_set_color(*ui.l_calib_state, Qt::gray);
 	ui.pb_progress->setValue(0);
