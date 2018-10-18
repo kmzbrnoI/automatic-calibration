@@ -1,10 +1,21 @@
 # Automatic Calibration SW
 
 Automatic Calibration SW is a desktop application which allows you to
-automatically calibrate your model train vehicle. It requires a Wireless
-Speedometer and [XpressNET command
+automatically calibrate your model train vehicle. It requires a [Wireless
+Speedometer](https://github.com/kmzbrnoI/wsm-pcb) and [XpressNET command
 station](https://dccwiki.com/XpressNet_Protocol) connected to PC via
 [LI](https://dccwiki.com/Computer_Interface_List) and (virtual) serial port.
+
+**Calibrating** = assigning power to each of 28 speed steps so specific speed
+steps fit specific real speed. E. g. step 15 = 40 km/h, step 17 = 50 km/h etc.
+This assignment is defined by user and this application loads it from file
+'speed.csv'. The main aim of this application is to do this 'assignment'
+automatically.
+
+How does it work? Application assigns *power* to each speed step of the DCC
+decoder in the train and then measures real speed of the train. It repeats this
+process until the correct speed is assigned to the speed step. And the again
+for different speed step and different real speed...
 
 This application is developed in [QT](https://www.qt.io/) v5.
 
