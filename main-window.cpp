@@ -888,7 +888,9 @@ void MainWindow::init_calib_graph() {
 void MainWindow::vs_steps_moved(int value) {
 	unsigned stepi = qobject_cast<QSlider*>(QObject::sender())->property("step").toUInt();
 	ui_steps[stepi].value->setText(QString::number(value));
-	step_set_color(stepi, _STEPC_CHANGED);
+
+	if (ui_steps[stepi].slider->isEnabled())
+		step_set_color(stepi, _STEPC_CHANGED);
 }
 
 void MainWindow::b_calibrate_handle() {
@@ -1017,7 +1019,7 @@ void MainWindow::b_calib_start_handle() {
 	ui.a_loco_load->setEnabled(false);
 	ui.b_reset->setEnabled(false);
 	ui.gb_speed->setEnabled(false);
-	widget_set_color(*ui.l_calib_state, Qt::darkYellow);
+	widget_set_color(*ui.l_calib_state, Qt::yellow);
 	cm.calibrateAll(ui.sb_loco->value(),
 	                static_cast<Xn::XnDirection>(ui.rb_forward->isChecked()));
 }
