@@ -1,11 +1,12 @@
 # Automatic Calibration SW
 
 Automatic Calibration SW is a desktop application which allows you to
-automatically calibrate your model train vehicle.
+automatically calibrate your model train vehicle. It requires a Wireless
+Speedometer and [XpressNET command
+station](https://dccwiki.com/XpressNet_Protocol) connected to PC via
+[LI](https://dccwiki.com/Computer_Interface_List) and (virtual) serial port.
 
-This application is developed in [QT](https://www.qt.io/).
-
-*More information will be added here when the project reaches alpha state.*
+This application is developed in [QT](https://www.qt.io/) v5.
 
 ## Resources
 
@@ -15,15 +16,15 @@ This application is developed in [QT](https://www.qt.io/).
 
 ## Building & toolkit
 
-This SW was developed in `vim` using `make`. Downloads are available in
-*Releases* section.
+This SW was developed in `vim` using `qmake` & `make`. Downloads are available
+in *Releases* section.
 
 Howto build:
 
 Clone this repository (including submodules!):
 
 ```
-git clone --recurse-submodules https://github.com/kmzbrnoI/automatic-calibration
+$ git clone --recurse-submodules https://github.com/kmzbrnoI/automatic-calibration
 ```
 
 And then build:
@@ -44,7 +45,7 @@ qmake CONFIG+=debug ..
 make
 ```
 
-You may use [this script](https://serverfault.com/questions/61659/can-you-get-any-program-in-linux-to-print-a-stack-trace-if-it-segfaults) do debug segfaults.
+You may use [this script](https://serverfault.com/questions/61659/can-you-get-any-program-in-linux-to-print-a-stack-trace-if-it-segfaults) to debug segfaults.
 
 ## Connecting to WSM
 
