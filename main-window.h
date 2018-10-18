@@ -27,6 +27,10 @@ const unsigned _CV_ADDR_LO = 18;
 const unsigned _CV_ADDR_HI = 17;
 const unsigned _CV_BASIC = 29;
 
+const QColor _STEPC_DONE = QColor(50, 200, 50);
+const QColor _STEPC_ERROR = Qt::red;
+const QColor _STEPC_CHANGED = Qt::blue;
+
 struct UiStep {
 	QSlider *slider;
 	QLabel *step, *speed_want, *value;

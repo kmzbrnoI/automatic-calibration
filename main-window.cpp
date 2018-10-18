@@ -534,12 +534,12 @@ void MainWindow::xn_decelWritten(void*, void*) {
 
 void MainWindow::xn_stepWritten(void*, void* d) {
 	unsigned stepi = reinterpret_cast<intptr_t>(d);
-	step_set_color(stepi, Qt::green);
+	step_set_color(stepi, _STEPC_DONE);
 }
 
 void MainWindow::xn_stepWriteError(void*, void* d) {
 	unsigned stepi = reinterpret_cast<intptr_t>(d);
-	step_set_color(stepi, Qt::red);
+	step_set_color(stepi, _STEPC_ERROR);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -844,6 +844,7 @@ void MainWindow::a_power_graph(bool) {
 void MainWindow::init_calib_graph() {
 	for(size_t i = 0; i < _STEPS_CNT; i++) {
 		QLabel *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
+		step->setFont(QFont("Sans Serif", 9, QFont::Bold));
 		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].step = step;
 		ui.l_cal_graph->addWidget(step, 0, i);
@@ -887,7 +888,7 @@ void MainWindow::init_calib_graph() {
 void MainWindow::vs_steps_moved(int value) {
 	unsigned stepi = qobject_cast<QSlider*>(QObject::sender())->property("step").toUInt();
 	ui_steps[stepi].value->setText(QString::number(value));
-	step_set_color(stepi, Qt::darkYellow);
+	step_set_color(stepi, _STEPC_CHANGED);
 }
 
 void MainWindow::b_calibrate_handle() {
@@ -937,18 +938,18 @@ void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 
 void MainWindow::cm_stepDone(unsigned step, unsigned power) {
 	(void)power;
-	step_set_color(step-1, Qt::darkGreen);
+	step_set_color(step-1, _STEPC_DONE);
 	log("Step " + QString::number(step) + " done");
 }
 
 void MainWindow::cm_stepStart(unsigned step) {
-	step_set_color(step-1, Qt::darkYellow);
+	step_set_color(step-1, _STEPC_CHANGED);
 	log("Starting calibration of step " + QString::number(step));
 }
 
 void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 	if (step != 0)
-		step_set_color(step-1, Qt::red);
+		step_set_color(step-1, _STEPC_ERROR);
 	widget_set_color(*ui.l_calib_state, Qt::red);
 
 	log("Step " + QString::number(step) + " calibration error!");
