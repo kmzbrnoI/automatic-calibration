@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	this->setWindowTitle(text);
 	this->setFixedSize(this->size());
 	a_config_load(true);
+	ui.b_start->setFocus();
 
 	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
