@@ -96,6 +96,8 @@ void CalibMan::csError(Cs::CsError cs, unsigned step) {
 		error(CmError::LocoStopped, step);
 	else if (cs == Cs::CsError::NoStep)
 		error(CmError::NoStep, step);
+	else if (cs == Cs::CsError::Oscilation)
+		error(CmError::Oscilation, step);
 }
 
 void CalibMan::coError(Co::CoError co, unsigned step) {

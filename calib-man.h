@@ -54,6 +54,7 @@ enum class CmError {
 	XnNoResponse,
 	LocoStopped,
 	NoStep,
+	Oscilation,
 };
 
 enum class CalibState {
