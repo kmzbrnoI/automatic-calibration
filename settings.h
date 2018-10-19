@@ -17,9 +17,13 @@ const std::map<QString, std::map<QString, QVariant>> _DEFAULTS {
 		{"flowcontrol", 1},
 		{"loglevel", 1},
 		{"port", "/dev/ttyUSB0"},
+		{"logfile", ""},
 	}},
 	{"Speed", {
 		{"file", "speed.csv"},
+	}},
+	{"Logging", {
+		{"file", ""},
 	}},
 };
 

@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QXmlStreamWriter>
 #include <utility>
+#include <fstream>
 
 #include "main-window.h"
 #include "ui_main-window.h"
@@ -254,6 +255,11 @@ void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
 
 	item->setText(2, message);
 	ui.tw_xn_log->addTopLevelItem(item);
+
+	if (s["XN"]["logfile"] != "") {
+		std::ofstream out(s["XN"]["logfile"].toString().toLatin1().data(), std::ofstream::app);
+		out << QTime::currentTime().toString("hh:mm:ss.zzz").toLatin1().data() << ": " << message.toLatin1().data() << std::endl;
+	}
 }
 
 void MainWindow::xn_onConnect() {
@@ -614,6 +620,11 @@ void MainWindow::log(QString message, QColor color) {
 		ui.lv_log->clear();
 	ui.lv_log->insertItem(0, QTime::currentTime().toString("hh:mm:ss") + ": " + message);
 	ui.lv_log->item(0)->setBackground(color);
+
+	if (s["Logging"]["file"] != "") {
+		std::ofstream out(s["Logging"]["file"].toString().toLatin1().data(), std::ofstream::app);
+		out << QTime::currentTime().toString("hh:mm:ss.zzz").toLatin1().data() << ": " << message.toLatin1().data() << std::endl;
+	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
