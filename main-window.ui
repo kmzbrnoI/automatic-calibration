@@ -469,6 +469,45 @@
           <string>Idle</string>
          </property>
         </widget>
+        <widget class="QPushButton" name="b_test3">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>230</y>
+           <width>51</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>test3</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_test1">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>170</y>
+           <width>51</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>test1</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_test2">
+         <property name="geometry">
+          <rect>
+           <x>150</x>
+           <y>200</y>
+           <width>51</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>test2</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="gb_cal_graph">
         <property name="enabled">
@@ -629,7 +668,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>80</y>
+           <y>90</y>
            <width>181</width>
            <height>31</height>
           </rect>
@@ -641,9 +680,9 @@
         <widget class="QSpinBox" name="sb_max_speed">
          <property name="geometry">
           <rect>
-           <x>10</x>
-           <y>50</y>
-           <width>181</width>
+           <x>90</x>
+           <y>30</y>
+           <width>101</width>
            <height>23</height>
           </rect>
          </property>
@@ -659,58 +698,19 @@
           <rect>
            <x>10</x>
            <y>30</y>
-           <width>111</width>
+           <width>81</width>
            <height>16</height>
           </rect>
          </property>
          <property name="text">
-          <string>Maximum speed:</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="b_test1">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>280</y>
-           <width>51</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>test1</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="b_test2">
-         <property name="geometry">
-          <rect>
-           <x>70</x>
-           <y>280</y>
-           <width>61</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>test2</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="b_test3">
-         <property name="geometry">
-          <rect>
-           <x>140</x>
-           <y>280</y>
-           <width>51</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>test3</string>
+          <string>Max. speed:</string>
          </property>
         </widget>
         <widget class="Line" name="line_2">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>160</y>
+           <y>170</y>
            <width>181</width>
            <height>20</height>
           </rect>
@@ -723,7 +723,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>200</y>
+           <y>220</y>
            <width>181</width>
            <height>23</height>
           </rect>
@@ -736,7 +736,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>180</y>
+           <y>200</y>
            <width>59</width>
            <height>14</height>
           </rect>
@@ -752,7 +752,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>120</y>
+           <y>130</y>
            <width>181</width>
            <height>31</height>
           </rect>
@@ -761,24 +761,11 @@
           <string>Stop calibration</string>
          </property>
         </widget>
-        <widget class="Line" name="line_3">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>260</y>
-           <width>181</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-        </widget>
         <widget class="QPushButton" name="b_reset">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>230</y>
+           <y>280</y>
            <width>181</width>
            <height>22</height>
           </rect>
@@ -790,15 +777,15 @@
         <widget class="QLabel" name="l_calib_state">
          <property name="geometry">
           <rect>
-           <x>90</x>
-           <y>180</y>
-           <width>101</width>
-           <height>16</height>
+           <x>10</x>
+           <y>250</y>
+           <width>181</width>
+           <height>21</height>
           </rect>
          </property>
          <property name="font">
           <font>
-           <pointsize>100</pointsize>
+           <pointsize>200</pointsize>
           </font>
          </property>
          <property name="text">
@@ -806,6 +793,35 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="sb_vmax">
+         <property name="geometry">
+          <rect>
+           <x>90</x>
+           <y>60</y>
+           <width>101</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>255</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_14">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>60</y>
+           <width>41</width>
+           <height>16</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Vmax:</string>
          </property>
         </widget>
        </widget>
@@ -1176,12 +1192,10 @@
   <tabstop>b_start</tabstop>
   <tabstop>b_wsm_lt</tabstop>
   <tabstop>sb_max_speed</tabstop>
+  <tabstop>sb_vmax</tabstop>
   <tabstop>b_calib_start</tabstop>
   <tabstop>b_calib_stop</tabstop>
   <tabstop>b_reset</tabstop>
-  <tabstop>b_test1</tabstop>
-  <tabstop>b_test2</tabstop>
-  <tabstop>b_test3</tabstop>
   <tabstop>lv_log</tabstop>
   <tabstop>b_addr_read</tabstop>
   <tabstop>sb_loco</tabstop>
@@ -1204,6 +1218,9 @@
   <tabstop>b_decel_measure</tabstop>
   <tabstop>cb_xn_loglevel</tabstop>
   <tabstop>tw_xn_log</tabstop>
+  <tabstop>b_test3</tabstop>
+  <tabstop>b_test1</tabstop>
+  <tabstop>b_test2</tabstop>
  </tabstops>
  <resources/>
  <connections/>
