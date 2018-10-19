@@ -237,11 +237,15 @@ void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
 
 	if (loglevel == Xn::XnLogLevel::None)
 		item->setText(1, "None");
-	else if (loglevel == Xn::XnLogLevel::Error)
+	else if (loglevel == Xn::XnLogLevel::Error) {
 		item->setText(1, "Error");
-	else if (loglevel == Xn::XnLogLevel::Warning)
+		for(size_t i = 0; i < 3; i++)
+			item->setBackground(i, _LOGC_ERROR);
+	} else if (loglevel == Xn::XnLogLevel::Warning) {
 		item->setText(1, "Warning");
-	else if (loglevel == Xn::XnLogLevel::Info)
+		for(size_t i = 0; i < 3; i++)
+			item->setBackground(i, _LOGC_WARN);
+	} else if (loglevel == Xn::XnLogLevel::Info)
 		item->setText(1, "Info");
 	else if (loglevel == Xn::XnLogLevel::Data)
 		item->setText(1, "Data");
