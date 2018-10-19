@@ -58,6 +58,9 @@ QMAKE_CXXFLAGS += -Wall -Wextra -pedantic
 QT += serialport
 QT += charts
 
+RESOURCES += auto-calib.qrc
+win32:RC_ICONS += icon/app-icon.ico
+
 VERSION_MAJOR = 0
 VERSION_MINOR = 1
 

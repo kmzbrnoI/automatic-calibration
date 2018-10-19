@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>Automatic Calibration</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="auto-calib.qrc">
+    <normaloff>:/icon/app-icon.svg</normaloff>:/icon/app-icon.svg</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
@@ -1222,6 +1226,8 @@
   <tabstop>b_test1</tabstop>
   <tabstop>b_test2</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="auto-calib.qrc"/>
+ </resources>
  <connections/>
 </ui>
