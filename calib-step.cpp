@@ -17,6 +17,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 	m_step = step;
 	m_target_speed = speed;
 	m_diff_count = 0;
+	power_history.clear();
 
 	try {
 		m_last_power = m_pm.power(m_target_speed);
@@ -33,6 +34,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
+	power_history.push_back(m_last_power);
 	step_power_changed(m_step, m_last_power);
 }
 
@@ -62,6 +64,11 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		return;
 	}
 
+	if (is_oscilating()) {
+		on_error(CsError::Oscilation, speed);
+		return;
+	}
+
 	unsigned new_power;
 	try {
 		new_power = m_pm.power(m_target_speed);
@@ -88,6 +95,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
 
+	power_history.push_back(m_last_power);
 	step_power_changed(m_step, m_last_power);
 }
 
@@ -119,6 +127,25 @@ void CalibStep::wsm_lt_error() {
 
 void CalibStep::stop() {
 	wsm_lt_error();
+}
+
+bool CalibStep::is_oscilating() const {
+	if (power_history.size() < _OSC_MAX_COUNT*2)
+		return false;
+
+	// Compare odd indexes
+	unsigned compared = power_history[power_history.size()-2];
+	for(size_t i = power_history.size() - _OSC_MAX_COUNT*2; i < power_history.size(); i += 2)
+		if (power_history[i] != compared)
+			return false;
+
+	// Compare even indexes
+	compared = power_history[power_history.size()-1];
+	for(size_t i = power_history.size() - _OSC_MAX_COUNT*2 + 1; i < power_history.size(); i += 2)
+		if (power_history[i] != compared)
+			return false;
+
+	return true;
 }
 
 }//namespace Cs

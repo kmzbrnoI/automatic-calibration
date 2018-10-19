@@ -25,6 +25,7 @@ speed step.
 
 #include <QObject>
 #include <QTimer>
+#include <vector>
 
 #include "lib/xn/xn.h"
 #include "lib/wsm/wsm.h"
@@ -39,6 +40,7 @@ const unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
 
 const unsigned _CV_START = 67; // cv 67 = step 1
 const unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
+const unsigned _OSC_MAX_COUNT = 3;
 
 enum class CsError {
 	LargeDiffusion,
@@ -75,8 +77,11 @@ private:
 	unsigned m_last_power;
 	unsigned m_diff_count;
 
+	std::vector<unsigned> power_history;
+
 	void xn_pom_ok(void*, void*);
 	void xn_pom_err(void*, void*);
+	bool is_oscilating() const;
 
 private slots:
 	void wsm_lt_read(double speed, double diffusion);
