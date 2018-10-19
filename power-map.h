@@ -37,6 +37,9 @@ public:
 	bool isAnyRecord() const;
 	float* speed(unsigned power) const;
 
+	float* at(const int power) const;
+	float* operator[] (const int power) const;
+
 signals:
 	void onAddOrUpdate(unsigned power, float speed);
 	void onClear();

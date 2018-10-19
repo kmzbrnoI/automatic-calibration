@@ -53,4 +53,12 @@ bool PowerToSpeedMap::isAnyRecord() const {
 	return false;
 }
 
+float* PowerToSpeedMap::at(const int power) const {
+	return map[power].get();
+}
+
+float* PowerToSpeedMap::operator[] (const int power) const {
+	return at(power);
+}
+
 }//namespace Pm
