@@ -32,9 +32,10 @@ public:
 
 	void clear();
 	void addOrUpdate(unsigned power, float speed);
-	unsigned power(float speed);
-	bool isRecord(unsigned power);
-	float* speed(unsigned power);
+	unsigned power(float speed) const;
+	bool isRecord(unsigned power) const;
+	bool isAnyRecord() const;
+	float* speed(unsigned power) const;
 
 signals:
 	void onAddOrUpdate(unsigned power, float speed);

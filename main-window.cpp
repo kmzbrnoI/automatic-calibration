@@ -67,6 +67,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_test3, SIGNAL(released()), this, SLOT(b_test3_handle()));
 
 	ui.sb_max_speed->setValue(m_ssm.maxSpeedInFile());
+	ui.sb_vmax->setValue(cm.vmax);
 	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_max_speed_changed(int)));
 	QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(lv_log_dblclick(QListWidgetItem*)));
 	QObject::connect(ui.tw_xn_log, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
@@ -1019,9 +1020,26 @@ void MainWindow::b_calib_start_handle() {
 		return;
 	}
 
+	if (m_pm.isAnyRecord() && static_cast<unsigned>(ui.sb_vmax->value()) != cm.vmax) {
+		QMessageBox::StandardButton reply;
+		reply = QMessageBox::question(
+			this,
+			"Question",
+			"Vmax has been changed from '" + QString::number(cm.vmax) +
+			"' to '" + QString::number(ui.sb_vmax->value()) +
+			"', so all the measured data must be erased and calibrated again.\nContinue?",
+			QMessageBox::Yes|QMessageBox::No, QMessageBox::No
+		);
+		if (reply != QMessageBox::Yes)
+			return;
+
+		reset();
+	}
+
 	ui.b_calib_start->setEnabled(false);
 	ui.b_calib_stop->setEnabled(true);
 	ui.sb_max_speed->setEnabled(false);
+	ui.sb_vmax->setEnabled(false);
 	ui.gb_cal_graph->setEnabled(false);
 	ui.gb_ad->setEnabled(false);
 	ui.b_wsm_lt->setEnabled(false);
@@ -1049,6 +1067,7 @@ void MainWindow::cm_done_gui() {
 	ui.b_calib_start->setEnabled(true);
 	ui.b_calib_stop->setEnabled(false);
 	ui.sb_max_speed->setEnabled(true);
+	ui.sb_vmax->setEnabled(true);
 	ui.gb_cal_graph->setEnabled(true);
 	ui.gb_ad->setEnabled(true);
 	ui.b_wsm_lt->setEnabled(true);
@@ -1063,7 +1082,7 @@ void MainWindow::b_reset_handle() {
 		return;
 
 	QMessageBox::StandardButton reply;
-	reply = QMessageBox::question(this, "Question", "Reaaly erase all measured data?",
+	reply = QMessageBox::question(this, "Question", "Really erase all measured data?",
 	                              QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
 	if (reply != QMessageBox::Yes)
 		return;

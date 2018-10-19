@@ -20,7 +20,7 @@ void PowerToSpeedMap::addOrUpdate(unsigned power, float speed) {
 	onAddOrUpdate(power, speed);
 }
 
-unsigned PowerToSpeedMap::power(float speed) {
+unsigned PowerToSpeedMap::power(float speed) const {
 	size_t last = 0;
 	for(size_t i = 0; i < _POWER_CNT; i++) {
 		if (nullptr != map[i]) {
@@ -38,12 +38,19 @@ unsigned PowerToSpeedMap::power(float speed) {
 	throw ENoMap("No map data for this speed!");
 }
 
-bool PowerToSpeedMap::isRecord(unsigned power) {
+bool PowerToSpeedMap::isRecord(unsigned power) const {
 	return (nullptr != map[power]);
 }
 
-float *PowerToSpeedMap::speed(unsigned power) {
+float *PowerToSpeedMap::speed(unsigned power) const {
 	return map[power].get();
+}
+
+bool PowerToSpeedMap::isAnyRecord() const {
+	for(size_t i = 1; i < _POWER_CNT; i++)
+		if (nullptr != map[i])
+			return true;
+	return false;
 }
 
 }//namespace Pm

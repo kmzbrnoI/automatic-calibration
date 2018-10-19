@@ -69,7 +69,7 @@ const unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
 const bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
 const unsigned _CV_ACCEL = 3;
 const unsigned _CV_DECEL = 4;
-const unsigned _DEFAULT_VMAX = 1;
+const unsigned _DEFAULT_VMAX = 255;
 const unsigned _VMAX_CV = 5;
 
 class CalibMan : public QObject {
@@ -105,7 +105,7 @@ private:
 	unsigned m_no_calibrated;
 
 	std::map<unsigned, unsigned> init_cvs = { // (cv, value)
-		{2, 1}, {3, 0}, {4, 0}, {5, 255}, {6, 60},
+		{2, 1}, {3, 0}, {4, 0}, {_VMAX_CV, _DEFAULT_VMAX}, {6, 60},
 	};
 	std::map<unsigned, unsigned>::iterator m_init_cv_iterator;
 	unsigned m_init_cv_index;
