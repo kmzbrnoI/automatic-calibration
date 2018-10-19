@@ -106,6 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_loco_save, SIGNAL(triggered(bool)), this, SLOT(a_loco_save(bool)));
 	QObject::connect(ui.a_config_load, SIGNAL(triggered(bool)), this, SLOT(a_config_load(bool)));
 	QObject::connect(ui.a_config_save, SIGNAL(triggered(bool)), this, SLOT(a_config_save(bool)));
+	QObject::connect(ui.a_speed_load, SIGNAL(triggered(bool)), this, SLOT(a_speed_load(bool)));
 
 	// WSM init
 	QObject::connect(&wsm, SIGNAL(speedRead(double, uint16_t)), this, SLOT(mc_speedRead(double, uint16_t)));
@@ -142,7 +143,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Steps to Speed map
 	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
-	m_ssm.load("speed.csv");
+	a_speed_load(true);
 
 	// Range Calibration
 	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError, unsigned)), this, SLOT(cr_error(Cr::CrError, unsigned)));
@@ -1024,6 +1025,7 @@ void MainWindow::b_calib_start_handle() {
 	ui.b_wsm_lt->setEnabled(false);
 	ui.pb_progress->setValue(0);
 	ui.a_loco_load->setEnabled(false);
+	ui.a_speed_load->setEnabled(false);
 	ui.b_reset->setEnabled(false);
 	ui.gb_speed->setEnabled(false);
 	widget_set_color(*ui.l_calib_state, Qt::yellow);
@@ -1049,6 +1051,7 @@ void MainWindow::cm_done_gui() {
 	ui.gb_ad->setEnabled(true);
 	ui.b_wsm_lt->setEnabled(true);
 	ui.a_loco_load->setEnabled(true);
+	ui.a_speed_load->setEnabled(true);
 	ui.b_reset->setEnabled(true);
 	ui.gb_speed->setEnabled(true);
 }
@@ -1310,6 +1313,16 @@ void MainWindow::a_config_load(bool) {
 void MainWindow::a_config_save(bool) {
 	s.save(_CONFIG_FN);
 	log("Saved config to " + _CONFIG_FN);
+}
+
+void MainWindow::a_speed_load(bool) {
+	for(size_t i = 0; i < _STEPS_CNT; i++)
+		ui_steps[i].speed_want->setText("-");
+
+	QString filename;
+	Settings::cfgToQString(s["Speed"], "file", filename);
+	m_ssm.load(filename);
+	log("Loaded steps-to-speed mapping from " + filename);
 }
 
 //////////////////////////////////////////////////////////////////////////////

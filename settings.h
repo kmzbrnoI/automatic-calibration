@@ -20,6 +20,10 @@ const std::map<QString, std::map<QString, QVariant>> _DEFAULTS {
 		std::pair<QString, QVariant>("loglevel", 1),
 		std::pair<QString, QVariant>("port", "/dev/ttyUSB0"),
 	}),
+	std::pair<QString, std::map<QString, QVariant>>("Speed",
+	{
+		std::pair<QString, QVariant>("file", "speed.csv"),
+	}),
 };
 
 class Settings {
@@ -36,6 +40,8 @@ public:
 	                          unsigned& target);
 	static void cfgToDouble(std::map<QString, QVariant>& cfg, const QString section,
 	                        double& target);
+	static void cfgToQString(std::map<QString, QVariant>& cfg, const QString section,
+	                        QString& target);
 private:
 };
 

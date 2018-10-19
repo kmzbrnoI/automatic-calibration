@@ -52,3 +52,11 @@ void Settings::cfgToDouble(std::map<QString, QVariant>& cfg, const QString secti
 	else
 		cfg[section] = target;
 }
+
+void Settings::cfgToQString(std::map<QString, QVariant>& cfg, const QString section,
+                            QString& target) {
+	if (cfg.find(section) != cfg.end())
+		target = cfg[section].toString();
+	else
+		cfg[section] = target;
+}

@@ -111,6 +111,7 @@ private slots:
 	void a_loco_save(bool);
 	void a_config_load(bool);
 	void a_config_save(bool);
+	void a_speed_load(bool);
 
 	// Wsm events:
 	void mc_speedRead(double speed, uint16_t speed_raw);
