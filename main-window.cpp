@@ -161,6 +161,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow() {
 	try {
+		QObject::disconnect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
+		QObject::disconnect(&xn, SIGNAL(onLog(QString, Xn::XnLogLevel)), this, SLOT(xn_onLog(QString, Xn::XnLogLevel)));
+		QObject::disconnect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
 		a_config_save(true);
 	}
 	catch (...) {
