@@ -85,12 +85,12 @@ public:
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
 
-	void calibrateAll(unsigned locoAddr,  Xn::XnDirection dir);
+	void calibrateAll(const unsigned locoAddr,  Xn::XnDirection dir);
 	void stop();
 	void reset();
 	void interpolateAll();
-	void setStepManually(unsigned step, unsigned power);
-	void unsetStep(unsigned step);
+	void setStepManually(const unsigned step, unsigned power);
+	void unsetStep(const unsigned step);
 	bool inProgress() const;
 	CalibState progress() const;
 
@@ -105,10 +105,11 @@ private:
 	CalibState m_progress = CalibState::Stopped;
 	unsigned m_no_calibrated;
 
-	std::map<unsigned, unsigned> init_cvs = { // (cv, value)
+	using CVsConfig = std::map<unsigned, unsigned>;
+	CVsConfig init_cvs = { // (cv, value)
 		{2, 1}, {3, 0}, {4, 0}, {_VMAX_CV, _DEFAULT_VMAX}, {6, 60},
 	};
-	std::map<unsigned, unsigned>::iterator m_init_cv_iterator;
+	CVsConfig::iterator m_init_cv_iterator;
 	unsigned m_init_cv_index;
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
@@ -117,8 +118,8 @@ private:
 	                                      const size_t left, const size_t right);
 	void csSigConnect();
 	void csSigDisconnect();
-	void updateProg(CalibState cs, size_t progress, size_t max);
-	size_t getProgress(CalibState cs, size_t progress, size_t max);
+	void updateProg(const CalibState cs, const size_t progress, const size_t max);
+	size_t getProgress(const CalibState cs, const size_t progress, const size_t max);
 
 	void xnStepWritten(void*, void*);
 	void xnStepWriteError(void*, void*);
@@ -127,22 +128,20 @@ private:
 	unsigned m_thisIPleft;
 	unsigned m_thisIPstep;
 	unsigned m_thisIPright;
-	unsigned getIPpower(unsigned left, unsigned right, unsigned step);
+	unsigned getIPpower(const unsigned left, const unsigned right, const unsigned step);
 
 	void interpolateNext();
 	void xnIPWritten(void*, void*);
 	void xnIPError(void*, void*);
 
 	void done();
-	void error(Cm::CmError, unsigned step);
+	void error(const Cm::CmError, const unsigned step);
 
 	void initCVs();
 	void initCVsOk(void*, void*);
 	void initCVsError(void*, void*);
 	void initCVsWriteNext();
 	void initSTWritten(void*, void*);
-
-
 
 private slots:
 	void csDone(unsigned step, unsigned power);

@@ -31,11 +31,11 @@ public:
 	PowerToSpeedMap(QObject *parent = nullptr);
 
 	void clear();
-	void addOrUpdate(unsigned power, float speed);
-	unsigned power(float speed) const;
-	bool isRecord(unsigned power) const;
+	void addOrUpdate(const unsigned power, const float speed);
+	unsigned power(const float speed) const;
+	bool isRecord(const unsigned power) const;
 	bool isAnyRecord() const;
-	float* speed(unsigned power) const;
+	float* speed(const unsigned power) const;
 
 	float* at(const int power) const;
 	float* operator[] (const int power) const;

@@ -46,7 +46,7 @@ void StepsToSpeedMap::clear() {
 	onClear();
 }
 
-void StepsToSpeedMap::addOrUpdate(unsigned step, unsigned speed) {
+void StepsToSpeedMap::addOrUpdate(const unsigned step, const unsigned speed) {
 	m_map[step] = std::make_unique<unsigned>(speed);
 	onAddOrUpdate(step, speed);
 }
@@ -67,7 +67,7 @@ unsigned StepsToSpeedMap::maxSpeed() const {
 	return m_max_speed;
 }
 
-void StepsToSpeedMap::setMaxSpeed(unsigned new_speed) {
+void StepsToSpeedMap::setMaxSpeed(const unsigned new_speed) {
 	for(size_t i = 0; i < _STEPS_CNT; i++)
 		if (nullptr != m_map[i] && *m_map[i] > m_max_speed && *m_map[i] <= new_speed)
 			onAddOrUpdate(i, *m_map[i]);

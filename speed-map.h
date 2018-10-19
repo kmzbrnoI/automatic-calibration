@@ -39,11 +39,11 @@ public:
 	void load(const QString& filename);
 	void save(const QString& filename);
 	void clear();
-	void addOrUpdate(unsigned step, unsigned speed);
+	void addOrUpdate(const unsigned step, const unsigned speed);
 	unsigned noDifferentSpeeds();
 
 	unsigned maxSpeed() const;
-	void setMaxSpeed(unsigned new_speed);
+	void setMaxSpeed(const unsigned new_speed);
 	unsigned maxSpeedInFile() const;
 
 	unsigned* at(const int index);

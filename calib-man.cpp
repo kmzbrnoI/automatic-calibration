@@ -30,17 +30,17 @@ void CalibMan::done() {
 	onDone();
 }
 
-void CalibMan::error(Cm::CmError e, unsigned step) {
+void CalibMan::error(const Cm::CmError e, const unsigned step) {
 	updateProg(CalibState::Stopped, 0, 1);
 	onError(e, step);
 }
 
-void CalibMan::updateProg(CalibState cs, size_t progress, size_t max) {
+void CalibMan::updateProg(const CalibState cs, const size_t progress, const size_t max) {
 	m_progress = cs;
 	onProgressUpdate(getProgress(cs, progress, max));
 }
 
-size_t CalibMan::getProgress(CalibState cs, size_t progress, size_t max) {
+size_t CalibMan::getProgress(const CalibState cs, const size_t progress, const size_t max) {
 	if (cs == CalibState::InitProg) // 0-10
 		return 10 * progress / max;
 	if (cs == CalibState::Overview) // 10-40
@@ -203,7 +203,7 @@ std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& use
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void CalibMan::calibrateAll(unsigned locoAddr, Xn::XnDirection dir) {
+void CalibMan::calibrateAll(const unsigned locoAddr, Xn::XnDirection dir) {
 	m_locoAddr = locoAddr;
 	direction = dir;
 	csSigConnect();
@@ -281,7 +281,7 @@ void CalibMan::csSigDisconnect() {
 ///////////////////////////////////////////////////////////////////////////////
 // Steps interpolation
 
-unsigned CalibMan::getIPpower(unsigned left, unsigned right, unsigned step) {
+unsigned CalibMan::getIPpower(const unsigned left, const unsigned right, const unsigned step) {
 	// Get power for step 'step' interpolated from speed [left -- right]
 	// Input condition: step \in [left--right]
 
@@ -372,7 +372,7 @@ void CalibMan::xnIPError(void*, void*) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void CalibMan::setStepManually(unsigned step, unsigned power) {
+void CalibMan::setStepManually(const unsigned step, const unsigned power) {
 	state[step] = StepState::SetManually;
 	this->power[step] = power;
 
@@ -390,7 +390,7 @@ void CalibMan::setStepManually(unsigned step, unsigned power) {
 	}
 }
 
-void CalibMan::unsetStep(unsigned step) {
+void CalibMan::unsetStep(const unsigned step) {
 	state[step] = StepState::Uncalibred;
 }
 

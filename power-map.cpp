@@ -15,12 +15,12 @@ void PowerToSpeedMap::clear() {
 	onAddOrUpdate(0, 0);
 }
 
-void PowerToSpeedMap::addOrUpdate(unsigned power, float speed) {
+void PowerToSpeedMap::addOrUpdate(const unsigned power, const float speed) {
 	map[power] = std::make_unique<float>(speed);
 	onAddOrUpdate(power, speed);
 }
 
-unsigned PowerToSpeedMap::power(float speed) const {
+unsigned PowerToSpeedMap::power(const float speed) const {
 	size_t last = 0;
 	for(size_t i = 0; i < _POWER_CNT; i++) {
 		if (nullptr != map[i]) {
@@ -38,11 +38,11 @@ unsigned PowerToSpeedMap::power(float speed) const {
 	throw ENoMap("No map data for this speed!");
 }
 
-bool PowerToSpeedMap::isRecord(unsigned power) const {
+bool PowerToSpeedMap::isRecord(const unsigned power) const {
 	return (nullptr != map[power]);
 }
 
-float *PowerToSpeedMap::speed(unsigned power) const {
+float *PowerToSpeedMap::speed(const unsigned power) const {
 	return map[power].get();
 }
 
