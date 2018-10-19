@@ -399,6 +399,8 @@ void CalibMan::unsetStep(unsigned step) {
 void CalibMan::initCVs() {
 	updateProg(CalibState::InitProg, 1, init_cvs.size() + 2);
 
+	init_cvs[_VMAX_CV] = vmax;
+
 	m_xn.pomWriteBit(
 		Xn::LocoAddr(m_locoAddr),
 		_CV_CONFIG,
@@ -412,13 +414,14 @@ void CalibMan::initCVs() {
 void CalibMan::initSTWritten(void*, void*) {
 	updateProg(CalibState::InitProg, 2, init_cvs.size() + 2);
 	m_init_cv_index = 0;
+	m_init_cv_iterator = init_cvs.begin();
 	initCVsWriteNext();
 }
 
 void CalibMan::initCVsWriteNext() {
 	updateProg(CalibState::InitProg, m_init_cv_index + 1, init_cvs.size() + 2);
 
-	if (m_init_cv_index >= init_cvs.size()) {
+	if (m_init_cv_iterator == init_cvs.end()) {
 		// Go to phase 1: make an overview of mapping steps to speed
 		updateProg(CalibState::Overview, 0, 1);
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), co.overview_step, direction);
@@ -429,8 +432,8 @@ void CalibMan::initCVsWriteNext() {
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_locoAddr),
-		init_cvs[m_init_cv_index].first,
-		init_cvs[m_init_cv_index].second,
+		m_init_cv_iterator->first,
+		m_init_cv_iterator->second,
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsOk(s, d); }),
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsError(s, d); })
 	);
@@ -438,6 +441,7 @@ void CalibMan::initCVsWriteNext() {
 
 void CalibMan::initCVsOk(void*, void*) {
 	m_init_cv_index++;
+	++m_init_cv_iterator;
 	initCVsWriteNext();
 }
 

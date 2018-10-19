@@ -79,7 +79,7 @@ public:
 	Cs::CalibStep cs;
 	Co::CalibOverview co;
 	Xn::XnDirection direction;
-	unsigned wmax = _DEFAULT_VMAX;
+	unsigned vmax = _DEFAULT_VMAX;
 
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
@@ -102,8 +102,13 @@ private:
 	unsigned m_step_writing;
 	unsigned m_step_power;
 	CalibState m_progress = CalibState::Stopped;
-	unsigned m_init_cv_index = 0;
 	unsigned m_no_calibrated;
+
+	std::map<unsigned, unsigned> init_cvs = { // (cv, value)
+		{2, 1}, {3, 0}, {4, 0}, {5, 255}, {6, 60},
+	};
+	std::map<unsigned, unsigned>::iterator m_init_cv_iterator;
+	unsigned m_init_cv_index;
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();
@@ -136,13 +141,7 @@ private:
 	void initCVsWriteNext();
 	void initSTWritten(void*, void*);
 
-	std::vector<std::pair<unsigned, unsigned>> init_cvs = { // (cv, value)
-		std::make_pair<unsigned, unsigned>(2, 1),
-		std::make_pair<unsigned, unsigned>(3, 0),
-		std::make_pair<unsigned, unsigned>(4, 0),
-		std::make_pair<unsigned, unsigned>(5, 255),
-		std::make_pair<unsigned, unsigned>(6, 60),
-	};
+
 
 private slots:
 	void csDone(unsigned step, unsigned power);
