@@ -19,6 +19,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	a_config_load(true);
 	ui.b_start->setFocus();
 
+	init_calib_graph();
+
+	// Steps to Speed map
+	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
+	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
+	a_speed_load(true);
+	m_ssm.setMaxSpeed(m_ssm.maxSpeedInFile());
+
 	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
 	QObject::connect(&xn, SIGNAL(onLog(QString, Xn::XnLogLevel)), this, SLOT(xn_onLog(QString, Xn::XnLogLevel)));
@@ -58,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_test2, SIGNAL(released()), this, SLOT(b_test2_handle()));
 	QObject::connect(ui.b_test3, SIGNAL(released()), this, SLOT(b_test3_handle()));
 
+	ui.sb_max_speed->setValue(m_ssm.maxSpeedInFile());
 	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_max_speed_changed(int)));
 	QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(lv_log_dblclick(QListWidgetItem*)));
 	QObject::connect(ui.tw_xn_log, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
@@ -137,13 +146,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
 	QObject::connect(&m_pm, SIGNAL(onClear()), &w_pg, SLOT(clear()));
 	m_pm.clear();
-
-	init_calib_graph();
-
-	// Steps to Speed map
-	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
-	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
-	a_speed_load(true);
 
 	// Range Calibration
 	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError, unsigned)), this, SLOT(cr_error(Cr::CrError, unsigned)));

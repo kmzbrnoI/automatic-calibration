@@ -28,7 +28,7 @@ void StepsToSpeedMap::load(QString filename) {
 			continue;
 
 		m_map[step-1] = std::make_unique<unsigned>(speed);
-		onAddOrUpdate(step-1, speed);
+		onAddOrUpdate(step-1, *at(step-1));
 	}
 }
 
@@ -87,6 +87,13 @@ unsigned StepsToSpeedMap::noDifferentSpeeds() {
 		}
 	}
 	return count;
+}
+
+unsigned StepsToSpeedMap::maxSpeedInFile() const {
+	for(int i = _STEPS_CNT-1; i >= 0; i--)
+		if (nullptr != m_map[i])
+			return *m_map[i];
+	return 0;
 }
 
 }//namespace Ssm

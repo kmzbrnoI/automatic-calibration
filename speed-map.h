@@ -44,6 +44,7 @@ public:
 
 	unsigned maxSpeed() const;
 	void setMaxSpeed(unsigned new_speed);
+	unsigned maxSpeedInFile() const;
 
 	unsigned* at(const int index);
 	unsigned* operator[] (const int index);
