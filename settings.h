@@ -7,7 +7,9 @@
 
 /* This file defines global settings of the application */
 
-const std::map<QString, std::map<QString, QVariant>> _DEFAULTS {
+using Config = std::map<QString, std::map<QString, QVariant>>;
+
+const Config _DEFAULTS {
 	{"WSM", {
 		{"scale", 120},
 		{"wheelDiameter", 8.0},
@@ -29,7 +31,7 @@ const std::map<QString, std::map<QString, QVariant>> _DEFAULTS {
 
 class Settings {
 public:
-	std::map<QString, std::map<QString, QVariant>> data;
+	Config data;
 
 	void load(const QString& filename);
 	void save(const QString& filename);
