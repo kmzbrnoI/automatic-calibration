@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1060</width>
-    <height>668</height>
+    <height>645</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1096,7 +1096,6 @@
    <addaction name="m_wsm"/>
    <addaction name="m_power_graph"/>
   </widget>
-  <widget class="QStatusBar" name="sb_main"/>
   <action name="a_xn_connect">
    <property name="text">
     <string>Connect</string>
