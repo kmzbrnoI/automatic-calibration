@@ -1243,6 +1243,9 @@ void MainWindow::a_loco_save(bool) {
 		std::make_pair<QString, QString>("Deceleration Rate", QString::number(ui.sb_decel->value())),
 		std::make_pair<QString, QString>("Use Speed Table", "1"),
 		std::make_pair<QString, QString>("Speed Table", std::move(steps)),
+		std::make_pair<QString, QString>("Vhigh", QString::number(ui.sb_vmax->value())),
+		std::make_pair<QString, QString>("Vmid", "60"),
+		std::make_pair<QString, QString>("Vstart", "1"),
 	};
 
 	for (const auto& val : values) {
