@@ -190,7 +190,7 @@ void MainWindow::cb_xn_ll_index_changed(int index) {
 }
 
 void MainWindow::show_error(const QString error) {
-	log(error);
+	log(error, _LOGC_ERROR);
 	QMessageBox::warning(this, "Error!", error, QMessageBox::Ok);
 }
 
@@ -605,10 +605,11 @@ void MainWindow::a_dcc_stop(bool) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::log(QString message) {
+void MainWindow::log(QString message, QColor color) {
 	if (ui.lv_log->count() > 200)
 		ui.lv_log->clear();
 	ui.lv_log->insertItem(0, QTime::currentTime().toString("hh:mm:ss") + ": " + message);
+	ui.lv_log->item(0)->setBackground(color);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -810,12 +811,12 @@ void MainWindow::mc_batteryCritical() {
 }
 
 void MainWindow::t_mc_disconnect_tick() {
-	log("WSM error, disconnecting...");
+	log("WSM error, disconnecting...", _LOGC_ERROR);
 	a_wsm_disconnect(true);
 }
 
 void MainWindow::mc_speedReceiveTimeout() {
-	log("WSM receive timeout!");
+	log("WSM receive timeout!", _LOGC_ERROR);
 	widget_set_color(*(ui.l_wsm_alive), Qt::red);
 }
 
@@ -827,7 +828,7 @@ void MainWindow::mc_speedReceiveRestore() {
 void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
 	ui.b_wsm_lt->setEnabled(true);
 	log("WSM long term done: sp=" + QString::number(speed, 'f', 1) +
-	    ", diff=" + QString::number(diffusion, 'f', 1));
+	    ", diff=" + QString::number(diffusion, 'f', 1), _LOGC_DONE);
 }
 
 void MainWindow::b_wsm_lt_handle() {
@@ -952,7 +953,7 @@ void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 void MainWindow::cm_stepDone(unsigned step, unsigned power) {
 	(void)power;
 	step_set_color(step-1, _STEPC_DONE);
-	log("Step " + QString::number(step) + " done");
+	log("Step " + QString::number(step) + " done", _LOGC_DONE);
 }
 
 void MainWindow::cm_stepStart(unsigned step) {
@@ -965,16 +966,18 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 		step_set_color(step-1, _STEPC_ERROR);
 	widget_set_color(*ui.l_calib_state, Qt::red);
 
-	log("Step " + QString::number(step) + " calibration error!");
+	log("Step " + QString::number(step) + " calibration error!", _LOGC_ERROR);
 
 	if (ce == Cm::CmError::LargeDiffusion)
-		log("Loco speed too diffused!");
+		log("Loco speed too diffused!", _LOGC_ERROR);
 	else if (ce == Cm::CmError::XnNoResponse)
-		log("No response from XpressNET!");
+		log("No response from XpressNET!", _LOGC_ERROR);
 	else if (ce == Cm::CmError::LocoStopped)
-		log("Loco stopped!");
+		log("Loco stopped!", _LOGC_ERROR);
 	else if (ce == Cm::CmError::NoStep)
-		log("No suitable power step for this speed!");
+		log("No suitable power step for this speed!", _LOGC_ERROR);
+	else if (ce == Cm::CmError::Oscilation)
+		log("Unable to reach target speed due to low precision (try decreasing Vmax?)", _LOGC_ERROR);
 
 	cm_done_gui();
 }
@@ -986,7 +989,7 @@ void MainWindow::cm_locoSpeedChanged(unsigned step) {
 }
 
 void MainWindow::cm_done() {
-	log("Calibration done :)");
+	log("Calibration done :)", _LOGC_DONE);
 	widget_set_color(*ui.l_calib_state, Qt::green);
 	ui.pb_progress->setValue(100);
 	cm_done_gui();
@@ -1058,7 +1061,7 @@ void MainWindow::b_calib_stop_handle() {
 		return;
 
 	cm.stop();
-	log("Calibration manually interrupted!");
+	log("Calibration manually interrupted!", _LOGC_WARN);
 	widget_set_color(*ui.l_calib_state, Qt::red);
 	cm_done_gui();
 }
@@ -1282,10 +1285,10 @@ void MainWindow::cr_measured(double distance) {
 }
 
 void MainWindow::cr_error(Cr::CrError ce, unsigned) {
-	log("Range calibration error!");
+	log("Range calibration error!", _LOGC_ERROR);
 
 	if (ce == Cr::CrError::XnNoResponse)
-		log("No response from XpressNET!");
+		log("No response from XpressNET!", _LOGC_ERROR);
 }
 
 void MainWindow::b_decel_measure_handle() {

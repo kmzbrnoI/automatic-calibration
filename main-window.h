@@ -40,6 +40,10 @@ const QColor _STEPC_DONE = QColor(50, 200, 50);
 const QColor _STEPC_ERROR = Qt::red;
 const QColor _STEPC_CHANGED = Qt::blue;
 
+const QColor _LOGC_ERROR = QColor(0xFF, 0xAA, 0xAA);
+const QColor _LOGC_WARN = QColor(0xFF, 0xFF, 0xAA);
+const QColor _LOGC_DONE = QColor(0xAA, 0xFF, 0xAA);
+
 struct UiStep {
 	QSlider *slider;
 	QLabel *step, *speed_want, *value;
@@ -187,7 +191,7 @@ private:
 
 	void widget_set_color(QWidget&, const QColor);
 	void show_response_error(QString command);
-	void log(QString message);
+	void log(QString message, QColor color = Qt::white);
 	void wsm_status_blink();
 	void show_error(const QString error);
 	void loco_released();
