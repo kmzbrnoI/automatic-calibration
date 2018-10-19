@@ -43,14 +43,13 @@ void CalibMan::updateProg(CalibState cs, size_t progress, size_t max) {
 size_t CalibMan::getProgress(CalibState cs, size_t progress, size_t max) {
 	if (cs == CalibState::InitProg) // 0-10
 		return 10 * progress / max;
-	else if (cs == CalibState::Overview) // 10-40
+	if (cs == CalibState::Overview) // 10-40
 		return (30 * progress / max) + 10;
-	else if (cs == CalibState::Steps) // 40-90
+	if (cs == CalibState::Steps) // 40-90
 		return (50 * progress / max) + 40;
-	else if (cs == CalibState::Interpolation) // 90-100
+	if (cs == CalibState::Interpolation) // 90-100
 		return (10 * progress / max) + 90;
-	else
-		return 0;
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -165,7 +164,7 @@ std::unique_ptr<unsigned> CalibMan::nextStep() {
 			last = *m_ssm[i]; // avoid duplicate speds
 		}
 
-	if (used_steps.size() == 0) // no available steps
+	if (used_steps.empty()) // no available steps
 		return nullptr;
 
 	// Check if min step calibred

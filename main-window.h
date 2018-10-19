@@ -60,8 +60,8 @@ public:
 
 private slots:
 	// Signals from XpressNET library
-	void xn_onError(QString error);
-	void xn_onLog(QString, Xn::XnLogLevel);
+	void xn_onError(const QString& error);
+	void xn_onLog(const QString&, const Xn::XnLogLevel&);
 	void xn_onConnect();
 	void xn_onDisconnect();
 	void xn_onTrkStatusChanged(Xn::XnTrkStatus);
@@ -189,15 +189,15 @@ private:
 	void xn_stepWritten(void*, void*);
 	void xn_stepWriteError(void*, void*);
 
-	void widget_set_color(QWidget&, const QColor);
-	void show_response_error(QString command);
-	void log(QString message, QColor color = Qt::white);
+	void widget_set_color(QWidget&, const QColor&);
+	void show_response_error(const QString& command);
+	void log(const QString& message, const QColor& color = Qt::white);
 	void wsm_status_blink();
-	void show_error(const QString error);
+	void show_error(const QString& error);
 	void loco_released();
 	void init_calib_graph();
 	void reset();
-	void step_set_color(unsigned stepi, QColor color);
+	void step_set_color(const unsigned stepi, const QColor& color);
 };
 
 #endif // MAINWINDOW_H

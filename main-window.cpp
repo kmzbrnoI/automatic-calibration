@@ -11,7 +11,7 @@
 const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent), xn(this), s(), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
+	QMainWindow(parent), xn(this), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
 	QString text;
 	text.sprintf("Automatic Claibration v%d.%d", VERSION_MAJOR, VERSION_MINOR);
@@ -171,7 +171,7 @@ MainWindow::~MainWindow() {
 ///////////////////////////////////////////////////////////////////////////////
 // UI general functions
 
-void MainWindow::widget_set_color(QWidget& widget, const QColor color) {
+void MainWindow::widget_set_color(QWidget& widget, const QColor& color) {
 	QPalette palette = widget.palette();
 	palette.setColor(QPalette::WindowText, color);
 	widget.setPalette(palette);
@@ -190,7 +190,7 @@ void MainWindow::cb_xn_ll_index_changed(int index) {
 	xn.loglevel = static_cast<Xn::XnLogLevel>(index);
 }
 
-void MainWindow::show_error(const QString error) {
+void MainWindow::show_error(const QString& error) {
 	log(error, _LOGC_ERROR);
 	QMessageBox::warning(this, "Error!", error, QMessageBox::Ok);
 }
@@ -213,7 +213,7 @@ void MainWindow::tw_xn_log_dblclick(QTreeWidgetItem*, int) {
 	ui.tw_xn_log->clear();
 }
 
-void MainWindow::step_set_color(unsigned stepi, QColor color) {
+void MainWindow::step_set_color(const unsigned stepi, const QColor& color) {
 	widget_set_color(*ui_steps[stepi].step, color);
 	widget_set_color(*ui_steps[stepi].speed_want, color);
 	widget_set_color(*ui_steps[stepi].value, color);
@@ -222,18 +222,18 @@ void MainWindow::step_set_color(unsigned stepi, QColor color) {
 ///////////////////////////////////////////////////////////////////////////////
 // XN Events
 
-void MainWindow::xn_onError(QString error) {
+void MainWindow::xn_onError(const QString& error) {
 	xn_onLog(error, Xn::XnLogLevel::Error);
 
 	if (!t_xn_disconnect.isActive() && xn.connected())
 		t_xn_disconnect.start(0);
 }
 
-void MainWindow::xn_onLog(QString message, Xn::XnLogLevel loglevel) {
+void MainWindow::xn_onLog(const QString& message, const Xn::XnLogLevel& loglevel) {
 	if (ui.tw_xn_log->topLevelItemCount() > 300)
 		ui.tw_xn_log->clear();
 
-	QTreeWidgetItem *item = new QTreeWidgetItem(ui.tw_xn_log);
+	auto *item = new QTreeWidgetItem(ui.tw_xn_log);
 	item->setText(0, QTime::currentTime().toString("hh:mm:ss"));
 
 	if (loglevel == Xn::XnLogLevel::None)
@@ -341,7 +341,7 @@ void MainWindow::xn_onDccStopError(void*, void*) {
 	show_response_error("DCC STOP");
 }
 
-void MainWindow::show_response_error(QString command) {
+void MainWindow::show_response_error(const QString& command) {
 	log("Command station did not respond to " + command + " command!");
 	QMessageBox::warning(this, "Error!",
 		"Command station did not respond to " + command + " command!");
@@ -615,7 +615,7 @@ void MainWindow::a_dcc_stop(bool) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::log(QString message, QColor color) {
+void MainWindow::log(const QString& message, const QColor& color) {
 	if (ui.lv_log->count() > 200)
 		ui.lv_log->clear();
 	ui.lv_log->insertItem(0, QTime::currentTime().toString("hh:mm:ss") + ": " + message);
@@ -741,7 +741,7 @@ void MainWindow::sb_speed_changed(int) {
 
 void MainWindow::wsm_status_blink() {
 	QPalette palette = ui.l_wsm_alive->palette();
-	QColor color = palette.color(QPalette::WindowText);
+	const QColor& color = palette.color(QPalette::WindowText);
 	if (color == Qt::green)
 		widget_set_color(*(ui.l_wsm_alive), palette.color(QPalette::Window));
 	else
@@ -868,25 +868,25 @@ void MainWindow::a_power_graph(bool) {
 
 void MainWindow::init_calib_graph() {
 	for(size_t i = 0; i < _STEPS_CNT; i++) {
-		QLabel *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
+		auto *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
 		step->setFont(QFont("Sans Serif", 9, QFont::Bold));
 		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].step = step;
 		ui.l_cal_graph->addWidget(step, 0, i);
 
-		QLabel *speed_want = new QLabel("-", ui.gb_cal_graph);
+		auto *speed_want = new QLabel("-", ui.gb_cal_graph);
 		speed_want->setFont(QFont("Sans Serif", 8));
 		speed_want->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].speed_want = speed_want;
 		ui.l_cal_graph->addWidget(speed_want, 1, i);
 
-		QLabel *value = new QLabel("0", ui.gb_cal_graph);
+		auto *value = new QLabel("0", ui.gb_cal_graph);
 		value->setFont(QFont("Sans Serif", 8));
 		value->setAlignment(Qt::AlignmentFlag::AlignHCenter);
 		ui_steps[i].value = value;
 		ui.l_cal_graph->addWidget(value, 2, i);
 
-		QSlider *slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
+		auto *slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
 		slider->setMinimum(0);
 		slider->setMaximum(255);
 		slider->setProperty("step", static_cast<uint>(i));
@@ -895,13 +895,13 @@ void MainWindow::init_calib_graph() {
 		ui_steps[i].slider = slider;
 		ui.l_cal_graph->addWidget(slider, 3, i);
 
-		QCheckBox *selected = new QCheckBox(ui.gb_cal_graph);
+		auto *selected = new QCheckBox(ui.gb_cal_graph);
 		selected->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].selected = selected;
 		QObject::connect(selected, SIGNAL(clicked(bool)), this, SLOT(chb_step_selected_clicked(bool)));
 		ui.l_cal_graph->addWidget(selected, 4, i);
 
-		QPushButton *calibrate = new QPushButton("C", ui.gb_cal_graph);
+		auto *calibrate = new QPushButton("C", ui.gb_cal_graph);
 		calibrate->setProperty("step", static_cast<uint>(i));
 		calibrate->setEnabled(false);
 		ui_steps[i].calibrate = calibrate;
@@ -953,8 +953,8 @@ void MainWindow::ssm_onAddOrUpdate(unsigned step, unsigned speed) {
 }
 
 void MainWindow::ssm_onClear() {
-	for(size_t i = 0; i < _STEPS_CNT; i++)
-		ui_steps[i].speed_want->setText("0");
+	for(const auto& s : ui_steps)
+		s.speed_want->setText("0");
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1113,7 +1113,7 @@ void MainWindow::b_reset_handle() {
 void MainWindow::t_calib_active_tick() {
 	if (cm.inProgress()) {
 		QPalette palette = ui.l_calib_state->palette();
-		QColor color = palette.color(QPalette::WindowText);
+		const QColor& color = palette.color(QPalette::WindowText);
 		if (color == Qt::yellow)
 			widget_set_color(*(ui.l_calib_state), Qt::lightGray);
 		else
@@ -1253,8 +1253,8 @@ void MainWindow::a_loco_save(bool) {
 	xw.writeStartElement("decoderDef");
 
 	QString steps = "";
-	for(size_t i = 0; i < Xn::_STEPS_CNT; i++)
-		steps += QString::number(ui_steps[i].slider->value()) + ",";
+	for(const auto& s : ui_steps)
+		steps += QString::number(s.slider->value()) + ",";
 
 	std::vector<std::pair<QString, QString>> values = {
 		std::make_pair<QString, QString>("Acceleration Rate", QString::number(ui.sb_accel->value())),
@@ -1358,8 +1358,8 @@ void MainWindow::a_config_save(bool) {
 }
 
 void MainWindow::a_speed_load(bool) {
-	for(size_t i = 0; i < _STEPS_CNT; i++)
-		ui_steps[i].speed_want->setText("-");
+	for(const auto& s : ui_steps)
+		s.speed_want->setText("-");
 
 	QString filename;
 	Settings::cfgToQString(s["Speed"], "file", filename);

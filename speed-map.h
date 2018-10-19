@@ -34,10 +34,10 @@ private:
 
 public:
 	StepsToSpeedMap(QObject *parent = nullptr);
-	StepsToSpeedMap(QString filename, QObject *parent = nullptr);
+	StepsToSpeedMap(const QString& filename, QObject *parent = nullptr);
 
-	void load(QString filename);
-	void save(QString filename);
+	void load(const QString& filename);
+	void save(const QString& filename);
 	void clear();
 	void addOrUpdate(unsigned step, unsigned speed);
 	unsigned noDifferentSpeeds();

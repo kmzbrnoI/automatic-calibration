@@ -18,14 +18,14 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent)
 	chart.addSeries(&series);
 	chart.createDefaultAxes();
 	chart.axisX()->setRange(0, 256);
-	static_cast<QValueAxis*>(chart.axisX())->setTickCount(9);
-	static_cast<QValueAxis*>(chart.axisX())->setMinorTickCount(1);
+	dynamic_cast<QValueAxis*>(chart.axisX())->setTickCount(9);
+	dynamic_cast<QValueAxis*>(chart.axisX())->setMinorTickCount(1);
 	chart.axisY()->setRange(0, 120);
-	static_cast<QValueAxis*>(chart.axisY())->setTickCount(7);
-	static_cast<QValueAxis*>(chart.axisY())->setMinorTickCount(1);
+	dynamic_cast<QValueAxis*>(chart.axisY())->setTickCount(7);
+	dynamic_cast<QValueAxis*>(chart.axisY())->setMinorTickCount(1);
 	chart.setTitle("Power to speed graph");
 
-	QChartView *chartView = new QChartView(&chart);
+	auto *chartView = new QChartView(&chart);
 	chartView->setRenderHint(QPainter::Antialiasing);
 	this->setCentralWidget(chartView);
 

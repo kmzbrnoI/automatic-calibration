@@ -8,12 +8,12 @@ namespace Ssm {
 
 StepsToSpeedMap::StepsToSpeedMap(QObject *parent) : QObject(parent) {}
 
-StepsToSpeedMap::StepsToSpeedMap(QString filename, QObject *parent)
+StepsToSpeedMap::StepsToSpeedMap(const QString& filename, QObject *parent)
 	: QObject(parent) {
 	load(filename);
 }
 
-void StepsToSpeedMap::load(QString filename) {
+void StepsToSpeedMap::load(const QString& filename) {
 	std::ifstream in(filename.toLatin1().data());
 	std::string line;
 	while (getline(in, line, '\n')) {
@@ -32,7 +32,7 @@ void StepsToSpeedMap::load(QString filename) {
 	}
 }
 
-void StepsToSpeedMap::save(QString filename) {
+void StepsToSpeedMap::save(const QString& filename) {
 	std::ofstream out(filename.toLatin1().data());
 	out << "0;0" << std::endl;
 	for(size_t i = 0; i < _STEPS_CNT; i++)
