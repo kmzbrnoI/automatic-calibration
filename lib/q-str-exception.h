@@ -1,6 +1,8 @@
 #ifndef _Q_STR_EXCEPTION_H_
 #define _Q_STR_EXCEPTION_H_
 
+#include <QString>
+
 class QStrException {
 private:
 	QString m_err_msg;
