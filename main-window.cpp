@@ -185,7 +185,7 @@ void MainWindow::t_xn_disconnect_tick() {
 	a_xn_disconnect(true);
 
 	QMessageBox::warning(this, "Error!",
-		"XN serial port error, more information in lo!", QMessageBox::Ok);
+		"XN serial port error, more information in log!", QMessageBox::Ok);
 }
 
 void MainWindow::cb_xn_ll_index_changed(int index) {
