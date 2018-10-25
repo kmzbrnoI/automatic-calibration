@@ -65,13 +65,13 @@ enum class CalibState {
 	Interpolation,
 };
 
-const unsigned _CV_CONFIG = 29;
-const unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
-const bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
-const unsigned _CV_ACCEL = 3;
-const unsigned _CV_DECEL = 4;
-const unsigned _DEFAULT_VMAX = 255;
-const unsigned _VMAX_CV = 5;
+constexpr unsigned _CV_CONFIG = 29;
+constexpr unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
+constexpr bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
+constexpr unsigned _CV_ACCEL = 3;
+constexpr unsigned _CV_DECEL = 4;
+constexpr unsigned _DEFAULT_VMAX = 255;
+constexpr unsigned _VMAX_CV = 5;
 
 class CalibMan : public QObject {
 	Q_OBJECT

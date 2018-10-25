@@ -37,18 +37,18 @@ of the loco and the power of maximum speed of the loco.
 
 namespace Co {
 
-const unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
-const double _DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
-const unsigned _DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
-const unsigned _DEFAULT_SPEED_MAX = 120;
-const unsigned _DEFAULT_OVERVIEW_STEP = 2;
-const unsigned _DEFAULT_OVERVIEW_START = 10;
-const unsigned _DEFAULT_MIN_SPEED = 5; // 5 kmph
+constexpr unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
+constexpr double _DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
+constexpr unsigned _DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
+constexpr unsigned _DEFAULT_SPEED_MAX = 120;
+constexpr unsigned _DEFAULT_OVERVIEW_STEP = 2;
+constexpr unsigned _DEFAULT_OVERVIEW_START = 10;
+constexpr unsigned _DEFAULT_MIN_SPEED = 5; // 5 kmph
 
-const unsigned _STEP_RESET_VALUE = 10;
-const unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
-const unsigned _POWER_CNT = 256;
-const unsigned _CV_START = 67; // cv 67 = step 1
+constexpr unsigned _STEP_RESET_VALUE = 10;
+constexpr unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
+constexpr unsigned _POWER_CNT = 256;
+constexpr unsigned _CV_START = 67; // cv 67 = step 1
 
 enum class CoError {
 	LargeDiffusion,

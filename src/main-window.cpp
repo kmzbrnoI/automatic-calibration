@@ -1353,12 +1353,12 @@ void MainWindow::a_config_load(bool) {
 	Settings::cfgToUnsigned(calcfg, "overviewMinSpeed", cm.co.min_speed);
 	Settings::cfgToUnsigned(calcfg, "rangeStopMinTimes", cr.stop_min);
 
-	log("Loaded config from " + _CONFIG_FN);
+	log("Loaded config from " + QString(_CONFIG_FN));
 }
 
 void MainWindow::a_config_save(bool) {
 	s.save(_CONFIG_FN);
-	log("Saved config to " + _CONFIG_FN);
+	log("Saved config to " + QString(_CONFIG_FN));
 }
 
 void MainWindow::a_speed_load(bool) {

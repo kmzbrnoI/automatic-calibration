@@ -22,8 +22,8 @@ namespace Ssm {
 
 // Uses step index everywhere
 
-const size_t _STEPS_CNT = 28;
-const size_t _SPEED_MAX = 120;
+constexpr size_t _STEPS_CNT = 28;
+constexpr size_t _SPEED_MAX = 120;
 
 class StepsToSpeedMap : public QObject {
 	Q_OBJECT

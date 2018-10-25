@@ -27,8 +27,8 @@ enum class CrError {
 	XnNoResponse,
 };
 
-const unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2s
-const unsigned _DEFAULT_STOP_MIN = 10; // we must measure 10 times 0 kmph to determnine that loco has stopped
+constexpr unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2s
+constexpr unsigned _DEFAULT_STOP_MIN = 10; // we must measure 10 times 0 kmph to determnine that loco has stopped
 
 class CalibRange : public QObject {
 	Q_OBJECT

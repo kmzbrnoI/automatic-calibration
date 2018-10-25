@@ -19,7 +19,8 @@ namespace Pm {
 
 // This class uses stepindex everywhere!
 
-const size_t _POWER_CNT = 256;
+constexpr size_t _POWER_CNT = 256;
+
 struct ENoMap : public QStrException {
 	ENoMap(const QString str) : QStrException(str) {}
 };

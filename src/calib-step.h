@@ -33,14 +33,14 @@ speed step.
 
 namespace Cs {
 
-const double _DEFAULT_EPSILON = 1; // +- 1 kmph
-const double _DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
-const size_t _DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
-const unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
+constexpr double _DEFAULT_EPSILON = 1; // +- 1 kmph
+constexpr double _DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
+constexpr size_t _DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
+constexpr unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
 
-const unsigned _CV_START = 67; // cv 67 = step 1
-const unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
-const unsigned _OSC_MAX_COUNT = 3;
+constexpr unsigned _CV_START = 67; // cv 67 = step 1
+constexpr unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
+constexpr unsigned _OSC_MAX_COUNT = 3;
 
 enum class CsError {
 	LargeDiffusion,

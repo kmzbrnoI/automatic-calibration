@@ -27,14 +27,14 @@ forwarded to Calibration Manager as a references.
 #include "calib-man.h"
 #include "calib-range.h"
 
-const QString _CONFIG_FN = "config.ini";
-const unsigned _STEPS_CNT = 28;
+constexpr char _CONFIG_FN[] = "config.ini";
+constexpr unsigned _STEPS_CNT = 28;
 
-const unsigned _CV_ACCEL = 3;
-const unsigned _CV_DECEL = 4;
-const unsigned _CV_ADDR_LO = 18;
-const unsigned _CV_ADDR_HI = 17;
-const unsigned _CV_BASIC = 29;
+constexpr unsigned _CV_ACCEL = 3;
+constexpr unsigned _CV_DECEL = 4;
+constexpr unsigned _CV_ADDR_LO = 18;
+constexpr unsigned _CV_ADDR_HI = 17;
+constexpr unsigned _CV_BASIC = 29;
 
 const QColor _STEPC_DONE = QColor(50, 200, 50);
 const QColor _STEPC_ERROR = Qt::red;
