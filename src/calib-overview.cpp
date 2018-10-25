@@ -27,25 +27,14 @@ std::unique_ptr<unsigned> CalibOverview::next_step() {
 		speed = m_pm.speed(step);
 	}
 
-	if (!m_pm.isRecord(64))
-		return std::make_unique<unsigned>(64);
-	if (*m_pm.speed(64) >= max_speed)
-		return nullptr;
+	const std::vector<unsigned> _POWERS_TRY = {64, 128, 192, 255};
 
-	if (!m_pm.isRecord(128))
-		return std::make_unique<unsigned>(128);
-	if (*m_pm.speed(128) >= max_speed)
-		return nullptr;
-
-	if (!m_pm.isRecord(192))
-		return std::make_unique<unsigned>(192);
-	if (*m_pm.speed(192) >= max_speed)
-		return nullptr;
-
-	if (!m_pm.isRecord(255))
-		return std::make_unique<unsigned>(255);
-	if (*m_pm.speed(255) >= max_speed)
-		return nullptr;
+	for(const unsigned& power : _POWERS_TRY) {
+		if (!m_pm.isRecord(power))
+			return std::make_unique<unsigned>(power);
+		if (*m_pm.speed(power) >= max_speed)
+			return nullptr;
+	}
 
 	return nullptr;
 }
