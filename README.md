@@ -41,8 +41,6 @@ $ git clone --recurse-submodules https://github.com/kmzbrnoI/automatic-calibrati
 And then build:
 
 ```
-$ uic main-window.ui > ui_main-window.h
-$ uic power-graph-window.ui > ui_power-graph-window.h
 $ mkdir build
 $ cd build
 $ qmake ..

@@ -18,42 +18,43 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += \
-	main.cpp \
-	main-window.cpp \
 	lib/wsm/wsm.cpp \
 	lib/xn/xn.cpp \
-	settings.cpp \
-	power-map.cpp \
-	power-graph-window.cpp \
-	speed-map.cpp \
-	calib-step.cpp \
-	calib-man.cpp \
-	calib-overview.cpp \
-	calib-range.cpp
+	src/main.cpp \
+	src/main-window.cpp \
+	src/settings.cpp \
+	src/power-map.cpp \
+	src/power-graph-window.cpp \
+	src/speed-map.cpp \
+	src/calib-step.cpp \
+	src/calib-man.cpp \
+	src/calib-overview.cpp \
+	src/calib-range.cpp
 
 HEADERS += \
-	main-window.h \
 	lib/q-str-exception.h \
 	lib/wsm/q-str-exception.h \
 	lib/xn/q-str-exception.h \
 	lib/wsm/wsm.h \
 	lib/xn/xn.h \
 	lib/xn/xn-typedefs.h \
-	settings.h \
-	power-map.h \
-	power-graph-window.h \
-	speed-map.h \
-	calib-step.h \
-	calib-man.h \
-	calib-overview.h \
-	calib-range.h
+	src/main-window.h \
+	src/settings.h \
+	src/power-map.h \
+	src/power-graph-window.h \
+	src/speed-map.h \
+	src/calib-step.h \
+	src/calib-man.h \
+	src/calib-overview.h \
+	src/calib-range.h
 
 FORMS += \
-	main-window.ui \
-	power-graph-window.ui
+	form/main-window.ui \
+	form/power-graph-window.ui
 
 CONFIG += c++14
 QMAKE_CXXFLAGS += -Wall -Wextra -pedantic
+UI_DIR = src
 
 QT += serialport
 QT += charts
