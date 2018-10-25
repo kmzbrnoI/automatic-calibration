@@ -17,16 +17,21 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent)
 	chart.legend()->hide();
 	chart.addSeries(&series);
 	chart.createDefaultAxes();
-	chart.axisX()->setRange(0, 256);
-	dynamic_cast<QValueAxis*>(chart.axisX())->setTickCount(9);
-	dynamic_cast<QValueAxis*>(chart.axisX())->setMinorTickCount(1);
-	dynamic_cast<QValueAxis*>(chart.axisX())->setLabelFormat("%d");
-	dynamic_cast<QValueAxis*>(chart.axisX())->setTitleText("Power [decoder step]");
-	chart.axisY()->setRange(0, 120);
-	dynamic_cast<QValueAxis*>(chart.axisY())->setTickCount(7);
-	dynamic_cast<QValueAxis*>(chart.axisY())->setMinorTickCount(1);
-	dynamic_cast<QValueAxis*>(chart.axisY())->setLabelFormat("%d");
-	dynamic_cast<QValueAxis*>(chart.axisY())->setTitleText("Speed [model km/h]");
+
+	QValueAxis& axisX = dynamic_cast<QValueAxis&>(*chart.axisX());
+	axisX.setRange(0, 256);
+	axisX.setTickCount(9);
+	axisX.setMinorTickCount(1);
+	axisX.setLabelFormat("%d");
+	axisX.setTitleText("Power [decoder step]");
+
+	QValueAxis& axisY = dynamic_cast<QValueAxis&>(*chart.axisY());
+	axisY.setRange(0, 120);
+	axisY.setTickCount(7);
+	axisY.setMinorTickCount(1);
+	axisY.setLabelFormat("%d");
+	axisY.setTitleText("Speed [model km/h]");
+
 	chart.setTitle("Locomotive power-to-speed profile");
 	chart.setTitleFont(QFont("Sans Serif", 16, QFont::Bold));
 
