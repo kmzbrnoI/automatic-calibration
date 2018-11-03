@@ -30,7 +30,13 @@ This application is developed in [QT](https://www.qt.io/) v5.
 This SW was developed in `vim` using `qmake` & `make`. Downloads are available
 in *Releases* section.
 
-Howto build:
+### Prerequisities
+
+ * Qt 5
+ * Qt's `serialport`
+ * Qt's `charts`
+
+### Build
 
 Clone this repository (including submodules!):
 
