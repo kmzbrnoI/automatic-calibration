@@ -130,6 +130,9 @@ void CalibStep::stop() {
 }
 
 bool CalibStep::is_oscilating() const {
+	// Sometimes, it happens that sequence of powers is 87,86,87,86,...
+	// This function detects the behavior.
+
 	if (power_history.size() < _OSC_MAX_COUNT*2)
 		return false;
 
