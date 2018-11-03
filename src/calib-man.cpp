@@ -99,13 +99,13 @@ void CalibMan::csError(Cs::CsError cs, unsigned step) {
 		error(CmError::Oscilation, step);
 }
 
-void CalibMan::coError(Co::CoError co, unsigned step) {
+void CalibMan::coError(Co::Error co, unsigned step) {
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
 	csSigDisconnect();
 
-	if (co == Co::CoError::LargeDiffusion)
+	if (co == Co::Error::LargeDiffusion)
 		error(CmError::LargeDiffusion, step);
-	else if (co == Co::CoError::XnNoResponse)
+	else if (co == Co::Error::XnNoResponse)
 		error(CmError::XnNoResponse, step);
 }
 
@@ -256,7 +256,7 @@ void CalibMan::csSigConnect() {
 	QObject::connect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                 this, SLOT(cStepPowerChanged(unsigned, unsigned)));
 
-	QObject::connect(&co, SIGNAL(on_error(Co::CoError, unsigned)), this, SLOT(coError(Co::CoError, unsigned)));
+	QObject::connect(&co, SIGNAL(on_error(Co::Error, unsigned)), this, SLOT(coError(Co::Error, unsigned)));
 	QObject::connect(&co, SIGNAL(done()), this, SLOT(coDone()));
 	QObject::connect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                 this, SLOT(cStepPowerChanged(unsigned, unsigned)));
@@ -270,7 +270,7 @@ void CalibMan::csSigDisconnect() {
 	QObject::disconnect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                    this, SLOT(cStepPowerChanged(unsigned, unsigned)));
 
-	QObject::disconnect(&co, SIGNAL(on_error(Co::CoError, unsigned)), this, SLOT(coError(Co::CoError, unsigned)));
+	QObject::disconnect(&co, SIGNAL(on_error(Co::Error, unsigned)), this, SLOT(coError(Co::Error, unsigned)));
 	QObject::disconnect(&co, SIGNAL(done()), this, SLOT(coDone()));
 	QObject::disconnect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
 	                    this, SLOT(cStepPowerChanged(unsigned, unsigned)));

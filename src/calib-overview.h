@@ -50,7 +50,7 @@ constexpr unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
 constexpr unsigned _POWER_CNT = 256;
 constexpr unsigned _CV_START = 67; // cv 67 = step 1
 
-enum class CoError {
+enum class Error {
 	LargeDiffusion,
 	XnNoResponse,
 };
@@ -97,7 +97,7 @@ private slots:
 	void t_sp_adapt_tick();
 
 signals:
-	void on_error(Co::CoError, unsigned step);
+	void on_error(Co::Error, unsigned step);
 	void done();
 	void step_power_changed(unsigned step, unsigned power);
 	void progress_update(size_t progress, size_t max);
