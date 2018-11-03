@@ -40,7 +40,7 @@ constexpr unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
 
 constexpr unsigned _CV_START = 67; // cv 67 = step 1
 constexpr unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
-constexpr unsigned _OSC_MAX_COUNT = 3;
+constexpr unsigned _OSC_MAX_COUNT = 3; // frame length for oscilation detection
 
 enum class CsError {
 	LargeDiffusion,
