@@ -27,15 +27,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 		return;
 	}
 
-	m_xn.pomWriteCv(
-		Xn::LocoAddr(m_loco_addr),
-		_CV_START - 1 + m_step,
-		m_last_power,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
-	);
-	power_history.push_back(m_last_power);
-	step_power_changed(m_step, m_last_power);
+	set_power(m_last_power);
 }
 
 void CalibStep::wsm_lt_read(double speed, double diffusion) {
@@ -84,7 +76,12 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		else
 			new_power = m_last_power + 1;
 	}
-	m_last_power = new_power;
+
+	set_power(new_power);
+}
+
+void CalibStep::set_power(unsigned power) {
+	m_last_power = power;
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),

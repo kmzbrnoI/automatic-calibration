@@ -82,6 +82,7 @@ private:
 	void xn_pom_ok(void*, void*);
 	void xn_pom_err(void*, void*);
 	bool is_oscilating() const;
+	void set_power(unsigned power);
 
 private slots:
 	void wsm_lt_read(double speed, double diffusion);
