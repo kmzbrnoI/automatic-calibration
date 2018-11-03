@@ -39,8 +39,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
 }
 
 void CalibStep::wsm_lt_read(double speed, double diffusion) {
-	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
-	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
+	wsm_lt_done();
 
 	if (diffusion > max_diffusion) {
 		if (m_diff_count >= _ADAPT_MAX_TICKS) {
@@ -121,6 +120,10 @@ void CalibStep::xn_pom_err(void *source, void *data) {
 
 void CalibStep::wsm_lt_error() {
 	t_sp_adapt.stop();
+	wsm_lt_done();
+}
+
+void CalibStep::wsm_lt_done() {
 	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 }

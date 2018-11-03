@@ -86,6 +86,7 @@ private:
 private slots:
 	void wsm_lt_read(double speed, double diffusion);
 	void wsm_lt_error();
+	void wsm_lt_done();
 	void t_sp_adapt_tick();
 
 signals:
