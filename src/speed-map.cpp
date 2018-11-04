@@ -80,13 +80,14 @@ unsigned StepsToSpeedMap::maxSpeed() const {
 }
 
 void StepsToSpeedMap::setMaxSpeed(const unsigned new_speed) {
-	for(size_t i = 0; i < STEPS_CNT; i++)
-		if (EMPTY_VALUE != m_map[i] && m_map[i] > m_max_speed && m_map[i] <= new_speed)
-			onAddOrUpdate(i, m_map[i]);
-	for(size_t i = 0; i < STEPS_CNT; i++)
-		if (EMPTY_VALUE != m_map[i] && m_map[i] > new_speed)
-			onAddOrUpdate(i, new_speed);
-
+	for(size_t i = 0; i < STEPS_CNT; i++) {
+		if (EMPTY_VALUE != m_map[i]) {
+			if (m_map[i] > m_max_speed && m_map[i] <= new_speed)
+				onAddOrUpdate(i, m_map[i]);
+			else if (m_map[i] > new_speed)
+				onAddOrUpdate(i, new_speed);
+		}
+	}
 	m_max_speed = new_speed;
 }
 
