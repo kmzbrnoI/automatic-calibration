@@ -37,7 +37,7 @@ of the loco and the power of maximum speed of the loco.
 
 namespace Co {
 
-constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
+constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // speed timeout, 2 s
 constexpr double DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
 constexpr unsigned DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
 constexpr unsigned DEFAULT_SPEED_MAX = 120;
