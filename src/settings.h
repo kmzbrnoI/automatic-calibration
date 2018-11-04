@@ -9,7 +9,7 @@
 
 using Config = std::map<QString, std::map<QString, QVariant>>;
 
-const Config _DEFAULTS {
+const Config DEFAULTS {
 	{"WSM", {
 		{"scale", 120},
 		{"wheelDiameter", 8.0},

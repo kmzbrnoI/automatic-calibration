@@ -22,7 +22,7 @@ void PowerToSpeedMap::addOrUpdate(const unsigned power, const float speed) {
 
 unsigned PowerToSpeedMap::power(const float speed) const {
 	size_t last = 0;
-	for(size_t i = 0; i < _POWER_CNT; i++) {
+	for(size_t i = 0; i < POWER_CNT; i++) {
 		if (nullptr != map[i]) {
 			if (*map[i] == speed)
 				return i;
@@ -47,7 +47,7 @@ float *PowerToSpeedMap::speed(const unsigned power) const {
 }
 
 bool PowerToSpeedMap::isAnyRecord() const {
-	for(size_t i = 1; i < _POWER_CNT; i++)
+	for(size_t i = 1; i < POWER_CNT; i++)
 		if (nullptr != map[i])
 			return true;
 	return false;

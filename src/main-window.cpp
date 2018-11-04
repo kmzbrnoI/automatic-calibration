@@ -194,7 +194,7 @@ void MainWindow::cb_xn_ll_index_changed(int index) {
 }
 
 void MainWindow::show_error(const QString& error) {
-	log(error, _LOGC_ERROR);
+	log(error, LOGC_ERROR);
 	QMessageBox::warning(this, "Error!", error, QMessageBox::Ok);
 }
 
@@ -244,11 +244,11 @@ void MainWindow::xn_onLog(const QString& message, const Xn::XnLogLevel& loglevel
 	else if (loglevel == Xn::XnLogLevel::Error) {
 		item->setText(1, "Error");
 		for(size_t i = 0; i < 3; i++)
-			item->setBackground(i, _LOGC_ERROR);
+			item->setBackground(i, LOGC_ERROR);
 	} else if (loglevel == Xn::XnLogLevel::Warning) {
 		item->setText(1, "Warning");
 		for(size_t i = 0; i < 3; i++)
-			item->setBackground(i, _LOGC_WARN);
+			item->setBackground(i, LOGC_WARN);
 	} else if (loglevel == Xn::XnLogLevel::Info)
 		item->setText(1, "Info");
 	else if (loglevel == Xn::XnLogLevel::Data)
@@ -488,17 +488,17 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 		show_error("Unable to read CV " + QString::number(cv) + ": " +
 		           Xn::XpressNet::xnReadCVStatusToQString(st));
 
-		if (cv == _CV_ADDR_LO || cv == _CV_ADDR_HI) {
+		if (cv == CV_ADDR_LO || cv == CV_ADDR_HI) {
 			ui.sb_loco->setEnabled(true);
 			ui.b_addr_set->setEnabled(true);
 			ui.b_addr_read->setEnabled(true);
-		} else if (cv == _CV_ACCEL || cv == _CV_DECEL) {
+		} else if (cv == CV_ACCEL || cv == CV_DECEL) {
 			ui.gb_ad->setEnabled(true);
 		}
 		return;
 	}
 
-	if (cv == _CV_ADDR_LO) {
+	if (cv == CV_ADDR_LO) {
 		try {
 			ui.sb_loco->setValue(Xn::LocoAddr(value, 0xC0));
 		}
@@ -506,11 +506,11 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 			show_error("Invalid address!");
 		}
 		xn.readCVdirect(
-			_CV_ADDR_HI,
+			CV_ADDR_HI,
 			[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
 			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_addrReadError(s, d); })
 		);
-	} else if (cv == _CV_ADDR_HI) {
+	} else if (cv == CV_ADDR_HI) {
 		try {
 			ui.sb_loco->setValue(Xn::LocoAddr(ui.sb_loco->value(), value));
 		}
@@ -521,13 +521,13 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 		ui.b_addr_set->setEnabled(true);
 		ui.b_addr_read->setEnabled(true);
 		a_dcc_go(true);
-	} else if (cv == _CV_ACCEL) {
+	} else if (cv == CV_ACCEL) {
 		ui.sb_accel->setValue(value);
-		xn.readCVdirect(_CV_DECEL,
+		xn.readCVdirect(CV_DECEL,
 			[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
 			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_adReadError(s, d); })
 		);
-	} else if (cv == _CV_DECEL) {
+	} else if (cv == CV_DECEL) {
 		ui.sb_decel->setValue(value);
 		ui.gb_ad->setEnabled(true);
 		a_dcc_go(true);
@@ -540,7 +540,7 @@ void MainWindow::xn_adWriteError(void*, void*) {
 }
 
 void MainWindow::xn_accelWritten(void*, void*) {
-	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), _CV_DECEL, ui.sb_decel->value(),
+	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), CV_DECEL, ui.sb_decel->value(),
 	              std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_decelWritten(s, d); }),
 	              std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_adWriteError(s, d); }));
 }
@@ -551,12 +551,12 @@ void MainWindow::xn_decelWritten(void*, void*) {
 
 void MainWindow::xn_stepWritten(void*, void* d) {
 	unsigned stepi = reinterpret_cast<intptr_t>(d);
-	step_set_color(stepi, _STEPC_DONE);
+	step_set_color(stepi, STEPC_DONE);
 }
 
 void MainWindow::xn_stepWriteError(void*, void* d) {
 	unsigned stepi = reinterpret_cast<intptr_t>(d);
-	step_set_color(stepi, _STEPC_ERROR);
+	step_set_color(stepi, STEPC_ERROR);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -667,7 +667,7 @@ void MainWindow::b_addr_read_handle() {
 	ui.b_addr_set->setEnabled(false);
 	ui.b_addr_read->setEnabled(false);
 	xn.readCVdirect(
-		_CV_ADDR_LO,
+		CV_ADDR_LO,
 		[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_addrReadError(s, d); })
 	);
@@ -829,12 +829,12 @@ void MainWindow::mc_batteryCritical() {
 }
 
 void MainWindow::t_mc_disconnect_tick() {
-	log("WSM error, disconnecting...", _LOGC_ERROR);
+	log("WSM error, disconnecting...", LOGC_ERROR);
 	a_wsm_disconnect(true);
 }
 
 void MainWindow::mc_speedReceiveTimeout() {
-	log("WSM receive timeout!", _LOGC_ERROR);
+	log("WSM receive timeout!", LOGC_ERROR);
 	widget_set_color(*(ui.l_wsm_alive), Qt::red);
 }
 
@@ -846,7 +846,7 @@ void MainWindow::mc_speedReceiveRestore() {
 void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
 	ui.b_wsm_lt->setEnabled(true);
 	log("WSM long term done: sp=" + QString::number(speed, 'f', 1) +
-	    ", diff=" + QString::number(diffusion, 'f', 1), _LOGC_DONE);
+	    ", diff=" + QString::number(diffusion, 'f', 1), LOGC_DONE);
 }
 
 void MainWindow::b_wsm_lt_handle() {
@@ -870,7 +870,7 @@ void MainWindow::a_power_graph(bool) {
 }
 
 void MainWindow::init_calib_graph() {
-	for(size_t i = 0; i < _STEPS_CNT; i++) {
+	for(size_t i = 0; i < STEPS_CNT; i++) {
 		auto *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
 		step->setFont(QFont("Sans Serif", 9, QFont::Bold));
 		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
@@ -918,7 +918,7 @@ void MainWindow::vs_steps_moved(int value) {
 	ui_steps[stepi].value->setText(QString::number(value));
 
 	if (ui_steps[stepi].slider->isEnabled())
-		step_set_color(stepi, _STEPC_CHANGED);
+		step_set_color(stepi, STEPC_CHANGED);
 }
 
 void MainWindow::b_calibrate_handle() {
@@ -929,7 +929,7 @@ void MainWindow::b_calibrate_handle() {
 		log("Setting power of step " + QString::number(stepi+1) + " manually.");
 		xn.pomWriteCv(
 			Xn::LocoAddr(ui.sb_loco->value()),
-			Cs::_CV_START + stepi,
+			Cs::CV_START + stepi,
 			ui_steps[stepi].slider->value(),
 			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_stepWritten(s, d); }, reinterpret_cast<void*>(stepi)),
 			std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_stepWriteError(s, d); }, reinterpret_cast<void*>(stepi))
@@ -970,32 +970,32 @@ void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 
 void MainWindow::cm_stepDone(unsigned step, unsigned power) {
 	(void)power;
-	step_set_color(step-1, _STEPC_DONE);
-	log("Step " + QString::number(step) + " done", _LOGC_DONE);
+	step_set_color(step-1, STEPC_DONE);
+	log("Step " + QString::number(step) + " done", LOGC_DONE);
 }
 
 void MainWindow::cm_stepStart(unsigned step) {
-	step_set_color(step-1, _STEPC_CHANGED);
+	step_set_color(step-1, STEPC_CHANGED);
 	log("Starting calibration of step " + QString::number(step));
 }
 
 void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 	if (step != 0)
-		step_set_color(step-1, _STEPC_ERROR);
+		step_set_color(step-1, STEPC_ERROR);
 	widget_set_color(*ui.l_calib_state, Qt::red);
 
-	log("Step " + QString::number(step) + " calibration error!", _LOGC_ERROR);
+	log("Step " + QString::number(step) + " calibration error!", LOGC_ERROR);
 
 	if (ce == Cm::CmError::LargeDiffusion)
-		log("Loco speed too diffused!", _LOGC_ERROR);
+		log("Loco speed too diffused!", LOGC_ERROR);
 	else if (ce == Cm::CmError::XnNoResponse)
-		log("No response from XpressNET!", _LOGC_ERROR);
+		log("No response from XpressNET!", LOGC_ERROR);
 	else if (ce == Cm::CmError::LocoStopped)
-		log("Loco stopped!", _LOGC_ERROR);
+		log("Loco stopped!", LOGC_ERROR);
 	else if (ce == Cm::CmError::NoStep)
-		log("No suitable power step for this speed!", _LOGC_ERROR);
+		log("No suitable power step for this speed!", LOGC_ERROR);
 	else if (ce == Cm::CmError::Oscilation)
-		log("Unable to reach target speed due to low precision (try decreasing Vmax?)", _LOGC_ERROR);
+		log("Unable to reach target speed due to low precision (try decreasing Vmax?)", LOGC_ERROR);
 
 	cm_done_gui();
 }
@@ -1007,7 +1007,7 @@ void MainWindow::cm_locoSpeedChanged(unsigned step) {
 }
 
 void MainWindow::cm_done() {
-	log("Calibration done :)", _LOGC_DONE);
+	log("Calibration done :)", LOGC_DONE);
 	widget_set_color(*ui.l_calib_state, Qt::green);
 	ui.pb_progress->setValue(100);
 	cm_done_gui();
@@ -1080,7 +1080,7 @@ void MainWindow::b_calib_stop_handle() {
 		return;
 
 	cm.stop();
-	log("Calibration manually interrupted!", _LOGC_WARN);
+	log("Calibration manually interrupted!", LOGC_WARN);
 	widget_set_color(*ui.l_calib_state, Qt::red);
 	cm_done_gui();
 }
@@ -1131,7 +1131,7 @@ void MainWindow::t_calib_active_tick() {
 void MainWindow::b_ad_read_handle() {
 	ui.gb_ad->setEnabled(false);
 	xn.readCVdirect(
-		_CV_ACCEL,
+		CV_ACCEL,
 		[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_adReadError(s, d); })
 	);
@@ -1146,7 +1146,7 @@ void MainWindow::b_ad_write_handle() {
 	ui.gb_ad->setEnabled(false);
 
 	xn.pomWriteCv(Xn::LocoAddr(
-		ui.sb_loco->value()), _CV_ACCEL, ui.sb_accel->value(),
+		ui.sb_loco->value()), CV_ACCEL, ui.sb_accel->value(),
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_accelWritten(s, d); }),
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_adWriteError(s, d); })
 	);
@@ -1281,7 +1281,7 @@ void MainWindow::a_loco_save(bool) {
 	xw.writeEndElement();
 
 	xw.writeStartElement("powerToSpeed");
-	for(size_t i = 0; i < Pm::_POWER_CNT; i++) {
+	for(size_t i = 0; i < Pm::POWER_CNT; i++) {
 		if (nullptr != m_pm.speed(i)) {
 			xw.writeStartElement("record");
 			xw.writeAttribute("power", QString::number(i));
@@ -1304,10 +1304,10 @@ void MainWindow::cr_measured(double distance) {
 }
 
 void MainWindow::cr_error(Cr::CrError ce, unsigned) {
-	log("Range calibration error!", _LOGC_ERROR);
+	log("Range calibration error!", LOGC_ERROR);
 
 	if (ce == Cr::CrError::XnNoResponse)
-		log("No response from XpressNET!", _LOGC_ERROR);
+		log("No response from XpressNET!", LOGC_ERROR);
 }
 
 void MainWindow::b_decel_measure_handle() {
@@ -1333,7 +1333,7 @@ void MainWindow::reset() {
 // Config IO:
 
 void MainWindow::a_config_load(bool) {
-	s.load(_CONFIG_FN);
+	s.load(CONFIG_FN);
 
 	wsm.scale = s["WSM"]["scale"].toInt();
 	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();
@@ -1353,12 +1353,12 @@ void MainWindow::a_config_load(bool) {
 	Settings::cfgToUnsigned(calcfg, "overviewMinSpeed", cm.co.min_speed);
 	Settings::cfgToUnsigned(calcfg, "rangeStopMinTimes", cr.stop_min);
 
-	log("Loaded config from " + QString(_CONFIG_FN));
+	log("Loaded config from " + QString(CONFIG_FN));
 }
 
 void MainWindow::a_config_save(bool) {
-	s.save(_CONFIG_FN);
-	log("Saved config to " + QString(_CONFIG_FN));
+	s.save(CONFIG_FN);
+	log("Saved config to " + QString(CONFIG_FN));
 }
 
 void MainWindow::a_speed_load(bool) {

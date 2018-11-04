@@ -12,7 +12,7 @@ void Settings::load(const QString& filename) {
 	}
 
 	// Load default for non-loaded data
-	for (const auto& gm : _DEFAULTS)
+	for (const auto& gm : DEFAULTS)
 		for (const std::pair<const QString, QVariant>& k : gm.second)
 			if (data[gm.first].find(k.first) == data[gm.first].end())
 				data[gm.first][k.first] = k.second;

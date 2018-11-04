@@ -27,22 +27,22 @@ forwarded to Calibration Manager as a references.
 #include "calib-man.h"
 #include "calib-range.h"
 
-constexpr char _CONFIG_FN[] = "config.ini";
-constexpr unsigned _STEPS_CNT = 28;
+constexpr char CONFIG_FN[] = "config.ini";
+constexpr unsigned STEPS_CNT = 28;
 
-constexpr unsigned _CV_ACCEL = 3;
-constexpr unsigned _CV_DECEL = 4;
-constexpr unsigned _CV_ADDR_LO = 18;
-constexpr unsigned _CV_ADDR_HI = 17;
-constexpr unsigned _CV_BASIC = 29;
+constexpr unsigned CV_ACCEL = 3;
+constexpr unsigned CV_DECEL = 4;
+constexpr unsigned CV_ADDR_LO = 18;
+constexpr unsigned CV_ADDR_HI = 17;
+constexpr unsigned CV_BASIC = 29;
 
-const QColor _STEPC_DONE = QColor(50, 200, 50);
-const QColor _STEPC_ERROR = Qt::red;
-const QColor _STEPC_CHANGED = Qt::blue;
+const QColor STEPC_DONE = QColor(50, 200, 50);
+const QColor STEPC_ERROR = Qt::red;
+const QColor STEPC_CHANGED = Qt::blue;
 
-const QColor _LOGC_ERROR = QColor(0xFF, 0xAA, 0xAA);
-const QColor _LOGC_WARN = QColor(0xFF, 0xFF, 0xAA);
-const QColor _LOGC_DONE = QColor(0xAA, 0xFF, 0xAA);
+const QColor LOGC_ERROR = QColor(0xFF, 0xAA, 0xAA);
+const QColor LOGC_WARN = QColor(0xFF, 0xFF, 0xAA);
+const QColor LOGC_DONE = QColor(0xAA, 0xFF, 0xAA);
 
 struct UiStep {
 	QSlider *slider;
@@ -161,7 +161,7 @@ private:
 	QDateTime m_canBlink;
 	bool m_starting = false;
 	PowerGraphWindow w_pg;
-	UiStep ui_steps[_STEPS_CNT];
+	UiStep ui_steps[STEPS_CNT];
 	Xn::XnFA m_fa;
 	Pm::PowerToSpeedMap m_pm;
 	Ssm::StepsToSpeedMap m_ssm;

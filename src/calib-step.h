@@ -33,14 +33,14 @@ speed step.
 
 namespace Cs {
 
-constexpr double _DEFAULT_EPSILON = 1; // +- 1 kmph
-constexpr double _DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
-constexpr size_t _DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
-constexpr unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
+constexpr double DEFAULT_EPSILON = 1; // +- 1 kmph
+constexpr double DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
+constexpr size_t DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
+constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
 
-constexpr unsigned _CV_START = 67; // cv 67 = step 1
-constexpr unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
-constexpr unsigned _OSC_MAX_COUNT = 3; // frame length for oscilation detection
+constexpr unsigned CV_START = 67; // cv 67 = step 1
+constexpr unsigned ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
+constexpr unsigned OSC_MAX_COUNT = 3; // frame length for oscilation detection
 
 enum class CsError {
 	LargeDiffusion,
@@ -54,10 +54,10 @@ class CalibStep : public QObject {
 	Q_OBJECT
 
 public:
-	double epsilon = _DEFAULT_EPSILON;
-	double max_diffusion = _DEFAULT_MAX_DIFFUSION;
-	unsigned measure_count = _DEFAULT_MEASURE_COUNT;
-	unsigned sp_adapt_timeout = _DEFAULT_SP_ADAPT_TIMEOUT;
+	double epsilon = DEFAULT_EPSILON;
+	double max_diffusion = DEFAULT_MAX_DIFFUSION;
+	unsigned measure_count = DEFAULT_MEASURE_COUNT;
+	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;
 
 	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	          QObject *parent = nullptr);

@@ -35,7 +35,7 @@ void StepsToSpeedMap::load(const QString& filename) {
 void StepsToSpeedMap::save(const QString& filename) {
 	std::ofstream out(filename.toLatin1().data());
 	out << "0;0" << std::endl;
-	for(size_t i = 0; i < _STEPS_CNT; i++)
+	for(size_t i = 0; i < STEPS_CNT; i++)
 		if (nullptr != m_map[i])
 			out << (i+1) << ";" << *m_map[i] << std::endl;
 }
@@ -68,10 +68,10 @@ unsigned StepsToSpeedMap::maxSpeed() const {
 }
 
 void StepsToSpeedMap::setMaxSpeed(const unsigned new_speed) {
-	for(size_t i = 0; i < _STEPS_CNT; i++)
+	for(size_t i = 0; i < STEPS_CNT; i++)
 		if (nullptr != m_map[i] && *m_map[i] > m_max_speed && *m_map[i] <= new_speed)
 			onAddOrUpdate(i, *m_map[i]);
-	for(size_t i = 0; i < _STEPS_CNT; i++)
+	for(size_t i = 0; i < STEPS_CNT; i++)
 		if (nullptr != m_map[i] && *m_map[i] > new_speed)
 			onAddOrUpdate(i, new_speed);
 
@@ -80,7 +80,7 @@ void StepsToSpeedMap::setMaxSpeed(const unsigned new_speed) {
 
 unsigned StepsToSpeedMap::noDifferentSpeeds() {
 	unsigned last = 0, count = 0;
-	for(size_t i = 0; i < _STEPS_CNT; i++) {
+	for(size_t i = 0; i < STEPS_CNT; i++) {
 		if (nullptr != at(i) && last != *at(i)) {
 			count++;
 			last = *at(i);
@@ -90,7 +90,7 @@ unsigned StepsToSpeedMap::noDifferentSpeeds() {
 }
 
 unsigned StepsToSpeedMap::maxSpeedInFile() const {
-	for(int i = _STEPS_CNT-1; i >= 0; i--)
+	for(int i = STEPS_CNT-1; i >= 0; i--)
 		if (nullptr != m_map[i])
 			return *m_map[i];
 	return 0;

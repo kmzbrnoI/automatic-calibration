@@ -19,7 +19,7 @@ namespace Pm {
 
 // This class uses stepindex everywhere!
 
-constexpr size_t _POWER_CNT = 256;
+constexpr size_t POWER_CNT = 256;
 
 struct ENoMap : public QStrException {
 	ENoMap(const QString str) : QStrException(str) {}
@@ -46,7 +46,7 @@ signals:
 	void onClear();
 
 private:
-	std::unique_ptr<float> map[_POWER_CNT];
+	std::unique_ptr<float> map[POWER_CNT];
 };
 
 }//namespace Pm

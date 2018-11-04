@@ -34,7 +34,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	wsm_lt_done();
 
 	if (diffusion > max_diffusion) {
-		if (m_diff_count >= _ADAPT_MAX_TICKS) {
+		if (m_diff_count >= ADAPT_MAX_TICKS) {
 			on_error(CsError::LargeDiffusion, m_step);
 			return;
 		}
@@ -85,7 +85,7 @@ void CalibStep::set_power(unsigned power) {
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
-		_CV_START - 1 + m_step,
+		CV_START - 1 + m_step,
 		m_last_power,
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
@@ -133,18 +133,18 @@ bool CalibStep::is_oscilating() const {
 	// Sometimes, it happens that sequence of powers is 87,86,87,86,...
 	// This function detects the behavior.
 
-	if (power_history.size() < _OSC_MAX_COUNT*2)
+	if (power_history.size() < OSC_MAX_COUNT*2)
 		return false;
 
 	// Compare odd indexes
 	unsigned compared = power_history[power_history.size()-2];
-	for(size_t i = power_history.size() - _OSC_MAX_COUNT*2; i < power_history.size(); i += 2)
+	for(size_t i = power_history.size() - OSC_MAX_COUNT*2; i < power_history.size(); i += 2)
 		if (power_history[i] != compared)
 			return false;
 
 	// Compare even indexes
 	compared = power_history[power_history.size()-1];
-	for(size_t i = power_history.size() - _OSC_MAX_COUNT*2 + 1; i < power_history.size(); i += 2)
+	for(size_t i = power_history.size() - OSC_MAX_COUNT*2 + 1; i < power_history.size(); i += 2)
 		if (power_history[i] != compared)
 			return false;
 

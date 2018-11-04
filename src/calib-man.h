@@ -65,13 +65,13 @@ enum class CalibState {
 	Interpolation,
 };
 
-constexpr unsigned _CV_CONFIG = 29;
-constexpr unsigned _CV_CONFIG_BIT_SPEED_TABLE = 4;
-constexpr bool _CV_CONFIG_SPEED_TABLE_VALUE = true;
-constexpr unsigned _CV_ACCEL = 3;
-constexpr unsigned _CV_DECEL = 4;
-constexpr unsigned _DEFAULT_VMAX = 255;
-constexpr unsigned _VMAX_CV = 5;
+constexpr unsigned CV_CONFIG = 29;
+constexpr unsigned CV_CONFIG_BIT_SPEED_TABLE = 4;
+constexpr bool CV_CONFIG_SPEED_TABLE_VALUE = true;
+constexpr unsigned CV_ACCEL = 3;
+constexpr unsigned CV_DECEL = 4;
+constexpr unsigned DEFAULT_VMAX = 255;
+constexpr unsigned VMAX_CV = 5;
 
 class CalibMan : public QObject {
 	Q_OBJECT
@@ -80,7 +80,7 @@ public:
 	Cs::CalibStep cs;
 	Co::CalibOverview co;
 	Xn::XnDirection direction;
-	unsigned vmax = _DEFAULT_VMAX;
+	unsigned vmax = DEFAULT_VMAX;
 
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
@@ -107,7 +107,7 @@ private:
 
 	using CVsConfig = std::map<unsigned, unsigned>;
 	CVsConfig init_cvs = { // (cv, value)
-		{2, 1}, {3, 0}, {4, 0}, {_VMAX_CV, _DEFAULT_VMAX}, {6, 60},
+		{2, 1}, {3, 0}, {4, 0}, {VMAX_CV, DEFAULT_VMAX}, {6, 60},
 	};
 	CVsConfig::iterator m_init_cv_iterator;
 	unsigned m_init_cv_index;

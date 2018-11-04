@@ -22,15 +22,15 @@ namespace Ssm {
 
 // Uses step index everywhere
 
-constexpr size_t _STEPS_CNT = 28;
-constexpr size_t _SPEED_MAX = 120;
+constexpr size_t STEPS_CNT = 28;
+constexpr size_t SPEED_MAX = 120;
 
 class StepsToSpeedMap : public QObject {
 	Q_OBJECT
 
 private:
-	unsigned m_max_speed = _SPEED_MAX;
-	std::unique_ptr<unsigned> m_map[_STEPS_CNT];
+	unsigned m_max_speed = SPEED_MAX;
+	std::unique_ptr<unsigned> m_map[STEPS_CNT];
 
 public:
 	StepsToSpeedMap(QObject *parent = nullptr);

@@ -27,15 +27,15 @@ enum class CrError {
 	XnNoResponse,
 };
 
-constexpr unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2s
-constexpr unsigned _DEFAULT_STOP_MIN = 10; // we must measure 10 times 0 kmph to determnine that loco has stopped
+constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2s
+constexpr unsigned DEFAULT_STOP_MIN = 10; // we must measure 10 times 0 kmph to determnine that loco has stopped
 
 class CalibRange : public QObject {
 	Q_OBJECT
 
 public:
-	unsigned sp_adapt_timeout = _DEFAULT_SP_ADAPT_TIMEOUT;
-	unsigned stop_min = _DEFAULT_STOP_MIN;
+	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;
+	unsigned stop_min = DEFAULT_STOP_MIN;
 
 	CalibRange(Xn::XpressNet& xn, Wsm::Wsm& wsm, QObject *parent = nullptr);
 	void measure(const unsigned loco_addr, const unsigned step, Xn::XnDirection dir);

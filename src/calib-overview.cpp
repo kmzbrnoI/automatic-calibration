@@ -21,15 +21,15 @@ std::unique_ptr<unsigned> CalibOverview::next_step() {
 			return std::make_unique<unsigned>(step);
 
 		step *= 2;
-		if (step >= _POWER_CNT-1)
+		if (step >= POWER_CNT-1)
 			return nullptr;
 
 		speed = m_pm.speed(step);
 	}
 
-	const std::vector<unsigned> _POWERS_TRY = {64, 128, 192, 255};
+	const std::vector<unsigned> POWERS_TRY = {64, 128, 192, 255};
 
-	for(const unsigned& power : _POWERS_TRY) {
+	for(const unsigned& power : POWERS_TRY) {
 		if (!m_pm.isRecord(power))
 			return std::make_unique<unsigned>(power);
 		if (*m_pm.speed(power) >= max_speed)
@@ -55,11 +55,11 @@ void CalibOverview::do_next_step() {
 		return;
 	}
 	m_last_power = *next;
-	progress_update(m_last_power, _POWER_CNT);
+	progress_update(m_last_power, POWER_CNT);
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
-		_CV_START - 1 + overview_step,
+		CV_START - 1 + overview_step,
 		m_last_power,
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
@@ -81,7 +81,7 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 	}
 
 	if (diffusion > max_diffusion) {
-		if (m_diff_count >= _ADAPT_MAX_TICKS) {
+		if (m_diff_count >= ADAPT_MAX_TICKS) {
 			on_error(Co::Error::LargeDiffusion, overview_step);
 			return;
 		}
@@ -120,10 +120,10 @@ void CalibOverview::wsm_lt_error() {
 void CalibOverview::reset_step() {
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
-		_CV_START - 1 + overview_step,
-		_STEP_RESET_VALUE
+		CV_START - 1 + overview_step,
+		STEP_RESET_VALUE
 	);
-	step_power_changed(overview_step, _STEP_RESET_VALUE);
+	step_power_changed(overview_step, STEP_RESET_VALUE);
 }
 
 void CalibOverview::stop() {

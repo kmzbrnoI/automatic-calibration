@@ -17,8 +17,8 @@ The whole process goes as followed:
 
 Powers are tested from lowest to highest based on this procedure:
 
- 1) Start with _START_STEP and wait for speed to be >= _MIN_SPEED.
-    If speed is low, increase power _OVERVIEW_STEP-times.
+ 1) Start with START_STEP and wait for speed to be >= MIN_SPEED.
+    If speed is low, increase power OVERVIEW_STEP-times.
  2) Once the power-to-speed map for low speed is measured, go to higher speeds.
  3) Test 64, 128, 192 and 255 power when the speed is < max_speed (we do not
     need info about power-to-speed mapping for higher speeds [and it might
@@ -37,18 +37,18 @@ of the loco and the power of maximum speed of the loco.
 
 namespace Co {
 
-constexpr unsigned _DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
-constexpr double _DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
-constexpr unsigned _DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
-constexpr unsigned _DEFAULT_SPEED_MAX = 120;
-constexpr unsigned _DEFAULT_OVERVIEW_STEP = 2;
-constexpr unsigned _DEFAULT_OVERVIEW_START = 10;
-constexpr unsigned _DEFAULT_MIN_SPEED = 5; // 5 kmph
+constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
+constexpr double DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
+constexpr unsigned DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
+constexpr unsigned DEFAULT_SPEED_MAX = 120;
+constexpr unsigned DEFAULT_OVERVIEW_STEP = 2;
+constexpr unsigned DEFAULT_OVERVIEW_START = 10;
+constexpr unsigned DEFAULT_MIN_SPEED = 5; // 5 kmph
 
-constexpr unsigned _STEP_RESET_VALUE = 10;
-constexpr unsigned _ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
-constexpr unsigned _POWER_CNT = 256;
-constexpr unsigned _CV_START = 67; // cv 67 = step 1
+constexpr unsigned STEP_RESET_VALUE = 10;
+constexpr unsigned ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
+constexpr unsigned POWER_CNT = 256;
+constexpr unsigned CV_START = 67; // cv 67 = step 1
 
 enum class Error {
 	LargeDiffusion,
@@ -59,15 +59,15 @@ class CalibOverview : public QObject {
 	Q_OBJECT
 
 public:
-	unsigned sp_adapt_timeout = _DEFAULT_SP_ADAPT_TIMEOUT;
-	double max_diffusion = _DEFAULT_MAX_DIFFUSION;
-	unsigned measure_count = _DEFAULT_MEASURE_COUNT;
-	unsigned overview_step = _DEFAULT_OVERVIEW_STEP;
-	unsigned overview_start = _DEFAULT_OVERVIEW_START;
-	unsigned min_speed = _DEFAULT_MIN_SPEED;
+	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;
+	double max_diffusion = DEFAULT_MAX_DIFFUSION;
+	unsigned measure_count = DEFAULT_MEASURE_COUNT;
+	unsigned overview_step = DEFAULT_OVERVIEW_STEP;
+	unsigned overview_start = DEFAULT_OVERVIEW_START;
+	unsigned min_speed = DEFAULT_MIN_SPEED;
 
 	CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
-	              unsigned max_speed = _DEFAULT_SPEED_MAX, QObject *parent = nullptr);
+	              unsigned max_speed = DEFAULT_SPEED_MAX, QObject *parent = nullptr);
 	void makeOverview(const unsigned loco_addr);
 	void stop();
 
