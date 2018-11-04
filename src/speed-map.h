@@ -2,7 +2,7 @@
 #define _SPEED_MAP_H_
 
 /*
-This file defines StepsToSpeedMap class which maps spped steps (0-28) to
+This file defines StepsToSpeedMap class which maps speed steps (0-28) to
 real speed of the train. It defines the goal of the calibration, it defines
 which real speed to assign to which speed step.
 
@@ -24,13 +24,14 @@ namespace Ssm {
 
 constexpr size_t STEPS_CNT = 28;
 constexpr size_t SPEED_MAX = 120;
+constexpr unsigned EMPTY_VALUE = 0;
 
 class StepsToSpeedMap : public QObject {
 	Q_OBJECT
 
 private:
 	unsigned m_max_speed = SPEED_MAX;
-	std::unique_ptr<unsigned> m_map[STEPS_CNT];
+	std::array<unsigned, STEPS_CNT> m_map;
 
 public:
 	StepsToSpeedMap(QObject *parent = nullptr);
@@ -40,14 +41,14 @@ public:
 	void save(const QString& filename);
 	void clear();
 	void addOrUpdate(const unsigned step, const unsigned speed);
-	unsigned noDifferentSpeeds();
+	unsigned noDifferentSpeeds() const;
 
 	unsigned maxSpeed() const;
 	void setMaxSpeed(const unsigned new_speed);
 	unsigned maxSpeedInFile() const;
 
-	unsigned* at(const int index);
-	unsigned* operator[] (const int index);
+	unsigned const* at(const int index) const;
+	unsigned const* operator[] (const int index) const;
 
 signals:
 	void onAddOrUpdate(unsigned step, unsigned speed);
