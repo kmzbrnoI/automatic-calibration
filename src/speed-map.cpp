@@ -22,10 +22,19 @@ void StepsToSpeedMap::load(const QString& filename) {
 	while (getline(in, line, '\n')) {
 		std::istringstream templine(line);
 		std::string data;
-		getline(templine, data, ';');
-		unsigned step = stoul(data);
-		getline(templine, data, ';');
-		unsigned speed = stoul(data);
+
+		unsigned step, speed;
+		try {
+			getline(templine, data, ';');
+			step = std::stoul(data);
+			getline(templine, data, ';');
+			speed = std::stoul(data);
+		}
+		catch (const std::invalid_argument& e) {
+			continue;
+		} catch (const std::out_of_range& e) {
+			continue;
+		}
 
 		if (step <= 0 || step > 28)
 			continue;
