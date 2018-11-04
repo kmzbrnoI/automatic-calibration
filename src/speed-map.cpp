@@ -17,7 +17,7 @@ StepsToSpeedMap::StepsToSpeedMap(const QString& filename, QObject *parent)
 }
 
 void StepsToSpeedMap::load(const QString& filename) {
-	std::ifstream in(filename.toLatin1().data());
+	std::ifstream in(filename.toUtf8().data());
 	std::string line;
 	while (getline(in, line, '\n')) {
 		std::istringstream templine(line);
@@ -36,7 +36,7 @@ void StepsToSpeedMap::load(const QString& filename) {
 }
 
 void StepsToSpeedMap::save(const QString& filename) {
-	std::ofstream out(filename.toLatin1().data());
+	std::ofstream out(filename.toUtf8().data());
 	out << "0;0" << std::endl;
 	for(size_t i = 0; i < STEPS_CNT; i++)
 		if (EMPTY_VALUE != m_map[i])

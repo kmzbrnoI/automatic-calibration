@@ -260,8 +260,8 @@ void MainWindow::xn_onLog(const QString& message, const Xn::XnLogLevel& loglevel
 	ui.tw_xn_log->addTopLevelItem(item);
 
 	if (s["XN"]["logfile"] != "") {
-		std::ofstream out(s["XN"]["logfile"].toString().toLatin1().data(), std::ofstream::app);
-		out << QTime::currentTime().toString("hh:mm:ss.zzz").toLatin1().data() << ": " << message.toLatin1().data() << std::endl;
+		std::ofstream out(s["XN"]["logfile"].toString().toUtf8().data(), std::ofstream::app);
+		out << QTime::currentTime().toString("hh:mm:ss.zzz").toUtf8().data() << ": " << message.toUtf8().data() << std::endl;
 	}
 }
 
@@ -625,8 +625,8 @@ void MainWindow::log(const QString& message, const QColor& color) {
 	ui.lv_log->item(0)->setBackground(color);
 
 	if (s["Logging"]["file"] != "") {
-		std::ofstream out(s["Logging"]["file"].toString().toLatin1().data(), std::ofstream::app);
-		out << QTime::currentTime().toString("hh:mm:ss.zzz").toLatin1().data() << ": " << message.toLatin1().data() << std::endl;
+		std::ofstream out(s["Logging"]["file"].toString().toUtf8().data(), std::ofstream::app);
+		out << QTime::currentTime().toString("hh:mm:ss.zzz").toUtf8().data() << ": " << message.toUtf8().data() << std::endl;
 	}
 }
 
@@ -815,7 +815,7 @@ void MainWindow::mc_batteryRead(double voltage, uint16_t voltage_raw) {
 	text.sprintf(
 		"%4.2f V (%s)",
 		voltage,
-		QTime::currentTime().toString().toLatin1().data()
+		QTime::currentTime().toString().toUtf8().data()
 	);
 	ui.l_wsm_bat_voltage->setText(text);
 }
