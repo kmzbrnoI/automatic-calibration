@@ -27,7 +27,7 @@ std::unique_ptr<unsigned> CalibOverview::next_step() {
 		speed = m_pm.speed(step);
 	}
 
-	const std::vector<unsigned> POWERS_TRY = {64, 128, 192, 255};
+	constexpr std::array<unsigned, 4> POWERS_TRY = {64, 128, 192, 255};
 
 	for(const unsigned& power : POWERS_TRY) {
 		if (!m_pm.isRecord(power))
