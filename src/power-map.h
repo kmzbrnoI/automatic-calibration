@@ -20,6 +20,7 @@ namespace Pm {
 // This class uses stepindex everywhere!
 
 constexpr size_t POWER_CNT = 256;
+constexpr float EMPTY_VALUE = -1;
 
 struct ENoMap : public QStrException {
 	ENoMap(const QString str) : QStrException(str) {}
@@ -36,17 +37,17 @@ public:
 	unsigned power(const float speed) const;
 	bool isRecord(const unsigned power) const;
 	bool isAnyRecord() const;
-	float* speed(const unsigned power) const;
+	float const* speed(const unsigned power) const;
 
-	float* at(const int power) const;
-	float* operator[] (const int power) const;
+	float const* at(const int power) const;
+	float const* operator[] (const int power) const;
 
 signals:
 	void onAddOrUpdate(unsigned power, float speed);
 	void onClear();
 
 private:
-	std::unique_ptr<float> map[POWER_CNT];
+	std::array<float, POWER_CNT> map;
 };
 
 }//namespace Pm

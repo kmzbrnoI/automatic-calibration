@@ -4,31 +4,31 @@ namespace Pm {
 
 PowerToSpeedMap::PowerToSpeedMap(QObject *parent)
 	: QObject(parent) {
-	map[0] = std::make_unique<float>(0);
+	clear();
 }
 
 void PowerToSpeedMap::clear() {
 	for(auto& item : map)
-		item = nullptr;
-	map[0] = std::make_unique<float>(0);
+		item = EMPTY_VALUE;
+	map[0] = 0;
 	onClear();
 	onAddOrUpdate(0, 0);
 }
 
 void PowerToSpeedMap::addOrUpdate(const unsigned power, const float speed) {
-	map[power] = std::make_unique<float>(speed);
+	map[power] = speed;
 	onAddOrUpdate(power, speed);
 }
 
 unsigned PowerToSpeedMap::power(const float speed) const {
 	size_t last = 0;
 	for(size_t i = 0; i < POWER_CNT; i++) {
-		if (nullptr != map[i]) {
-			if (*map[i] == speed)
+		if (EMPTY_VALUE != map[i]) {
+			if (map[i] == speed)
 				return i;
-			if (*map[i] > speed) {
-				float deltaSp = speed - *map[last];
-				float distSp = *map[i] - *map[last];
+			if (map[i] > speed) {
+				float deltaSp = speed - map[last];
+				float distSp = map[i] - map[last];
 				return ((deltaSp / distSp) * (i - last)) + last;
 			}
 			last = i;
@@ -39,26 +39,26 @@ unsigned PowerToSpeedMap::power(const float speed) const {
 }
 
 bool PowerToSpeedMap::isRecord(const unsigned power) const {
-	return (nullptr != map[power]);
+	return (EMPTY_VALUE != map[power]);
 }
 
-float *PowerToSpeedMap::speed(const unsigned power) const {
-	return map[power].get();
+float const* PowerToSpeedMap::speed(const unsigned power) const {
+	return map[power] != EMPTY_VALUE ? &map[power] : nullptr;
 }
 
 bool PowerToSpeedMap::isAnyRecord() const {
 	for(size_t i = 1; i < POWER_CNT; i++)
-		if (nullptr != map[i])
+		if (EMPTY_VALUE != map[i])
 			return true;
 	return false;
 }
 
-float* PowerToSpeedMap::at(const int power) const {
-	return map[power].get();
+float const* PowerToSpeedMap::at(const int power) const {
+	return speed(power);
 }
 
-float* PowerToSpeedMap::operator[] (const int power) const {
-	return at(power);
+float const* PowerToSpeedMap::operator[] (const int power) const {
+	return speed(power);
 }
 
 }//namespace Pm

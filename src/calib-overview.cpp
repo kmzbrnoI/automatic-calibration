@@ -15,7 +15,7 @@ CalibOverview::CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Ws
 std::unique_ptr<unsigned> CalibOverview::next_step() {
 	size_t step = overview_start;
 
-	float *speed = m_pm.speed(step);
+	float const *speed = m_pm.speed(step);
 	while (nullptr == speed || *speed == 0) {
 		if (nullptr == speed)
 			return std::make_unique<unsigned>(step);
