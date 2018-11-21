@@ -1,5 +1,5 @@
-#ifndef _CALIB_STEP_H_
-#define _CALIB_STEP_H_
+#ifndef CALIB_STEP_H
+#define CALIB_STEP_H
 
 /*
 This fule defines a CalibStep class which manages calibration of a single

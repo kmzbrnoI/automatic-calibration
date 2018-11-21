@@ -1,5 +1,5 @@
-#ifndef _CALIB_MAN_H_
-#define _CALIB_MAN_H_
+#ifndef CALIB_MAN_H
+#define CALIB_MAN_H
 
 /*
 This file defines CalibMan class, which serves as a Calibration Manager

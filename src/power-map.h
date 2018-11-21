@@ -1,5 +1,5 @@
-#ifndef _POWER_MAP_H_
-#define _POWER_MAP_H_
+#ifndef POWER_MAP_H
+#define POWER_MAP_H
 
 /*
 This file defines power-to-speed mapping via PowerToSpeedMap class.

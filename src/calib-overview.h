@@ -1,5 +1,5 @@
-#ifndef _CALIB_OVERVIEW_H_
-#define _CALIB_OVERVIEW_H_
+#ifndef CALIB_OVERVIEW_H
+#define CALIB_OVERVIEW_H
 
 /*
 This file defines a CalibOverview class which manages creating of a basic

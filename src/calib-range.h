@@ -1,5 +1,5 @@
-#ifndef _CALIB_RANGE_H_
-#define _CALIB_RANGE_H_
+#ifndef CALIB_RANGE_H
+#define CALIB_RANGE_H
 
 /*
 This unit defines a CalibRange class which allows user to measure distance

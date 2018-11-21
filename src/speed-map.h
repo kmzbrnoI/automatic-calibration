@@ -1,5 +1,5 @@
-#ifndef _SPEED_MAP_H_
-#define _SPEED_MAP_H_
+#ifndef SPEED_MAP_H
+#define SPEED_MAP_H
 
 /*
 This file defines StepsToSpeedMap class which maps speed steps (0-28) to
