@@ -29,10 +29,6 @@ constexpr unsigned EMPTY_VALUE = 0;
 class StepsToSpeedMap : public QObject {
 	Q_OBJECT
 
-private:
-	unsigned m_max_speed = SPEED_MAX;
-	std::array<unsigned, STEPS_CNT> m_map;
-
 public:
 	StepsToSpeedMap(QObject *parent = nullptr);
 	StepsToSpeedMap(const QString& filename, QObject *parent = nullptr);
@@ -49,6 +45,10 @@ public:
 
 	unsigned const* at(const int index) const;
 	unsigned const* operator[] (const int index) const;
+
+private:
+	unsigned m_max_speed = SPEED_MAX;
+	std::array<unsigned, STEPS_CNT> m_map;
 
 signals:
 	void onAddOrUpdate(unsigned step, unsigned speed);
