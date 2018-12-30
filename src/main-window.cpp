@@ -1337,6 +1337,7 @@ void MainWindow::a_config_load(bool) {
 
 	wsm.scale = s["WSM"]["scale"].toInt();
 	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();
+	wsm.ticksPerRevolution = s["WSM"]["ticksPerRevolution"].toDouble();
 
 	auto& calcfg = s["Calibration"];
 

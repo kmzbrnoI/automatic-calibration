@@ -13,6 +13,7 @@ const Config DEFAULTS {
 	{"WSM", {
 		{"scale", 120},
 		{"wheelDiameter", 8.0},
+		{"ticksPerRevolution", 8},
 	}},
 	{"XN", {
 		{"baudrate", 19200},
