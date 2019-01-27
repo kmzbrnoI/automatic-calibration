@@ -106,7 +106,7 @@ unsigned StepsToSpeedMap::maxSpeedInFile() const {
 	for(int i = STEPS_CNT-1; i >= 0; i--)
 		if (EMPTY_VALUE != m_map[i])
 			return m_map[i];
-	return 0;
+	return SPEED_MAX;
 }
 
 }//namespace Ssm
