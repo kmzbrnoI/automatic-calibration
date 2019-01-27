@@ -17,7 +17,10 @@ StepsToSpeedMap::StepsToSpeedMap(const QString& filename, QObject *parent)
 }
 
 void StepsToSpeedMap::load(const QString& filename) {
-	std::ifstream in(filename.toUtf8().data());
+	std::ifstream in(filename.toUtf8().data());;
+	if (in.fail())
+		throw std::ifstream::failure("Input stream fail!");
+
 	std::string line;
 	while (getline(in, line, '\n')) {
 		std::istringstream templine(line);

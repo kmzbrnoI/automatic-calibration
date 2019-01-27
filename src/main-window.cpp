@@ -1368,8 +1368,13 @@ void MainWindow::a_speed_load(bool) {
 
 	QString filename;
 	Settings::cfgToQString(s["Speed"], "file", filename);
-	m_ssm.load(filename);
-	log("Loaded steps-to-speed mapping from " + filename);
+	try {
+		m_ssm.load(filename);
+		log("Loaded steps-to-speed mapping from " + filename);
+	}
+	catch (const std::exception& e) {
+		log("Unable to load steps-to-speed file!", LOGC_ERROR);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////
