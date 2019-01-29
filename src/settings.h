@@ -14,6 +14,7 @@ const Config DEFAULTS {
 		{"scale", 120},
 		{"wheelDiameter", 8.0},
 		{"ticksPerRevolution", 8},
+		{"port", "/dev/ttyUSB0"},
 	}},
 	{"XN", {
 		{"baudrate", 19200},
