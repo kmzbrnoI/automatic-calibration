@@ -521,6 +521,12 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 		ui.b_addr_set->setEnabled(true);
 		ui.b_addr_read->setEnabled(true);
 		a_dcc_go(true);
+	} else if (cv == CV_ADDR_SHORT) {
+		ui.sb_loco->setValue(value);
+		ui.sb_loco->setEnabled(true);
+		ui.b_addr_set->setEnabled(true);
+		ui.b_addr_read->setEnabled(true);
+		a_dcc_go(true);
 	} else if (cv == CV_ACCEL) {
 		ui.sb_accel->setValue(value);
 		xn.readCVdirect(CV_DECEL,
@@ -666,9 +672,20 @@ void MainWindow::b_addr_read_handle() {
 	ui.sb_loco->setEnabled(false);
 	ui.b_addr_set->setEnabled(false);
 	ui.b_addr_read->setEnabled(false);
+
 	xn.readCVdirect(
-		CV_ADDR_LO,
-		[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
+		CV_BASIC_CONFIG,
+		[this](void*, Xn::XnReadCVStatus, uint8_t, uint8_t value) {
+			// Configuration successfully read
+			const auto& next_cv = (((value >> 5) & 0x1) == 1) ? CV_ADDR_LO : CV_ADDR_SHORT;
+			xn.readCVdirect(
+				next_cv,
+				[this](void *s, Xn::XnReadCVStatus st, uint8_t cv, uint8_t value) {
+					xn_cvRead(s, st, cv, value);
+				},
+				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_addrReadError(s, d); })
+			);
+		},
 		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_addrReadError(s, d); })
 	);
 }

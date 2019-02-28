@@ -30,11 +30,12 @@ forwarded to Calibration Manager as a references.
 constexpr char CONFIG_FN[] = "config.ini";
 constexpr unsigned STEPS_CNT = 28;
 
+constexpr unsigned CV_ADDR_SHORT = 1;
 constexpr unsigned CV_ACCEL = 3;
 constexpr unsigned CV_DECEL = 4;
 constexpr unsigned CV_ADDR_LO = 18;
 constexpr unsigned CV_ADDR_HI = 17;
-constexpr unsigned CV_BASIC = 29;
+constexpr unsigned CV_BASIC_CONFIG = 29;
 
 const QColor STEPC_DONE = QColor(50, 200, 50);
 const QColor STEPC_ERROR = Qt::red;
