@@ -488,7 +488,7 @@ void MainWindow::xn_cvRead(void*, Xn::XnReadCVStatus st, uint8_t cv, uint8_t val
 		show_error("Unable to read CV " + QString::number(cv) + ": " +
 		           Xn::XpressNet::xnReadCVStatusToQString(st));
 
-		if (cv == CV_ADDR_LO || cv == CV_ADDR_HI) {
+		if (cv == CV_ADDR_LO || cv == CV_ADDR_HI || cv == CV_ADDR_SHORT || cv == CV_BASIC_CONFIG) {
 			ui.sb_loco->setEnabled(true);
 			ui.b_addr_set->setEnabled(true);
 			ui.b_addr_read->setEnabled(true);
