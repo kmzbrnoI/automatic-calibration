@@ -62,6 +62,19 @@ $ make
 
 You may use [this script](https://serverfault.com/questions/61659/can-you-get-any-program-in-linux-to-print-a-stack-trace-if-it-segfaults) to debug segfaults.
 
+## Cross-compiling for Windows
+
+This application is being cross-compiled for Windows via [MXE](https://mxe.cc/).
+Follow [these instructions](https://stackoverflow.com/questions/14170590/building-qt-5-on-linux-for-windows)
+for building standalone `exe` file.
+
+You may want to use similar script as `activate.sh`:
+
+```bash
+export PATH="$HOME/...../mxe/usr/bin:$PATH"
+~/...../mxe/usr/i686-w64-mingw32.static/qt5/bin/qmake ..
+```
+
 ## Connecting to WSM
 
  * Windows: pair it with HC-05 module, serial port should be added
