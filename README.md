@@ -75,6 +75,12 @@ export PATH="$HOME/...../mxe/usr/bin:$PATH"
 ~/...../mxe/usr/i686-w64-mingw32.static/qt5/bin/qmake ..
 ```
 
+Make MXE this way:
+
+```bash
+make qtbase qtserialport
+```
+
 ## Connecting to WSM
 
  * Windows: pair it with HC-05 module, serial port should be added
