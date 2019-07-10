@@ -122,7 +122,8 @@ Speed table is loaded from `speed.csv` file, where each line is of format
 ## Style checking
 
 ```
-$ clang-tidy -extra-arg-before=-x -extra-arg-before=c++ -extra-arg=-std=c++14 *.cpp *.h
+$ clang-tidy-6.0 -extra-arg-before=-x -extra-arg-before=c++ -extra-arg=-std=c++14 *.cpp *.h
+$ clang-format-6.0 *.cpp *.h
 ```
 
 ## Authors
