@@ -79,13 +79,13 @@ class CalibMan : public QObject {
 public:
 	Cs::CalibStep cs;
 	Co::CalibOverview co;
-	Xn::XnDirection direction;
+	Xn::Direction direction;
 	unsigned vmax = DEFAULT_VMAX;
 
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
 
-	void calibrateAll(unsigned locoAddr,  Xn::XnDirection dir);
+	void calibrateAll(unsigned locoAddr,  Xn::Direction dir);
 	void stop();
 	void reset();
 	void interpolateAll();

@@ -87,8 +87,8 @@ void CalibStep::set_power(unsigned power) {
 		Xn::LocoAddr(m_loco_addr),
 		CV_START - 1 + m_step,
 		m_last_power,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_pom_err(s, d); })
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
 
 	power_history.push_back(m_last_power);

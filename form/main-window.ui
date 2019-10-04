@@ -997,7 +997,12 @@
              </item>
              <item>
               <property name="text">
-               <string>Data</string>
+               <string>Commands</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Raw Data</string>
               </property>
              </item>
              <item>

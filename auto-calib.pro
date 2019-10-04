@@ -34,10 +34,11 @@ SOURCES += \
 HEADERS += \
 	lib/q-str-exception.h \
 	lib/wsm/q-str-exception.h \
-	lib/xn/q-str-exception.h \
 	lib/wsm/wsm.h \
 	lib/xn/xn.h \
-	lib/xn/xn-typedefs.h \
+	lib/xn/xn-loco-addr.h \
+	lib/xn/xn-commands.h \
+	lib/xn/q-str-exception.h \
 	src/main-window.h \
 	src/settings.h \
 	src/power-map.h \

@@ -71,8 +71,8 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 				Xn::LocoAddr(m_locoAddr),
 				Cs::CV_START + i,
 				power,
-				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnStepWritten(s, d); }),
-				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnStepWriteError(s, d); })
+				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWritten(s, d); }),
+				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
 			this->power[i] = m_step_power;
 			onStepPowerChanged(i+1, power);
@@ -126,8 +126,8 @@ void CalibMan::xnStepWritten(void*, void*) {
 				Xn::LocoAddr(m_locoAddr),
 				Cs::CV_START + i,
 				m_step_power,
-				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnStepWritten(s, d); }),
-				std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnStepWriteError(s, d); })
+				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWritten(s, d); }),
+				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
 			power[i] = m_step_power;
 			onStepPowerChanged(i+1, m_step_power);
@@ -203,7 +203,7 @@ std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& use
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void CalibMan::calibrateAll(const unsigned locoAddr, Xn::XnDirection dir) {
+void CalibMan::calibrateAll(const unsigned locoAddr, Xn::Direction dir) {
 	m_locoAddr = locoAddr;
 	direction = dir;
 	csSigConnect();
@@ -358,8 +358,8 @@ void CalibMan::interpolateNext() {
 		Xn::LocoAddr(m_locoAddr),
 		Cs::CV_START + m_thisIPstep,
 		power,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnIPWritten(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xnIPError(s, d); })
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { xnIPWritten(s, d); }),
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { xnIPError(s, d); })
 	);
 	this->power[m_thisIPstep] = power;
 	onStepPowerChanged(m_thisIPstep+1, power);
@@ -407,8 +407,8 @@ void CalibMan::initCVs() {
 		CV_CONFIG,
 		CV_CONFIG_BIT_SPEED_TABLE,
 		CV_CONFIG_SPEED_TABLE_VALUE,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initSTWritten(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsError(s, d); })
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { initSTWritten(s, d); }),
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { initCVsError(s, d); })
 	);
 }
 
@@ -435,8 +435,8 @@ void CalibMan::initCVsWriteNext() {
 		Xn::LocoAddr(m_locoAddr),
 		m_init_cv_iterator->first,
 		m_init_cv_iterator->second,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsOk(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { initCVsError(s, d); })
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { initCVsOk(s, d); }),
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { initCVsError(s, d); })
 	);
 }
 

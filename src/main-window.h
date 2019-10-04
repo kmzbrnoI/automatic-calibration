@@ -62,10 +62,10 @@ public:
 private slots:
 	// Signals from XpressNET library
 	void xn_onError(const QString& error);
-	void xn_onLog(const QString&, const Xn::XnLogLevel&);
+	void xn_onLog(const QString&, const Xn::LogLevel&);
 	void xn_onConnect();
 	void xn_onDisconnect();
-	void xn_onTrkStatusChanged(Xn::XnTrkStatus);
+	void xn_onTrkStatusChanged(Xn::TrkStatus);
 
 	// Signals from GUI
 	void sb_loco_changed(int value);
@@ -163,7 +163,7 @@ private:
 	bool m_starting = false;
 	PowerGraphWindow w_pg;
 	UiStep ui_steps[STEPS_CNT];
-	Xn::XnFA m_fa;
+	Xn::FA m_fa;
 	Pm::PowerToSpeedMap m_pm;
 	Ssm::StepsToSpeedMap m_ssm;
 	Cm::CalibMan cm;
@@ -178,12 +178,12 @@ private:
 	void xn_onCSStatusOk(void*, void*);
 	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
 	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
-	void xn_gotLocoInfo(void*, bool used, Xn::XnDirection direction, unsigned speed,
-	                    Xn::XnFA, Xn::XnFB);
+	void xn_gotLocoInfo(void*, bool used, Xn::Direction direction, unsigned speed,
+	                    Xn::FA, Xn::FB);
 	void xn_onLocoInfoError(void*, void*);
 	void xn_addrReadError(void*, void*);
 	void xn_adReadError(void*, void*);
-	void xn_cvRead(void*, Xn::XnReadCVStatus, uint8_t cv, uint8_t value);
+	void xn_cvRead(void*, Xn::ReadCVStatus, uint8_t cv, uint8_t value);
 	void xn_adWriteError(void*, void*);
 	void xn_accelWritten(void*, void*);
 	void xn_decelWritten(void*, void*);

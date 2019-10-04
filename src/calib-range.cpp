@@ -11,7 +11,7 @@ CalibRange::CalibRange(Xn::XpressNet& xn, Wsm::Wsm& wsm, QObject *parent)
 }
 
 void CalibRange::measure(const unsigned loco_addr, const unsigned step,
-                         Xn::XnDirection dir) {
+                         Xn::Direction dir) {
 	m_loco_addr = loco_addr;
 	m_step = step;
 	m_dir = dir;
@@ -22,8 +22,8 @@ void CalibRange::measure(const unsigned loco_addr, const unsigned step,
 		Xn::LocoAddr(loco_addr),
 		step,
 		dir,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_speed_ok(s, d); }),
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_speed_err(s, d); })
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_ok(s, d); }),
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_err(s, d); })
 	);
 }
 
@@ -37,7 +37,7 @@ void CalibRange::wsm_dist_read(double, uint32_t dist_raw) {
 		0,
 		m_dir,
 		nullptr,
-		std::make_unique<Xn::XnCb>([this](void *s, void *d) { xn_speed_err(s, d); })
+		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_err(s, d); })
 	);
 	m_start_dist = dist_raw;
 }
