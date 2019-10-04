@@ -68,7 +68,7 @@ public:
 
 	CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	              unsigned max_speed = DEFAULT_SPEED_MAX, QObject *parent = nullptr);
-	void makeOverview(const unsigned loco_addr);
+	void makeOverview(unsigned loco_addr);
 	void stop();
 
 	unsigned max_speed;

@@ -14,7 +14,7 @@ The mapping could me only patrial, unused mappings are intended to be
 interpolated.
 */
 
-#include <stddef.h>
+#include <cstddef>
 #include <QObject>
 #include <memory>
 
@@ -36,15 +36,15 @@ public:
 	void load(const QString& filename);
 	void save(const QString& filename);
 	void clear();
-	void addOrUpdate(const unsigned step, const unsigned speed);
+	void addOrUpdate(unsigned step, unsigned speed);
 	unsigned noDifferentSpeeds() const;
 
 	unsigned maxSpeed() const;
-	void setMaxSpeed(const unsigned new_speed);
+	void setMaxSpeed(unsigned new_speed);
 	unsigned maxSpeedInFile() const;
 
-	unsigned const* at(const int index) const;
-	unsigned const* operator[] (const int index) const;
+	unsigned const* at(int index) const;
+	unsigned const* operator[] (int index) const;
 
 private:
 	unsigned m_max_speed = SPEED_MAX;

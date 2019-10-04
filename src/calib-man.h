@@ -85,12 +85,12 @@ public:
 	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
 
-	void calibrateAll(const unsigned locoAddr,  Xn::XnDirection dir);
+	void calibrateAll(unsigned locoAddr,  Xn::XnDirection dir);
 	void stop();
 	void reset();
 	void interpolateAll();
-	void setStepManually(const unsigned step, unsigned power);
-	void unsetStep(const unsigned step);
+	void setStepManually(unsigned step, unsigned power);
+	void unsetStep(unsigned step);
 	bool inProgress() const;
 	CalibState progress() const;
 
@@ -115,11 +115,11 @@ private:
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();
 	std::unique_ptr<unsigned> nextStepBin(const std::vector<unsigned>& used_steps,
-	                                      const size_t left, const size_t right);
+	                                      size_t left, size_t right);
 	void csSigConnect();
 	void csSigDisconnect();
-	void updateProg(const CalibState cs, const size_t progress, const size_t max);
-	size_t getProgress(const CalibState cs, const size_t progress, const size_t max);
+	void updateProg(CalibState cs, size_t progress, size_t max);
+	size_t getProgress(CalibState cs, size_t progress, size_t max);
 
 	void xnStepWritten(void*, void*);
 	void xnStepWriteError(void*, void*);
@@ -128,14 +128,14 @@ private:
 	unsigned m_thisIPleft;
 	unsigned m_thisIPstep;
 	unsigned m_thisIPright;
-	unsigned getIPpower(const unsigned left, const unsigned right, const unsigned step);
+	unsigned getIPpower(unsigned left, unsigned right, unsigned step);
 
 	void interpolateNext();
 	void xnIPWritten(void*, void*);
 	void xnIPError(void*, void*);
 
 	void done();
-	void error(const Cm::CmError, const unsigned step);
+	void error(Cm::CmError, unsigned step);
 
 	void initCVs();
 	void initCVsOk(void*, void*);

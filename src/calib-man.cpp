@@ -176,7 +176,7 @@ std::unique_ptr<unsigned> CalibMan::nextStep() {
 		return std::make_unique<unsigned>(used_steps[used_steps.size()-1]);
 
 	// Binary search next step; interval=[left, right)
-	return std::move(nextStepBin(used_steps, 0, used_steps.size()));
+	return nextStepBin(used_steps, 0, used_steps.size());
 }
 
 std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& used_steps,
@@ -190,11 +190,11 @@ std::unique_ptr<unsigned> CalibMan::nextStepBin(const std::vector<unsigned>& use
 
 	std::unique_ptr<unsigned> res;
 
-	res = std::move(nextStepBin(used_steps, left, middle));
+	res = nextStepBin(used_steps, left, middle);
 	if (nullptr != res)
 		return res;
 
-	res = std::move(nextStepBin(used_steps, middle+1, right));
+	res = nextStepBin(used_steps, middle+1, right);
 	if (nullptr != res)
 		return res;
 

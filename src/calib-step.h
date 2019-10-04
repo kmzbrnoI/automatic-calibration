@@ -61,8 +61,7 @@ public:
 
 	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
 	          QObject *parent = nullptr);
-	void calibrate(const unsigned loco_addr, const unsigned step,
-	               const double speed);
+	void calibrate(unsigned loco_addr, unsigned step, double speed);
 	void stop();
 
 private:

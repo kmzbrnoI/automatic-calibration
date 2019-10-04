@@ -9,7 +9,7 @@ This file defines power-to-speed mapping via PowerToSpeedMap class.
  * It allows to add new records to mapping dynamically.
 */
 
-#include <stddef.h>
+#include <cstddef>
 #include <QObject>
 #include <memory>
 
@@ -33,14 +33,14 @@ public:
 	PowerToSpeedMap(QObject *parent = nullptr);
 
 	void clear();
-	void addOrUpdate(const unsigned power, const float speed);
-	unsigned power(const float speed) const;
-	bool isRecord(const unsigned power) const;
+	void addOrUpdate(unsigned power, float speed);
+	unsigned power(float speed) const;
+	bool isRecord(unsigned power) const;
 	bool isAnyRecord() const;
-	float const* speed(const unsigned power) const;
+	float const* speed(unsigned power) const;
 
-	float const* at(const int power) const;
-	float const* operator[] (const int power) const;
+	float const* at(int power) const;
+	float const* operator[] (int power) const;
 
 signals:
 	void onAddOrUpdate(unsigned power, float speed);
