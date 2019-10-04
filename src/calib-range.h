@@ -38,7 +38,7 @@ public:
 	unsigned stop_min = DEFAULT_STOP_MIN;
 
 	CalibRange(Xn::XpressNet& xn, Wsm::Wsm& wsm, QObject *parent = nullptr);
-	void measure(const unsigned loco_addr, const unsigned step, Xn::Direction dir);
+	void measure(unsigned loco_addr, unsigned step, Xn::Direction dir);
 
 private:
 	Xn::XpressNet& m_xn;

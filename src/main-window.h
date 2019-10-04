@@ -56,8 +56,8 @@ class MainWindow : public QMainWindow {
 	Q_OBJECT
 
 public:
-	explicit MainWindow(QWidget *parent = 0);
-	~MainWindow();
+	explicit MainWindow(QWidget *parent = nullptr);
+	~MainWindow() override;
 
 private slots:
 	// Signals from XpressNET library
@@ -198,7 +198,7 @@ private:
 	void loco_released();
 	void init_calib_graph();
 	void reset();
-	void step_set_color(const unsigned stepi, const QColor& color);
+	void step_set_color(unsigned stepi, const QColor& color);
 };
 
 #endif // MAINWINDOW_H

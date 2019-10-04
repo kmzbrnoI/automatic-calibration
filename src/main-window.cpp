@@ -1281,13 +1281,13 @@ void MainWindow::a_loco_save(bool) {
 		steps += QString::number(s.slider->value()) + ",";
 
 	std::vector<std::pair<QString, QString>> values = {
-		std::make_pair<QString, QString>("Acceleration Rate", QString::number(ui.sb_accel->value())),
-		std::make_pair<QString, QString>("Deceleration Rate", QString::number(ui.sb_decel->value())),
-		std::make_pair<QString, QString>("Use Speed Table", "1"),
-		std::make_pair<QString, QString>("Speed Table", std::move(steps)),
-		std::make_pair<QString, QString>("Vhigh", QString::number(ui.sb_vmax->value())),
-		std::make_pair<QString, QString>("Vmid", "60"),
-		std::make_pair<QString, QString>("Vstart", "1"),
+		std::make_pair("Acceleration Rate", QString::number(ui.sb_accel->value())),
+		std::make_pair("Deceleration Rate", QString::number(ui.sb_decel->value())),
+		std::make_pair("Use Speed Table", "1"),
+		std::make_pair("Speed Table", std::move(steps)),
+		std::make_pair("Vhigh", QString::number(ui.sb_vmax->value())),
+		std::make_pair("Vmid", "60"),
+		std::make_pair("Vstart", "1"),
 	};
 
 	for (const auto& val : values) {
