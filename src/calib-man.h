@@ -34,12 +34,12 @@ All programming is done via POM (it is fast!).
 #include <memory>
 #include <vector>
 
-#include "lib/xn/xn.h"
+#include "calib-overview.h"
+#include "calib-step.h"
 #include "lib/wsm/wsm.h"
+#include "lib/xn/xn.h"
 #include "power-map.h"
 #include "speed-map.h"
-#include "calib-step.h"
-#include "calib-overview.h"
 
 namespace Cm {
 
@@ -82,10 +82,10 @@ public:
 	Xn::Direction direction;
 	unsigned vmax = DEFAULT_VMAX;
 
-	CalibMan(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
-	         Ssm::StepsToSpeedMap& ssm, QObject *parent = nullptr);
+	CalibMan(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm, Ssm::StepsToSpeedMap &ssm,
+	         QObject *parent = nullptr);
 
-	void calibrateAll(unsigned locoAddr,  Xn::Direction dir);
+	void calibrateAll(unsigned locoAddr, Xn::Direction dir);
 	void stop();
 	void reset();
 	void interpolateAll();
@@ -95,8 +95,8 @@ public:
 	CalibState progress() const;
 
 private:
-	Ssm::StepsToSpeedMap& m_ssm;
-	Xn::XpressNet& m_xn;
+	Ssm::StepsToSpeedMap &m_ssm;
+	Xn::XpressNet &m_xn;
 	StepState state[Xn::_STEPS_CNT]; // step index used as index
 	unsigned power[Xn::_STEPS_CNT]; // power assigned to steps after calibration
 	unsigned m_locoAddr = 3;
@@ -114,15 +114,15 @@ private:
 
 	std::unique_ptr<unsigned> nextStep(); // returns step index
 	void calibrateNextStep();
-	std::unique_ptr<unsigned> nextStepBin(const std::vector<unsigned>& used_steps,
+	std::unique_ptr<unsigned> nextStepBin(const std::vector<unsigned> &used_steps,
 	                                      size_t left, size_t right);
 	void csSigConnect();
 	void csSigDisconnect();
 	void updateProg(CalibState cs, size_t progress, size_t max);
 	size_t getProgress(CalibState cs, size_t progress, size_t max);
 
-	void xnStepWritten(void*, void*);
-	void xnStepWriteError(void*, void*);
+	void xnStepWritten(void *, void *);
+	void xnStepWriteError(void *, void *);
 
 	// Steps interpolation = IP
 	unsigned m_thisIPleft;
@@ -131,17 +131,17 @@ private:
 	unsigned getIPpower(unsigned left, unsigned right, unsigned step);
 
 	void interpolateNext();
-	void xnIPWritten(void*, void*);
-	void xnIPError(void*, void*);
+	void xnIPWritten(void *, void *);
+	void xnIPError(void *, void *);
 
 	void done();
 	void error(Cm::CmError, unsigned step);
 
 	void initCVs();
-	void initCVsOk(void*, void*);
-	void initCVsError(void*, void*);
+	void initCVsOk(void *, void *);
+	void initCVsError(void *, void *);
 	void initCVsWriteNext();
-	void initSTWritten(void*, void*);
+	void initSTWritten(void *, void *);
 
 private slots:
 	void csDone(unsigned step, unsigned power);
@@ -168,6 +168,6 @@ signals:
 	void onProgressUpdate(size_t val); // value 0-100
 };
 
-}//namespace Cm
+} // namespace Cm
 
 #endif

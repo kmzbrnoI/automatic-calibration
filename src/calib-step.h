@@ -27,8 +27,8 @@ speed step.
 #include <QTimer>
 #include <vector>
 
-#include "lib/xn/xn.h"
 #include "lib/wsm/wsm.h"
+#include "lib/xn/xn.h"
 #include "power-map.h"
 
 namespace Cs {
@@ -59,15 +59,14 @@ public:
 	unsigned measure_count = DEFAULT_MEASURE_COUNT;
 	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;
 
-	CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
-	          QObject *parent = nullptr);
+	CalibStep(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm, QObject *parent = nullptr);
 	void calibrate(unsigned loco_addr, unsigned step, double speed);
 	void stop();
 
 private:
-	Xn::XpressNet& m_xn;
-	Pm::PowerToSpeedMap& m_pm;
-	Wsm::Wsm& m_wsm;
+	Xn::XpressNet &m_xn;
+	Pm::PowerToSpeedMap &m_pm;
+	Wsm::Wsm &m_wsm;
 	unsigned m_loco_addr;
 	unsigned m_step;
 	double m_target_speed;
@@ -78,8 +77,8 @@ private:
 
 	std::vector<unsigned> power_history;
 
-	void xn_pom_ok(void*, void*);
-	void xn_pom_err(void*, void*);
+	void xn_pom_ok(void *, void *);
+	void xn_pom_err(void *, void *);
 	bool is_oscilating() const;
 	void set_power(unsigned power);
 
@@ -95,6 +94,6 @@ signals:
 	void step_power_changed(unsigned step, unsigned power);
 };
 
-}//namespace Cs
+} // namespace Cs
 
 #endif

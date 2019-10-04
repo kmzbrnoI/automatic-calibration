@@ -18,8 +18,8 @@ When any error happens, on_error event is called.
 #include <QObject>
 #include <QTimer>
 
-#include "lib/xn/xn.h"
 #include "lib/wsm/wsm.h"
+#include "lib/xn/xn.h"
 
 namespace Cr {
 
@@ -28,7 +28,8 @@ enum class CrError {
 };
 
 constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2s
-constexpr unsigned DEFAULT_STOP_MIN = 10; // we must measure 10 times 0 kmph to determnine that loco has stopped
+constexpr unsigned DEFAULT_STOP_MIN =
+    10; // we must measure 10 times 0 kmph to determnine that loco has stopped
 
 class CalibRange : public QObject {
 	Q_OBJECT
@@ -37,12 +38,12 @@ public:
 	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;
 	unsigned stop_min = DEFAULT_STOP_MIN;
 
-	CalibRange(Xn::XpressNet& xn, Wsm::Wsm& wsm, QObject *parent = nullptr);
+	CalibRange(Xn::XpressNet &xn, Wsm::Wsm &wsm, QObject *parent = nullptr);
 	void measure(unsigned loco_addr, unsigned step, Xn::Direction dir);
 
 private:
-	Xn::XpressNet& m_xn;
-	Wsm::Wsm& m_wsm;
+	Xn::XpressNet &m_xn;
+	Wsm::Wsm &m_wsm;
 	Xn::Direction m_dir;
 	unsigned m_loco_addr;
 	unsigned m_step;
@@ -51,8 +52,8 @@ private:
 	uint32_t m_end_dist;
 	unsigned m_stop_counter;
 
-	void xn_speed_ok(void*, void*);
-	void xn_speed_err(void*, void*);
+	void xn_speed_ok(void *, void *);
+	void xn_speed_err(void *, void *);
 
 private slots:
 	void wsm_dist_read(double dist, uint32_t dist_raw);
@@ -65,6 +66,6 @@ signals:
 	void measured(double distance);
 };
 
-}//namespace Cr
+} // namespace Cr
 
 #endif

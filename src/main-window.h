@@ -10,22 +10,22 @@ instance. It also owns instances of Xn and Wsm library classes, which are
 forwarded to Calibration Manager as a references.
 */
 
-#include <QMainWindow>
-#include <QSlider>
-#include <QLabel>
 #include <QCheckBox>
+#include <QLabel>
+#include <QMainWindow>
 #include <QPushButton>
+#include <QSlider>
 
-#include "ui_main-window.h"
-#include "lib/xn/xn.h"
-#include "lib/wsm/wsm.h"
-#include "settings.h"
-#include "power-graph-window.h"
-#include "speed-map.h"
-#include "power-map.h"
-#include "calib-step.h"
 #include "calib-man.h"
 #include "calib-range.h"
+#include "calib-step.h"
+#include "lib/wsm/wsm.h"
+#include "lib/xn/xn.h"
+#include "power-graph-window.h"
+#include "power-map.h"
+#include "settings.h"
+#include "speed-map.h"
+#include "ui_main-window.h"
 
 constexpr char CONFIG_FN[] = "config.ini";
 constexpr unsigned STEPS_CNT = 28;
@@ -61,8 +61,8 @@ public:
 
 private slots:
 	// Signals from XpressNET library
-	void xn_onError(const QString& error);
-	void xn_onLog(const QString&, const Xn::LogLevel&);
+	void xn_onError(const QString &error);
+	void xn_onLog(const QString &, const Xn::LogLevel &);
 	void xn_onConnect();
 	void xn_onDisconnect();
 	void xn_onTrkStatusChanged(Xn::TrkStatus);
@@ -89,8 +89,8 @@ private slots:
 	void b_decel_measure_handle();
 	void b_wsm_lt_handle();
 	void sb_max_speed_changed(int value);
-	void lv_log_dblclick(QListWidgetItem*);
-	void tw_xn_log_dblclick(QTreeWidgetItem*, int column);
+	void lv_log_dblclick(QListWidgetItem *);
+	void tw_xn_log_dblclick(QTreeWidgetItem *, int column);
 	void b_reset_handle();
 	void t_calib_active_tick();
 	void vs_steps_moved(int);
@@ -170,35 +170,34 @@ private:
 	Cr::CalibRange cr;
 
 	// Callbacks from XpressNET library:
-	void xn_onDccGoError(void*, void*);
-	void xn_onDccStopError(void*, void*);
-	void xn_onLIVersionError(void*, void*);
-	void xn_onCSVersionError(void*, void*);
-	void xn_onCSStatusError(void*, void*);
-	void xn_onCSStatusOk(void*, void*);
-	void xn_gotLIVersion(void*, unsigned hw, unsigned sw);
-	void xn_gotCSVersion(void*, unsigned major, unsigned minor);
-	void xn_gotLocoInfo(void*, bool used, Xn::Direction direction, unsigned speed,
-	                    Xn::FA, Xn::FB);
-	void xn_onLocoInfoError(void*, void*);
-	void xn_addrReadError(void*, void*);
-	void xn_adReadError(void*, void*);
-	void xn_cvRead(void*, Xn::ReadCVStatus, uint8_t cv, uint8_t value);
-	void xn_adWriteError(void*, void*);
-	void xn_accelWritten(void*, void*);
-	void xn_decelWritten(void*, void*);
-	void xn_stepWritten(void*, void*);
-	void xn_stepWriteError(void*, void*);
+	void xn_onDccGoError(void *, void *);
+	void xn_onDccStopError(void *, void *);
+	void xn_onLIVersionError(void *, void *);
+	void xn_onCSVersionError(void *, void *);
+	void xn_onCSStatusError(void *, void *);
+	void xn_onCSStatusOk(void *, void *);
+	void xn_gotLIVersion(void *, unsigned hw, unsigned sw);
+	void xn_gotCSVersion(void *, unsigned major, unsigned minor);
+	void xn_gotLocoInfo(void *, bool used, Xn::Direction direction, unsigned speed, Xn::FA, Xn::FB);
+	void xn_onLocoInfoError(void *, void *);
+	void xn_addrReadError(void *, void *);
+	void xn_adReadError(void *, void *);
+	void xn_cvRead(void *, Xn::ReadCVStatus, uint8_t cv, uint8_t value);
+	void xn_adWriteError(void *, void *);
+	void xn_accelWritten(void *, void *);
+	void xn_decelWritten(void *, void *);
+	void xn_stepWritten(void *, void *);
+	void xn_stepWriteError(void *, void *);
 
-	void widget_set_color(QWidget&, const QColor&);
-	void show_response_error(const QString& command);
-	void log(const QString& message, const QColor& color = Qt::white);
+	void widget_set_color(QWidget &, const QColor &);
+	void show_response_error(const QString &command);
+	void log(const QString &message, const QColor &color = Qt::white);
 	void wsm_status_blink();
-	void show_error(const QString& error);
+	void show_error(const QString &error);
 	void loco_released();
 	void init_calib_graph();
 	void reset();
-	void step_set_color(unsigned stepi, const QColor& color);
+	void step_set_color(unsigned stepi, const QColor &color);
 };
 
 #endif // MAINWINDOW_H

@@ -1,23 +1,20 @@
 #include <fstream>
-#include <string>
 #include <sstream>
+#include <string>
 
 #include "speed-map.h"
 
 namespace Ssm {
 
-StepsToSpeedMap::StepsToSpeedMap(QObject *parent) : QObject(parent) {
-	clear();
-}
+StepsToSpeedMap::StepsToSpeedMap(QObject *parent) : QObject(parent) { clear(); }
 
-StepsToSpeedMap::StepsToSpeedMap(const QString& filename, QObject *parent)
-	: QObject(parent) {
+StepsToSpeedMap::StepsToSpeedMap(const QString &filename, QObject *parent) : QObject(parent) {
 	clear();
 	load(filename);
 }
 
-void StepsToSpeedMap::load(const QString& filename) {
-	std::ifstream in(filename.toUtf8().data());;
+void StepsToSpeedMap::load(const QString &filename) {
+	std::ifstream in(filename.toUtf8().data());
 	if (in.fail())
 		throw std::ifstream::failure("Input stream fail!");
 
@@ -47,7 +44,7 @@ void StepsToSpeedMap::load(const QString& filename) {
 	}
 }
 
-void StepsToSpeedMap::save(const QString& filename) {
+void StepsToSpeedMap::save(const QString &filename) {
 	std::ofstream out(filename.toUtf8().data());
 	out << "0;0" << std::endl;
 	for(size_t i = 0; i < STEPS_CNT; i++)
@@ -56,7 +53,7 @@ void StepsToSpeedMap::save(const QString& filename) {
 }
 
 void StepsToSpeedMap::clear() {
-	for(auto& item : m_map)
+	for(auto &item : m_map)
 		item = EMPTY_VALUE;
 	onClear();
 }
@@ -66,11 +63,9 @@ void StepsToSpeedMap::addOrUpdate(const unsigned step, const unsigned speed) {
 	onAddOrUpdate(step, speed);
 }
 
-unsigned const* StepsToSpeedMap::operator[] (const int index) const {
-	return at(index);
-}
+unsigned const *StepsToSpeedMap::operator[](const int index) const { return at(index); }
 
-unsigned const* StepsToSpeedMap::at(const int index) const {
+unsigned const *StepsToSpeedMap::at(const int index) const {
 	if (EMPTY_VALUE == m_map[index])
 		return nullptr;
 	if (m_map[index] >= m_max_speed)
@@ -78,12 +73,10 @@ unsigned const* StepsToSpeedMap::at(const int index) const {
 	return &m_map[index];
 }
 
-unsigned StepsToSpeedMap::maxSpeed() const {
-	return m_max_speed;
-}
+unsigned StepsToSpeedMap::maxSpeed() const { return m_max_speed; }
 
 void StepsToSpeedMap::setMaxSpeed(const unsigned new_speed) {
-	for(size_t i = 0; i < STEPS_CNT; i++) {
+	for (size_t i = 0; i < STEPS_CNT; i++) {
 		if (EMPTY_VALUE != m_map[i]) {
 			if (m_map[i] > m_max_speed && m_map[i] <= new_speed)
 				onAddOrUpdate(i, m_map[i]);
@@ -96,7 +89,7 @@ void StepsToSpeedMap::setMaxSpeed(const unsigned new_speed) {
 
 unsigned StepsToSpeedMap::noDifferentSpeeds() const {
 	unsigned last = 0, count = 0;
-	for(size_t i = 0; i < STEPS_CNT; i++) {
+	for (size_t i = 0; i < STEPS_CNT; i++) {
 		if (nullptr != at(i) && last != *at(i)) {
 			count++;
 			last = *at(i);
@@ -106,10 +99,10 @@ unsigned StepsToSpeedMap::noDifferentSpeeds() const {
 }
 
 unsigned StepsToSpeedMap::maxSpeedInFile() const {
-	for(int i = STEPS_CNT-1; i >= 0; i--)
+	for (int i = STEPS_CNT-1; i >= 0; i--)
 		if (EMPTY_VALUE != m_map[i])
 			return m_map[i];
 	return SPEED_MAX;
 }
 
-}//namespace Ssm
+} // namespace Ssm

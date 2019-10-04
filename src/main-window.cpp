@@ -1,17 +1,17 @@
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QSlider>
-#include <QFileDialog>
 #include <QXmlStreamWriter>
-#include <utility>
 #include <fstream>
+#include <utility>
 
 #include "main-window.h"
 #include "ui_main-window.h"
 
 const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 
-MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent), xn(this), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent), xn(this), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
 	QString text;
 	text.sprintf("Automatic Claibration v%d.%d", VERSION_MAJOR, VERSION_MINOR);
@@ -23,17 +23,20 @@ MainWindow::MainWindow(QWidget *parent) :
 	init_calib_graph();
 
 	// Steps to Speed map
-	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this, SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
+	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this,
+	                 SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	a_speed_load(true);
 	m_ssm.setMaxSpeed(m_ssm.maxSpeedInFile());
 
 	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
-	QObject::connect(&xn, SIGNAL(onLog(QString, Xn::LogLevel)), this, SLOT(xn_onLog(QString, Xn::LogLevel)));
+	QObject::connect(&xn, SIGNAL(onLog(QString, Xn::LogLevel)), this,
+	                 SLOT(xn_onLog(QString, Xn::LogLevel)));
 	QObject::connect(&xn, SIGNAL(onConnect()), this, SLOT(xn_onConnect()));
 	QObject::connect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
-	QObject::connect(&xn, SIGNAL(onTrkStatusChanged(Xn::TrkStatus)), this, SLOT(xn_onTrkStatusChanged(Xn::TrkStatus)));
+	QObject::connect(&xn, SIGNAL(onTrkStatusChanged(Xn::TrkStatus)), this,
+	                 SLOT(xn_onTrkStatusChanged(Xn::TrkStatus)));
 
 	// UI signals
 	QObject::connect(ui.b_start, SIGNAL(released()), this, SLOT(b_start_handle()));
@@ -45,7 +48,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.b_loco_idle, SIGNAL(released()), this, SLOT(b_loco_idle_handle()));
 	ui.sb_speed->setKeyboardTracking(false);
 	QObject::connect(ui.sb_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_speed_changed(int)));
-	QObject::connect(ui.vs_speed, SIGNAL(valueChanged(int)), this, SLOT(vs_speed_slider_moved(int)));
+	QObject::connect(ui.vs_speed, SIGNAL(valueChanged(int)), this,
+	                 SLOT(vs_speed_slider_moved(int)));
 	QObject::connect(ui.rb_backward, SIGNAL(toggled(bool)), this, SLOT(rb_direction_toggled(bool)));
 	QObject::connect(ui.chb_f0, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
 	QObject::connect(ui.chb_f1, SIGNAL(clicked(bool)), this, SLOT(chb_f_clicked(bool)));
@@ -57,11 +61,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui.sb_loco->setKeyboardTracking(false);
 	QObject::connect(ui.sb_loco, SIGNAL(valueChanged(int)), this, SLOT(sb_loco_changed(int)));
 
-	#ifdef QT_NO_DEBUG
+#ifdef QT_NO_DEBUG
 	ui.b_test1->setVisible(false);
 	ui.b_test2->setVisible(false);
 	ui.b_test3->setVisible(false);
-	#endif
+#endif
 
 	QObject::connect(ui.b_test1, SIGNAL(released()), this, SLOT(b_test1_handle()));
 	QObject::connect(ui.b_test2, SIGNAL(released()), this, SLOT(b_test2_handle()));
@@ -69,10 +73,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui.sb_max_speed->setValue(m_ssm.maxSpeedInFile());
 	ui.sb_vmax->setValue(cm.vmax);
-	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this, SLOT(sb_max_speed_changed(int)));
-	QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(lv_log_dblclick(QListWidgetItem*)));
-	QObject::connect(ui.tw_xn_log, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
-	                 this, SLOT(tw_xn_log_dblclick(QTreeWidgetItem*, int)));
+	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this,
+	                 SLOT(sb_max_speed_changed(int)));
+	QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this,
+	                 SLOT(lv_log_dblclick(QListWidgetItem *)));
+	QObject::connect(ui.tw_xn_log, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this,
+	                 SLOT(tw_xn_log_dblclick(QTreeWidgetItem *, int)));
 
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
@@ -101,15 +107,18 @@ MainWindow::MainWindow(QWidget *parent) :
 	// XN UI
 	ui.cb_xn_loglevel->setCurrentIndex(s["XN"]["loglevel"].toInt());
 	xn.loglevel = static_cast<Xn::LogLevel>(s["XN"]["loglevel"].toInt());
-	QObject::connect(ui.cb_xn_loglevel, SIGNAL(currentIndexChanged(int)), this, SLOT(cb_xn_ll_index_changed(int)));
+	QObject::connect(ui.cb_xn_loglevel, SIGNAL(currentIndexChanged(int)), this,
+	                 SLOT(cb_xn_ll_index_changed(int)));
 
 	QObject::connect(ui.a_xn_connect, SIGNAL(triggered(bool)), this, SLOT(a_xn_connect(bool)));
-	QObject::connect(ui.a_xn_disconnect, SIGNAL(triggered(bool)), this, SLOT(a_xn_disconnect(bool)));
+	QObject::connect(ui.a_xn_disconnect, SIGNAL(triggered(bool)), this,
+	                 SLOT(a_xn_disconnect(bool)));
 	QObject::connect(ui.a_xn_dcc_go, SIGNAL(triggered(bool)), this, SLOT(a_dcc_go(bool)));
 	QObject::connect(ui.a_xn_dcc_stop, SIGNAL(triggered(bool)), this, SLOT(a_dcc_stop(bool)));
 
 	QObject::connect(ui.a_wsm_connect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_connect(bool)));
-	QObject::connect(ui.a_wsm_disconnect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_disconnect(bool)));
+	QObject::connect(ui.a_wsm_disconnect, SIGNAL(triggered(bool)), this,
+	                 SLOT(a_wsm_disconnect(bool)));
 	QObject::connect(ui.b_wsm_lt, SIGNAL(released()), this, SLOT(b_wsm_lt_handle()));
 
 	QObject::connect(ui.a_power_graph, SIGNAL(triggered(bool)), this, SLOT(a_power_graph(bool)));
@@ -120,13 +129,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(ui.a_speed_load, SIGNAL(triggered(bool)), this, SLOT(a_speed_load(bool)));
 
 	// WSM init
-	QObject::connect(&wsm, SIGNAL(speedRead(double, uint16_t)), this, SLOT(mc_speedRead(double, uint16_t)));
+	QObject::connect(&wsm, SIGNAL(speedRead(double, uint16_t)), this,
+	                 SLOT(mc_speedRead(double, uint16_t)));
 	QObject::connect(&wsm, SIGNAL(onError(QString)), this, SLOT(mc_onError(QString)));
-	QObject::connect(&wsm, SIGNAL(batteryRead(double, uint16_t)), this, SLOT(mc_batteryRead(double, uint16_t)));
+	QObject::connect(&wsm, SIGNAL(batteryRead(double, uint16_t)), this,
+	                 SLOT(mc_batteryRead(double, uint16_t)));
 	QObject::connect(&wsm, SIGNAL(batteryCritical()), this, SLOT(mc_batteryCritical()));
-	QObject::connect(&wsm, SIGNAL(distanceRead(double, uint32_t)), this, SLOT(mc_distanceRead(double, uint32_t)));
+	QObject::connect(&wsm, SIGNAL(distanceRead(double, uint32_t)), this,
+	                 SLOT(mc_distanceRead(double, uint32_t)));
 	QObject::connect(&wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(mc_speedReceiveTimeout()));
-	QObject::connect(&wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(mc_longTermMeasureDone(double, double)));
+	QObject::connect(&wsm, SIGNAL(longTermMeasureDone(double, double)), this,
+	                 SLOT(mc_longTermMeasureDone(double, double)));
 	QObject::connect(&wsm, SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
 
 	// Calibration Manager signals
@@ -145,12 +158,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	QObject::connect(&cm, SIGNAL(onDecelChanged(unsigned)), this, SLOT(cm_decelChanged(unsigned)));
 
 	// Connect power-to-map with GUI
-	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg, SLOT(addOrUpdate(unsigned, float)));
+	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg,
+	                 SLOT(addOrUpdate(unsigned, float)));
 	QObject::connect(&m_pm, SIGNAL(onClear()), &w_pg, SLOT(clear()));
 	m_pm.clear();
 
 	// Range Calibration
-	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError, unsigned)), this, SLOT(cr_error(Cr::CrError, unsigned)));
+	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError, unsigned)), this,
+	                 SLOT(cr_error(Cr::CrError, unsigned)));
 	QObject::connect(&cr, SIGNAL(measured(double)), this, SLOT(cr_measured(double)));
 
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
@@ -162,7 +177,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow() {
 	try {
 		QObject::disconnect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
-		QObject::disconnect(&xn, SIGNAL(onLog(QString, Xn::LogLevel)), this, SLOT(xn_onLog(QString, Xn::LogLevel)));
+		QObject::disconnect(&xn, SIGNAL(onLog(QString, Xn::LogLevel)), this,
+		                    SLOT(xn_onLog(QString, Xn::LogLevel)));
 		QObject::disconnect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
 		a_config_save(true);
 	}
@@ -174,7 +190,7 @@ MainWindow::~MainWindow() {
 ///////////////////////////////////////////////////////////////////////////////
 // UI general functions
 
-void MainWindow::widget_set_color(QWidget& widget, const QColor& color) {
+void MainWindow::widget_set_color(QWidget &widget, const QColor &color) {
 	QPalette palette = widget.palette();
 	palette.setColor(QPalette::WindowText, color);
 	widget.setPalette(palette);
@@ -193,7 +209,7 @@ void MainWindow::cb_xn_ll_index_changed(int index) {
 	xn.loglevel = static_cast<Xn::LogLevel>(index);
 }
 
-void MainWindow::show_error(const QString& error) {
+void MainWindow::show_error(const QString &error) {
 	log(error, LOGC_ERROR);
 	QMessageBox::warning(this, "Error!", error, QMessageBox::Ok);
 }
@@ -208,15 +224,15 @@ void MainWindow::b_start_handle() {
 	}
 }
 
-void MainWindow::lv_log_dblclick(QListWidgetItem*) {
+void MainWindow::lv_log_dblclick(QListWidgetItem *) {
 	ui.lv_log->clear();
 }
 
-void MainWindow::tw_xn_log_dblclick(QTreeWidgetItem*, int) {
+void MainWindow::tw_xn_log_dblclick(QTreeWidgetItem *, int) {
 	ui.tw_xn_log->clear();
 }
 
-void MainWindow::step_set_color(const unsigned stepi, const QColor& color) {
+void MainWindow::step_set_color(const unsigned stepi, const QColor &color) {
 	widget_set_color(*ui_steps[stepi].step, color);
 	widget_set_color(*ui_steps[stepi].speed_want, color);
 	widget_set_color(*ui_steps[stepi].value, color);
@@ -225,14 +241,14 @@ void MainWindow::step_set_color(const unsigned stepi, const QColor& color) {
 ///////////////////////////////////////////////////////////////////////////////
 // XN Events
 
-void MainWindow::xn_onError(const QString& error) {
+void MainWindow::xn_onError(const QString &error) {
 	xn_onLog(error, Xn::LogLevel::Error);
 
 	if (!t_xn_disconnect.isActive() && xn.connected())
 		t_xn_disconnect.start(0);
 }
 
-void MainWindow::xn_onLog(const QString& message, const Xn::LogLevel& loglevel) {
+void MainWindow::xn_onLog(const QString &message, const Xn::LogLevel &loglevel) {
 	if (ui.tw_xn_log->topLevelItemCount() > 300)
 		ui.tw_xn_log->clear();
 
@@ -243,11 +259,11 @@ void MainWindow::xn_onLog(const QString& message, const Xn::LogLevel& loglevel) 
 		item->setText(1, "None");
 	else if (loglevel == Xn::LogLevel::Error) {
 		item->setText(1, "Error");
-		for(size_t i = 0; i < 3; i++)
+		for (size_t i = 0; i < 3; i++)
 			item->setBackground(i, LOGC_ERROR);
 	} else if (loglevel == Xn::LogLevel::Warning) {
 		item->setText(1, "Warning");
-		for(size_t i = 0; i < 3; i++)
+		for (size_t i = 0; i < 3; i++)
 			item->setBackground(i, LOGC_WARN);
 	} else if (loglevel == Xn::LogLevel::Info)
 		item->setText(1, "Info");
@@ -263,7 +279,8 @@ void MainWindow::xn_onLog(const QString& message, const Xn::LogLevel& loglevel) 
 
 	if (s["XN"]["logfile"] != "") {
 		std::ofstream out(s["XN"]["logfile"].toString().toUtf8().data(), std::ofstream::app);
-		out << QTime::currentTime().toString("hh:mm:ss.zzz").toUtf8().data() << ": " << message.toUtf8().data() << std::endl;
+		out << QTime::currentTime().toString("hh:mm:ss.zzz").toUtf8().data() << ": "
+		    << message.toUtf8().data() << std::endl;
 	}
 }
 
@@ -338,28 +355,24 @@ void MainWindow::xn_onTrkStatusChanged(Xn::TrkStatus status) {
 	}
 }
 
-void MainWindow::xn_onDccGoError(void*, void*) {
-	show_response_error("DCC GO");
-}
+void MainWindow::xn_onDccGoError(void *, void *) { show_response_error("DCC GO"); }
 
-void MainWindow::xn_onDccStopError(void*, void*) {
-	show_response_error("DCC STOP");
-}
+void MainWindow::xn_onDccStopError(void *, void *) { show_response_error("DCC STOP"); }
 
-void MainWindow::show_response_error(const QString& command) {
+void MainWindow::show_response_error(const QString &command) {
 	log("Command station did not respond to " + command + " command!");
 	QMessageBox::warning(this, "Error!",
-		"Command station did not respond to " + command + " command!");
+	                     "Command station did not respond to " + command + " command!");
 }
 
-void MainWindow::xn_onLIVersionError(void*, void*) {
+void MainWindow::xn_onLIVersionError(void *, void *) {
 	m_starting = false;
 	log("LI did not respond to version request!");
 	QMessageBox::warning(this, "Error!",
 		"LI did not respond to version request, are you really connected to the LI?!");
 }
 
-void MainWindow::xn_onCSVersionError(void*, void*) {
+void MainWindow::xn_onCSVersionError(void *, void *) {
 	log("Coomand station did not respond to version request!");
 	QMessageBox::warning(this, "Error!",
 		"Command station did not respond to version request"
@@ -367,12 +380,12 @@ void MainWindow::xn_onCSVersionError(void*, void*) {
 	m_starting = false;
 }
 
-void MainWindow::xn_onCSStatusError(void*, void*) {
+void MainWindow::xn_onCSStatusError(void *, void *) {
 	show_response_error("STATUS");
 	m_starting = false;
 }
 
-void MainWindow::xn_onCSStatusOk(void*, void*) {
+void MainWindow::xn_onCSStatusOk(void *, void *) {
 	if (m_starting) {
 		m_starting = false;
 		log("Succesfully connected to Command station");
@@ -381,7 +394,7 @@ void MainWindow::xn_onCSStatusOk(void*, void*) {
 	}
 }
 
-void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
+void MainWindow::xn_gotLIVersion(void *, unsigned hw, unsigned sw) {
 	log("Got LI version. HW: " + QString::number(hw) + ", SW: " + QString::number(sw));
 	try {
 		xn.getCommandStationStatus(
@@ -394,11 +407,11 @@ void MainWindow::xn_gotLIVersion(void*, unsigned hw, unsigned sw) {
 	}
 }
 
-void MainWindow::xn_gotCSVersion(void*, unsigned major, unsigned minor) {
+void MainWindow::xn_gotCSVersion(void *, unsigned major, unsigned minor) {
 	log("Got command station version:" + QString::number(major) + "." + QString::number(minor));
 }
 
-void MainWindow::xn_gotLocoInfo(void*, bool used, Xn::Direction direction, unsigned speed,
+void MainWindow::xn_gotLocoInfo(void *, bool used, Xn::Direction direction, unsigned speed,
                                 Xn::FA fa, Xn::FB fb) {
 	(void)used;
 	(void)fb;
@@ -437,7 +450,7 @@ void MainWindow::xn_gotLocoInfo(void*, bool used, Xn::Direction direction, unsig
 	log("Acquired loco " + QString::number(ui.sb_loco->value()));
 }
 
-void MainWindow::xn_onLocoInfoError(void*, void*) {
+void MainWindow::xn_onLocoInfoError(void *, void *) {
 	show_error("Unable to get loco information from Command station!");
 	ui.b_addr_set->setEnabled(true);
 	ui.sb_loco->setEnabled(true);
@@ -473,19 +486,19 @@ void MainWindow::loco_released() {
 	log("Released loco " + QString::number(ui.sb_loco->value()));
 }
 
-void MainWindow::xn_addrReadError(void*, void*) {
+void MainWindow::xn_addrReadError(void *, void *) {
 	show_error("Unable to read address: no response from command station!");
 	ui.sb_loco->setEnabled(true);
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_read->setEnabled(true);
 }
 
-void MainWindow::xn_adReadError(void*, void*) {
+void MainWindow::xn_adReadError(void *, void *) {
 	show_error("Unable to read CV: no response from command station!");
 	ui.gb_ad->setEnabled(true);
 }
 
-void MainWindow::xn_cvRead(void*, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
+void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
 	if (st != Xn::ReadCVStatus::Ok) {
 		show_error("Unable to read CV " + QString::number(cv) + ": " +
 		           Xn::XpressNet::xnReadCVStatusToQString(st));
@@ -542,27 +555,27 @@ void MainWindow::xn_cvRead(void*, Xn::ReadCVStatus st, uint8_t cv, uint8_t value
 	}
 }
 
-void MainWindow::xn_adWriteError(void*, void*) {
+void MainWindow::xn_adWriteError(void *, void *) {
 	ui.gb_ad->setEnabled(true);
 	show_error("XN POM no response!");
 }
 
-void MainWindow::xn_accelWritten(void*, void*) {
+void MainWindow::xn_accelWritten(void *, void *) {
 	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), CV_DECEL, ui.sb_decel->value(),
 	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_decelWritten(s, d); }),
 	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_adWriteError(s, d); }));
 }
 
-void MainWindow::xn_decelWritten(void*, void*) {
+void MainWindow::xn_decelWritten(void *, void *) {
 	ui.gb_ad->setEnabled(true);
 }
 
-void MainWindow::xn_stepWritten(void*, void* d) {
+void MainWindow::xn_stepWritten(void *, void *d) {
 	unsigned stepi = reinterpret_cast<intptr_t>(d);
 	step_set_color(stepi, STEPC_DONE);
 }
 
-void MainWindow::xn_stepWriteError(void*, void* d) {
+void MainWindow::xn_stepWriteError(void *, void *d) {
 	unsigned stepi = reinterpret_cast<intptr_t>(d);
 	step_set_color(stepi, STEPC_ERROR);
 }
@@ -580,7 +593,7 @@ void MainWindow::a_xn_connect(bool) {
 		xn.connect(s["XN"]["port"].toString(), s["XN"]["baudrate"].toInt(),
 		           static_cast<QSerialPort::FlowControl>(s["XN"]["flowcontrol"].toInt()),
 		           Xn::LIType::uLI);
-	} catch (const Xn::QStrException& e) {
+	} catch (const Xn::QStrException &e) {
 		widget_set_color(*(ui.l_xn), Qt::red);
 		show_error("XN connect error while opening serial port '" +
 		           s["XN"]["port"].toString() + "':\n" + e);
@@ -596,7 +609,7 @@ void MainWindow::a_xn_disconnect(bool) {
 		xn.disconnect();
 		if (cm.inProgress())
 			b_calib_stop_handle();
-	} catch (const Xn::QStrException& e) {
+	} catch (const Xn::QStrException &e) {
 		show_error("XN disconnect error:\n" + e.str());
 	}
 }
@@ -627,7 +640,7 @@ void MainWindow::a_dcc_stop(bool) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::log(const QString& message, const QColor& color) {
+void MainWindow::log(const QString &message, const QColor &color) {
 	if (ui.lv_log->count() > 200)
 		ui.lv_log->clear();
 	ui.lv_log->insertItem(0, QTime::currentTime().toString("hh:mm:ss") + ": " + message);
@@ -635,7 +648,8 @@ void MainWindow::log(const QString& message, const QColor& color) {
 
 	if (s["Logging"]["file"] != "") {
 		std::ofstream out(s["Logging"]["file"].toString().toUtf8().data(), std::ofstream::app);
-		out << QTime::currentTime().toString("hh:mm:ss.zzz").toUtf8().data() << ": " << message.toUtf8().data() << std::endl;
+		out << QTime::currentTime().toString("hh:mm:ss.zzz").toUtf8().data() << ": "
+		    << message.toUtf8().data() << std::endl;
 	}
 }
 
@@ -722,13 +736,9 @@ void MainWindow::b_loco_idle_handle() {
 	b_speed_set_handle();
 }
 
-void MainWindow::vs_speed_slider_moved(int value) {
-	ui.sb_speed->setValue(value);
-}
+void MainWindow::vs_speed_slider_moved(int value) { ui.sb_speed->setValue(value); }
 
-void MainWindow::rb_direction_toggled(bool) {
-	b_speed_set_handle();
-}
+void MainWindow::rb_direction_toggled(bool) { b_speed_set_handle(); }
 
 void MainWindow::t_slider_tick() {
 	try {
@@ -750,9 +760,7 @@ void MainWindow::chb_f_clicked(bool) {
 	xn.setFuncA(Xn::LocoAddr(ui.sb_loco->value()), m_fa);
 }
 
-void MainWindow::sb_max_speed_changed(int value) {
-	m_ssm.setMaxSpeed(value);
-}
+void MainWindow::sb_max_speed_changed(int value) { m_ssm.setMaxSpeed(value); }
 
 void MainWindow::sb_speed_changed(int) {
 	if (m_sent_speed != ui.sb_speed->value())
@@ -764,7 +772,7 @@ void MainWindow::sb_speed_changed(int) {
 
 void MainWindow::wsm_status_blink() {
 	QPalette palette = ui.l_wsm_alive->palette();
-	const QColor& color = palette.color(QPalette::WindowText);
+	const QColor &color = palette.color(QPalette::WindowText);
 	if (color == Qt::green)
 		widget_set_color(*(ui.l_wsm_alive), palette.color(QPalette::Window));
 	else
@@ -784,7 +792,7 @@ void MainWindow::a_wsm_connect(bool) {
 
 		log("Connected to WSM");
 		widget_set_color(*(ui.l_wsm), Qt::green);
-	} catch (const Wsm::EOpenError& e) {
+	} catch (const Wsm::EOpenError &e) {
 		widget_set_color(*(ui.l_wsm), Qt::red);
 		show_error("WSM connect error while opening serial port '" +
 		           s["WSM"]["port"].toString() + "':\n" + e);
@@ -921,7 +929,8 @@ void MainWindow::init_calib_graph() {
 		auto *selected = new QCheckBox(ui.gb_cal_graph);
 		selected->setProperty("step", static_cast<uint>(i));
 		ui_steps[i].selected = selected;
-		QObject::connect(selected, SIGNAL(clicked(bool)), this, SLOT(chb_step_selected_clicked(bool)));
+		QObject::connect(selected, SIGNAL(clicked(bool)), this,
+		                 SLOT(chb_step_selected_clicked(bool)));
 		ui.l_cal_graph->addWidget(selected, 4, i);
 
 		auto *calibrate = new QPushButton("C", ui.gb_cal_graph);
@@ -976,7 +985,7 @@ void MainWindow::ssm_onAddOrUpdate(unsigned step, unsigned speed) {
 }
 
 void MainWindow::ssm_onClear() {
-	for(const auto& s : ui_steps)
+	for (const auto &s : ui_steps)
 		s.speed_want->setText("0");
 }
 
@@ -1033,17 +1042,11 @@ void MainWindow::cm_done() {
 	cm_done_gui();
 }
 
-void MainWindow::cm_progress_update(size_t val) {
-	ui.pb_progress->setValue(val);
-}
+void MainWindow::cm_progress_update(size_t val) { ui.pb_progress->setValue(val); }
 
-void MainWindow::cm_accelChanged(unsigned accel) {
-	ui.sb_accel->setValue(accel);
-}
+void MainWindow::cm_accelChanged(unsigned accel) { ui.sb_accel->setValue(accel); }
 
-void MainWindow::cm_decelChanged(unsigned decel) {
-	ui.sb_decel->setValue(decel);
-}
+void MainWindow::cm_decelChanged(unsigned decel) { ui.sb_decel->setValue(decel); }
 
 void MainWindow::b_calib_start_handle() {
 	if (!xn.connected()) {
@@ -1137,7 +1140,7 @@ void MainWindow::b_reset_handle() {
 void MainWindow::t_calib_active_tick() {
 	if (cm.inProgress()) {
 		QPalette palette = ui.l_calib_state->palette();
-		const QColor& color = palette.color(QPalette::WindowText);
+		const QColor &color = palette.color(QPalette::WindowText);
 		if (color == Qt::yellow)
 			widget_set_color(*(ui.l_calib_state), Qt::lightGray);
 		else
@@ -1176,9 +1179,7 @@ void MainWindow::b_ad_write_handle() {
 
 void MainWindow::b_test1_handle() {}
 
-void MainWindow::b_test2_handle() {
-	cm.interpolateAll();
-}
+void MainWindow::b_test2_handle() { cm.interpolateAll(); }
 
 void MainWindow::b_test3_handle() {}
 
@@ -1208,11 +1209,11 @@ void MainWindow::a_loco_load(bool) {
 	xr.setDevice(&file);
 	xr.readNext();
 
-	while(!xr.atEnd()) {
+	while (!xr.atEnd()) {
 		if (xr.isStartElement()) {
 			if (xr.name() == "powerToSpeed") {
 				xr.readNext();
-				while(xr.name() != "powerToSpeed") {
+				while (xr.name() != "powerToSpeed") {
 					if (xr.name() == "record" && xr.attributes().hasAttribute("power") &&
 					    xr.attributes().hasAttribute("speed")) {
 						int power = xr.attributes().value("power").toInt();
@@ -1277,7 +1278,7 @@ void MainWindow::a_loco_save(bool) {
 	xw.writeStartElement("decoderDef");
 
 	QString steps = "";
-	for(const auto& s : ui_steps)
+	for (const auto &s : ui_steps)
 		steps += QString::number(s.slider->value()) + ",";
 
 	std::vector<std::pair<QString, QString>> values = {
@@ -1290,7 +1291,7 @@ void MainWindow::a_loco_save(bool) {
 		std::make_pair("Vstart", "1"),
 	};
 
-	for (const auto& val : values) {
+	for (const auto &val : values) {
 		xw.writeStartElement("varValue");
 		xw.writeAttribute("item", val.first);
 		xw.writeAttribute("value", val.second);
@@ -1301,7 +1302,7 @@ void MainWindow::a_loco_save(bool) {
 	xw.writeEndElement();
 
 	xw.writeStartElement("powerToSpeed");
-	for(size_t i = 0; i < Pm::POWER_CNT; i++) {
+	for (size_t i = 0; i < Pm::POWER_CNT; i++) {
 		if (nullptr != m_pm.speed(i)) {
 			xw.writeStartElement("record");
 			xw.writeAttribute("power", QString::number(i));
@@ -1340,7 +1341,7 @@ void MainWindow::b_decel_measure_handle() {
 void MainWindow::reset() {
 	m_pm.clear();
 	cm.reset();
-	for(size_t i = 0; i < Xn::_STEPS_CNT; i++) {
+	for (size_t i = 0; i < Xn::_STEPS_CNT; i++) {
 		ui_steps[i].slider->setValue(0);
 		ui_steps[i].selected->setChecked(false);
 		ui_steps[i].calibrate->setEnabled(false);
@@ -1384,7 +1385,7 @@ void MainWindow::a_config_save(bool) {
 }
 
 void MainWindow::a_speed_load(bool) {
-	for(const auto& s : ui_steps)
+	for (const auto &s : ui_steps)
 		s.speed_want->setText("-");
 
 	QString filename;

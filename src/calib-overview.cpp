@@ -5,9 +5,9 @@
 
 namespace Co {
 
-CalibOverview::CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
+CalibOverview::CalibOverview(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm,
                              unsigned max_speed, QObject *parent)
-	: QObject(parent), max_speed(max_speed), m_xn(xn), m_pm(pm), m_wsm(wsm) {
+    : QObject(parent), max_speed(max_speed), m_xn(xn), m_pm(pm), m_wsm(wsm) {
 	t_sp_adapt.setSingleShot(true);
 	QObject::connect(&t_sp_adapt, SIGNAL(timeout()), this, SLOT(t_sp_adapt_tick()));
 }
@@ -29,7 +29,7 @@ std::unique_ptr<unsigned> CalibOverview::next_step() {
 
 	constexpr std::array<unsigned, 4> POWERS_TRY = {64, 128, 192, 255};
 
-	for(const unsigned& power : POWERS_TRY) {
+	for (const unsigned &power : POWERS_TRY) {
 		if (!m_pm.isRecord(power))
 			return std::make_unique<unsigned>(power);
 		if (*m_pm.speed(power) >= max_speed)
@@ -68,7 +68,8 @@ void CalibOverview::do_next_step() {
 }
 
 void CalibOverview::wsm_lt_read(double speed, double diffusion) {
-	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
+	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
+	                    SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 
 	if (speed < min_speed) {
@@ -96,23 +97,25 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 }
 
 void CalibOverview::t_sp_adapt_tick() {
-	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
+	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
+	                 SLOT(wsm_lt_read(double, double)));
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 	m_wsm.startLongTermMeasure(measure_count);
 }
 
-void CalibOverview::xn_pom_ok(void*, void*) {
+void CalibOverview::xn_pom_ok(void *, void *) {
 	// Insert 'waiting of mark' here when neccessarry
 	t_sp_adapt.start(sp_adapt_timeout);
 }
 
-void CalibOverview::xn_pom_err(void*, void*) {
+void CalibOverview::xn_pom_err(void *, void *) {
 	on_error(Co::Error::XnNoResponse, overview_step);
 }
 
 void CalibOverview::wsm_lt_error() {
 	t_sp_adapt.stop();
-	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
+	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
+	                    SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 	reset_step();
 }
@@ -126,8 +129,6 @@ void CalibOverview::reset_step() {
 	step_power_changed(overview_step, STEP_RESET_VALUE);
 }
 
-void CalibOverview::stop() {
-	wsm_lt_error();
-}
+void CalibOverview::stop() { wsm_lt_error(); }
 
-}//namespace Co
+} // namespace Co

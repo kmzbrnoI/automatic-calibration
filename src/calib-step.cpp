@@ -4,15 +4,13 @@
 
 namespace Cs {
 
-CalibStep::CalibStep(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
-                     QObject *parent)
-	: QObject(parent), m_xn(xn), m_pm(pm), m_wsm(wsm) {
+CalibStep::CalibStep(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm, QObject *parent)
+    : QObject(parent), m_xn(xn), m_pm(pm), m_wsm(wsm) {
 	t_sp_adapt.setSingleShot(true);
 	QObject::connect(&t_sp_adapt, SIGNAL(timeout()), this, SLOT(t_sp_adapt_tick()));
 }
 
-void CalibStep::calibrate(const unsigned loco_addr, const unsigned step,
-                          const double speed) {
+void CalibStep::calibrate(const unsigned loco_addr, const unsigned step, const double speed) {
 	m_loco_addr = loco_addr;
 	m_step = step;
 	m_target_speed = speed;
@@ -96,7 +94,8 @@ void CalibStep::set_power(unsigned power) {
 }
 
 void CalibStep::t_sp_adapt_tick() {
-	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
+	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
+	                 SLOT(wsm_lt_read(double, double)));
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 	m_wsm.startLongTermMeasure(measure_count);
 }
@@ -121,13 +120,12 @@ void CalibStep::wsm_lt_error() {
 }
 
 void CalibStep::wsm_lt_done() {
-	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this, SLOT(wsm_lt_read(double, double)));
+	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
+	                    SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 }
 
-void CalibStep::stop() {
-	wsm_lt_error();
-}
+void CalibStep::stop() { wsm_lt_error(); }
 
 bool CalibStep::is_oscilating() const {
 	// Sometimes, it happens that sequence of powers is 87,86,87,86,...
@@ -138,17 +136,17 @@ bool CalibStep::is_oscilating() const {
 
 	// Compare odd indexes
 	unsigned compared = power_history[power_history.size()-2];
-	for(size_t i = power_history.size() - OSC_MAX_COUNT*2; i < power_history.size(); i += 2)
+	for (size_t i = power_history.size() - OSC_MAX_COUNT*2; i < power_history.size(); i += 2)
 		if (power_history[i] != compared)
 			return false;
 
 	// Compare even indexes
 	compared = power_history[power_history.size()-1];
-	for(size_t i = power_history.size() - OSC_MAX_COUNT*2 + 1; i < power_history.size(); i += 2)
+	for (size_t i = power_history.size() - OSC_MAX_COUNT*2 + 1; i < power_history.size(); i += 2)
 		if (power_history[i] != compared)
 			return false;
 
 	return true;
 }
 
-}//namespace Cs
+} // namespace Cs

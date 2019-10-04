@@ -3,8 +3,7 @@
 #include "power-graph-window.h"
 #include "ui_power-graph-window.h"
 
-PowerGraphWindow::PowerGraphWindow(QWidget *parent)
-	: QMainWindow(parent) {
+PowerGraphWindow::PowerGraphWindow(QWidget *parent) : QMainWindow(parent) {
 	ui.setupUi(this);
 
 	series.setPointsVisible(true);
@@ -18,14 +17,14 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent)
 	chart.addSeries(&series);
 	chart.createDefaultAxes();
 
-	auto& axisX = dynamic_cast<QValueAxis&>(*chart.axisX());
+	auto &axisX = dynamic_cast<QValueAxis &>(*chart.axisX());
 	axisX.setRange(0, 256);
 	axisX.setTickCount(9);
 	axisX.setMinorTickCount(1);
 	axisX.setLabelFormat("%d");
 	axisX.setTitleText("Power [decoder step]");
 
-	auto& axisY = dynamic_cast<QValueAxis&>(*chart.axisY());
+	auto &axisY = dynamic_cast<QValueAxis &>(*chart.axisY());
 	axisY.setRange(0, 120);
 	axisY.setTickCount(7);
 	axisY.setMinorTickCount(1);
@@ -40,11 +39,10 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent)
 	this->setCentralWidget(chartView);
 
 	series.append(100, 100);
-	//chart->createDefaultAxes();
 }
 
 void PowerGraphWindow::addOrUpdate(unsigned step, float speed) {
-	for(int i = 0; i < series.count(); i++) {
+	for (int i = 0; i < series.count(); i++) {
 		if (series.at(i).x() == step) {
 			series.replace(i, QPointF(step, speed));
 			return;
@@ -57,6 +55,4 @@ void PowerGraphWindow::addOrUpdate(unsigned step, float speed) {
 	series.append(step, speed);
 }
 
-void PowerGraphWindow::clear() {
-	series.clear();
-}
+void PowerGraphWindow::clear() { series.clear(); }

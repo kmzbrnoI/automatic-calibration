@@ -14,8 +14,8 @@ The mapping could me only patrial, unused mappings are intended to be
 interpolated.
 */
 
-#include <cstddef>
 #include <QObject>
+#include <cstddef>
 #include <memory>
 
 namespace Ssm {
@@ -31,10 +31,10 @@ class StepsToSpeedMap : public QObject {
 
 public:
 	StepsToSpeedMap(QObject *parent = nullptr);
-	StepsToSpeedMap(const QString& filename, QObject *parent = nullptr);
+	StepsToSpeedMap(const QString &filename, QObject *parent = nullptr);
 
-	void load(const QString& filename);
-	void save(const QString& filename);
+	void load(const QString &filename);
+	void save(const QString &filename);
 	void clear();
 	void addOrUpdate(unsigned step, unsigned speed);
 	unsigned noDifferentSpeeds() const;
@@ -43,8 +43,8 @@ public:
 	void setMaxSpeed(unsigned new_speed);
 	unsigned maxSpeedInFile() const;
 
-	unsigned const* at(int index) const;
-	unsigned const* operator[] (int index) const;
+	unsigned const *at(int index) const;
+	unsigned const *operator[](int index) const;
 
 private:
 	unsigned m_max_speed = SPEED_MAX;
@@ -55,6 +55,6 @@ signals:
 	void onClear();
 };
 
-}//namespace Ssm
+} // namespace Ssm
 
 #endif

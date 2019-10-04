@@ -31,8 +31,8 @@ of the loco and the power of maximum speed of the loco.
 #include <QObject>
 #include <QTimer>
 
-#include "lib/xn/xn.h"
 #include "lib/wsm/wsm.h"
+#include "lib/xn/xn.h"
 #include "power-map.h"
 
 namespace Co {
@@ -66,7 +66,7 @@ public:
 	unsigned overview_start = DEFAULT_OVERVIEW_START;
 	unsigned min_speed = DEFAULT_MIN_SPEED;
 
-	CalibOverview(Xn::XpressNet& xn, Pm::PowerToSpeedMap& pm, Wsm::Wsm& wsm,
+	CalibOverview(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm,
 	              unsigned max_speed = DEFAULT_SPEED_MAX, QObject *parent = nullptr);
 	void makeOverview(unsigned loco_addr);
 	void stop();
@@ -74,17 +74,17 @@ public:
 	unsigned max_speed;
 
 private:
-	Xn::XpressNet& m_xn;
-	Pm::PowerToSpeedMap& m_pm;
-	Wsm::Wsm& m_wsm;
+	Xn::XpressNet &m_xn;
+	Pm::PowerToSpeedMap &m_pm;
+	Wsm::Wsm &m_wsm;
 
 	unsigned m_loco_addr;
 	QTimer t_sp_adapt;
 	unsigned m_diff_count;
 	unsigned m_last_power;
 
-	void xn_pom_ok(void*, void*);
-	void xn_pom_err(void*, void*);
+	void xn_pom_ok(void *, void *);
+	void xn_pom_err(void *, void *);
 
 	std::unique_ptr<unsigned> next_step();
 
@@ -103,6 +103,6 @@ signals:
 	void progress_update(size_t progress, size_t max);
 };
 
-}//namespace Co
+} // namespace Co
 
 #endif
