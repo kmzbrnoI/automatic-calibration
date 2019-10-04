@@ -1020,11 +1020,14 @@
           <property name="selectionMode">
            <enum>QAbstractItemView::SingleSelection</enum>
           </property>
+          <property name="rootIsDecorated">
+           <bool>false</bool>
+          </property>
           <property name="wordWrap">
            <bool>true</bool>
           </property>
           <attribute name="headerVisible">
-           <bool>false</bool>
+           <bool>true</bool>
           </attribute>
           <attribute name="headerCascadingSectionResizes">
            <bool>false</bool>
