@@ -28,13 +28,24 @@ This application is developed in [QT](https://www.qt.io/) v5.
 ## Building & toolkit
 
 This SW was developed in `vim` using `qmake` & `make`. Downloads are available
-in *Releases* section.
+in *Releases* section. It is suggested to use `clang` as a compiler, because
+then you may use `clang-tools` during development process (see below).
 
 ### Prerequisities
 
  * Qt 5
  * Qt's `serialport`
  * Qt's `charts`
+ * Optional: clang build tools (see below)
+ * Optional for clang: [Bear](https://github.com/rizsotto/Bear)
+
+### Example: toolchain setup on Debian
+
+```bash
+$ apt install qt5-default libqt5serialport5-dev libqt5charts5-dev
+$ apt install clang-7 clang-tools-7 clang-tidy-7 clang-format-7
+$ apt install bear
+```
 
 ### Build
 
@@ -49,14 +60,14 @@ And then build:
 ```
 $ mkdir build
 $ cd build
-$ qmake ..
-$ make
+$ qmake -spec linux-clang ..
+$ bear make
 ```
 
 To make debug binary, run:
 
 ```
-$ qmake CONFIG+=debug ..
+$ qmake -spec linux-clang CONFIG+=debug ..
 $ make
 ```
 
@@ -68,7 +79,7 @@ This application is being cross-compiled for Windows via [MXE](https://mxe.cc/).
 Follow [these instructions](https://stackoverflow.com/questions/14170590/building-qt-5-on-linux-for-windows)
 for building standalone `exe` file.
 
-You may want to use similar script as `activate.sh`:
+You may want to use activation script (see content below).
 
 ```bash
 export PATH="$HOME/...../mxe/usr/bin:$PATH"
@@ -141,8 +152,8 @@ Speed table is loaded from `speed.csv` file, where each line is of format
 ## Style checking
 
 ```
-$ clang-tidy-6.0 -extra-arg-before=-x -extra-arg-before=c++ -extra-arg=-std=c++14 *.cpp *.h
-$ clang-format-6.0 *.cpp *.h
+$ clang-tidy-7 -p build -extra-arg-before=-x -extra-arg-before=c++ -extra-arg=-std=c++14 -header-filter=. src/*.cpp
+$ clang-format-7 *.cpp *.h
 ```
 
 ## Authors
