@@ -1352,6 +1352,7 @@ void MainWindow::reset() {
 	cm.reset();
 	for (size_t i = 0; i < Xn::_STEPS_CNT; i++) {
 		ui_steps[i].slider->setValue(0);
+		ui_steps[i].slider->setEnabled(false);
 		ui_steps[i].selected->setChecked(false);
 		ui_steps[i].calibrate->setEnabled(false);
 		step_set_color(i, Qt::black);
