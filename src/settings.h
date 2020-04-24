@@ -22,6 +22,7 @@ const Config DEFAULTS {
 		{"loglevel", 1},
 		{"port", "/dev/ttyUSB0"},
 		{"logfile", ""},
+		{"interface", "uLI"},
 	}},
 	{"Speed", {
 		{"file", "speed.csv"},
