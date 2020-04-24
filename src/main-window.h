@@ -44,6 +44,8 @@ const QColor STEPC_CHANGED = Qt::blue;
 const QColor LOGC_ERROR = QColor(0xFF, 0xAA, 0xAA);
 const QColor LOGC_WARN = QColor(0xFF, 0xFF, 0xAA);
 const QColor LOGC_DONE = QColor(0xAA, 0xFF, 0xAA);
+const QColor LOGC_GET = QColor(0xE0, 0xE0, 0xFF);
+const QColor LOGC_PUT = QColor(0xE0, 0xFF, 0xE0);
 
 struct UiStep {
 	QSlider *slider;

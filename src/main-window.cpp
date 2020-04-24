@@ -249,21 +249,30 @@ void MainWindow::xn_onError(const QString &error) {
 }
 
 void MainWindow::xn_onLog(const QString &message, const Xn::LogLevel &loglevel) {
+	constexpr size_t COLUMN_COUNT = 3;
+
 	if (ui.tw_xn_log->topLevelItemCount() > 300)
 		ui.tw_xn_log->clear();
 
 	auto *item = new QTreeWidgetItem(ui.tw_xn_log);
 	item->setText(0, QTime::currentTime().toString("hh:mm:ss"));
 
+	if (message.startsWith("GET:"))
+		for (size_t i = 0; i < COLUMN_COUNT; i++)
+			item->setBackground(i, LOGC_GET);
+	if (message.startsWith("PUT:"))
+		for (size_t i = 0; i < COLUMN_COUNT; i++)
+			item->setBackground(i, LOGC_PUT);
+
 	if (loglevel == Xn::LogLevel::None)
 		item->setText(1, "None");
 	else if (loglevel == Xn::LogLevel::Error) {
 		item->setText(1, "Error");
-		for (size_t i = 0; i < 3; i++)
+		for (size_t i = 0; i < COLUMN_COUNT; i++)
 			item->setBackground(i, LOGC_ERROR);
 	} else if (loglevel == Xn::LogLevel::Warning) {
 		item->setText(1, "Warning");
-		for (size_t i = 0; i < 3; i++)
+		for (size_t i = 0; i < COLUMN_COUNT; i++)
 			item->setBackground(i, LOGC_WARN);
 	} else if (loglevel == Xn::LogLevel::Info)
 		item->setText(1, "Info");
