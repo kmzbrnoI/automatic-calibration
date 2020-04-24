@@ -20,6 +20,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
 	lib/wsm/wsm.cpp \
 	lib/xn/xn.cpp \
+	lib/xn/xn-api.cpp \
+	lib/xn/xn-receive.cpp \
+	lib/xn/xn-send.cpp \
+	lib/xn/xn-hist.cpp \
 	src/main.cpp \
 	src/main-window.cpp \
 	src/settings.cpp \
@@ -64,7 +68,7 @@ RESOURCES += auto-calib.qrc
 win32:RC_ICONS += icon/app-icon.ico
 
 VERSION_MAJOR = 1
-VERSION_MINOR = 1
+VERSION_MINOR = 2
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
 	"VERSION_MINOR=$$VERSION_MINOR"
