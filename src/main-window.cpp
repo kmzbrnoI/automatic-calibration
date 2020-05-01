@@ -1088,8 +1088,9 @@ void MainWindow::b_calib_start_handle() {
 			return;
 
 		reset();
-		cm.vmax = ui.sb_vmax->value();
 	}
+
+	cm.vmax = ui.sb_vmax->value();
 
 	ui.b_calib_start->setEnabled(false);
 	ui.b_calib_stop->setEnabled(true);
