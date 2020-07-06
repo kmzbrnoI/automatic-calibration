@@ -17,14 +17,14 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent) : QMainWindow(parent) {
 	chart.addSeries(&series);
 	chart.createDefaultAxes();
 
-	auto &axisX = dynamic_cast<QValueAxis &>(*chart.axisX());
+	auto &axisX = dynamic_cast<QValueAxis &>(*chart.axes(Qt::Horizontal)[0]);
 	axisX.setRange(0, 256);
 	axisX.setTickCount(9);
 	axisX.setMinorTickCount(1);
 	axisX.setLabelFormat("%d");
 	axisX.setTitleText("Power [decoder step]");
 
-	auto &axisY = dynamic_cast<QValueAxis &>(*chart.axisY());
+	auto &axisY = dynamic_cast<QValueAxis &>(*chart.axes(Qt::Vertical)[0]);
 	axisY.setRange(0, 120);
 	axisY.setTickCount(7);
 	axisY.setMinorTickCount(1);
