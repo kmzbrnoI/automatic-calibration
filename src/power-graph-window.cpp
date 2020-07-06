@@ -41,6 +41,15 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent) : QMainWindow(parent) {
 	series.append(100, 100);
 }
 
+PowerGraphWindow::~PowerGraphWindow() {
+	try {
+		chart.removeSeries(&series);
+	}
+	catch (...) {
+		// No exceptions in destructor!
+	}
+}
+
 void PowerGraphWindow::addOrUpdate(unsigned step, float speed) {
 	for (int i = 0; i < series.count(); i++) {
 		if (series.at(i).x() == step) {

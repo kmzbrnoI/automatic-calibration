@@ -20,6 +20,7 @@ class PowerGraphWindow : public QMainWindow {
 
 public:
 	PowerGraphWindow(QWidget *parent = nullptr);
+	~PowerGraphWindow() override;
 
 public slots:
 	void addOrUpdate(unsigned step, float speed);
