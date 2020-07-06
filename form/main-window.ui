@@ -20,7 +20,7 @@
    <string>Automatic Calibration</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="auto-calib.qrc">
+   <iconset resource="../auto-calib.qrc">
     <normaloff>:/icon/app-icon.svg</normaloff>:/icon/app-icon.svg</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -84,18 +84,18 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>50</y>
+           <y>48</y>
            <width>21</width>
-           <height>16</height>
+           <height>21</height>
           </rect>
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>16</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>◼</string>
+          <string>●</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
@@ -118,18 +118,18 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>70</y>
+           <y>69</y>
            <width>21</width>
-           <height>16</height>
+           <height>20</height>
           </rect>
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>16</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>◼</string>
+          <string>●</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
@@ -152,18 +152,18 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>30</y>
+           <y>28</y>
            <width>21</width>
-           <height>16</height>
+           <height>21</height>
           </rect>
          </property>
          <property name="font">
           <font>
-           <pointsize>12</pointsize>
+           <pointsize>16</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>◼</string>
+          <string>●</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignHCenter</set>
@@ -1061,7 +1061,7 @@
      <x>0</x>
      <y>0</y>
      <width>1060</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="m_xn">
@@ -1234,7 +1234,7 @@
   <tabstop>b_test2</tabstop>
  </tabstops>
  <resources>
-  <include location="auto-calib.qrc"/>
+  <include location="../auto-calib.qrc"/>
  </resources>
  <connections/>
 </ui>
