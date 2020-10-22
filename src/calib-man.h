@@ -55,6 +55,7 @@ enum class CmError {
 	LocoStopped,
 	NoStep,
 	Oscilation,
+	WsmError,
 };
 
 enum class CalibState {

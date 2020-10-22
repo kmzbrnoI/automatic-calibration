@@ -1033,6 +1033,8 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 		log("No suitable power step for this speed!", LOGC_ERROR);
 	else if (ce == Cm::CmError::Oscilation)
 		log("Unable to reach target speed due to low precision (try decreasing Vmax?)", LOGC_ERROR);
+	else if (ce == Cm::CmError::WsmError)
+		log("WSM read speed error!", LOGC_ERROR);
 
 	cm_done_gui();
 }

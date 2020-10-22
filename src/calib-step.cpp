@@ -97,7 +97,13 @@ void CalibStep::t_sp_adapt_tick() {
 	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
 	                 SLOT(wsm_lt_read(double, double)));
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
-	m_wsm.startLongTermMeasure(measure_count);
+	try {
+		m_wsm.startLongTermMeasure(measure_count);
+	}
+	catch (const Wsm::QStrException& e) {
+		wsm_lt_done();
+		on_error(CsError::WsmError, m_step);
+	}
 }
 
 void CalibStep::xn_pom_ok(void *source, void *data) {

@@ -48,6 +48,7 @@ enum class CsError {
 	LocoStopped,
 	NoStep,
 	Oscilation,
+	WsmError,
 };
 
 class CalibStep : public QObject {
