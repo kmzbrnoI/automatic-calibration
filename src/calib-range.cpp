@@ -67,7 +67,8 @@ void CalibRange::wsm_speed_read(double speed, uint16_t) {
 
 void CalibRange::wsm_lt_read(double speed, double diffusion) {
 	if (diffusion > MAX_DIFFUSION || std::abs(speed - m_expected_speed_kmph) > EPSILON) {
-		if (m_speed_err_count >= ADAPT_MAX_TICKS) {
+		if (m_speed_err_count >= ADAPT_MAX_TICKS ||
+				(m_speed_err_count > 0 && speed < 10)) {
 			disconnect_signals();
 			loco_stop();
 			on_error(CrError::SpeedMeasure, m_step);
