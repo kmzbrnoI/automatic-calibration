@@ -22,7 +22,7 @@ calibration helper classes.
 Calibration stages:
 
  1) Set important CVs to default (accel, devel, Vmax, ...).
- 2) Make "basci overview" of power-to-speed mapping = try some powers and
+ 2) Make "basic overview" of power-to-speed mapping = try some powers and
     measure speed (calib-overview.h)
  3) Calibrate speed steps (calib-step.h).
  4) Interpolate the rest of the steps.

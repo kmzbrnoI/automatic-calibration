@@ -1331,20 +1331,27 @@ void MainWindow::a_loco_save(bool) {
 
 void MainWindow::cr_measured(double distance) {
 	log("Range measured: " + QString::number(distance*100, 'f', 1) + " cm");
+	ui.b_decel_measure->setEnabled(true);
 }
 
 void MainWindow::cr_error(Cr::CrError ce, unsigned) {
 	log("Range calibration error!", LOGC_ERROR);
+	ui.b_decel_measure->setEnabled(true);
 
 	if (ce == Cr::CrError::XnNoResponse)
 		log("No response from XpressNET!", LOGC_ERROR);
+	else if (ce == Cr::CrError::WsmNoResponse)
+		log("No response from WSM!", LOGC_ERROR);
+	else if (ce == Cr::CrError::SpeedMeasure)
+		log("Unable to measure speed!", LOGC_ERROR);
 }
 
 void MainWindow::b_decel_measure_handle() {
 	if (!wsm.connected() || !wsm.isSpeedOk() || !xn.connected())
 		return;
 
-	cr.measure(ui.sb_loco->value(), 15, static_cast<Xn::Direction>(ui.rb_forward->isChecked()));
+	ui.b_decel_measure->setEnabled(false);
+	cr.measure(ui.sb_loco->value(), 15, static_cast<Xn::Direction>(ui.rb_forward->isChecked()), 40);
 }
 
 void MainWindow::reset() {
@@ -1380,7 +1387,6 @@ void MainWindow::a_config_load(bool) {
 	Settings::cfgToUnsigned(calcfg, "measureCount", cm.co.measure_count);
 	Settings::cfgToUnsigned(calcfg, "spAdaptTimeout", cm.cs.sp_adapt_timeout);
 	Settings::cfgToUnsigned(calcfg, "spAdaptTimeout", cm.co.sp_adapt_timeout);
-	Settings::cfgToUnsigned(calcfg, "spAdaptTimeout", cr.sp_adapt_timeout);
 	Settings::cfgToUnsigned(calcfg, "overviewStep", cm.co.overview_step);
 	Settings::cfgToUnsigned(calcfg, "overviewStart", cm.co.overview_start);
 	Settings::cfgToUnsigned(calcfg, "overviewMinSpeed", cm.co.min_speed);
