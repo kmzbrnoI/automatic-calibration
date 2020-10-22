@@ -6,10 +6,9 @@ This unit defines a CalibRange class which allows user to measure distance
 while decelerating from 'step' addr.
 
  1) The loco speed step is set to 'step'.
- 2) After _SP_ADAPT_TIMEOUT the loco`s speed is consireder as stabilized.
-    (beware of setting low acceleration!)
- 3) When the distance fom WSM is measured, the 'IDLE' signal is sent to loco.
- 4) Once ste speed of the WSM decreses to 0 and some other time is elapsed
+ 2) Application waits till loco reaches stable 'spkmph' speed.
+ 3) Right when next distance fom WSM is measured, the 'IDLE' signal is sent to loco.
+ 4) Once the speed of the WSM decreses to 0 and some other time is elapsed
     (the loco may still very slowly move), the measured() event is called.
 
 When any error happens, on_error event is called.
@@ -33,7 +32,6 @@ constexpr double EPSILON = 3; // +- 3 kmph
 constexpr double MAX_DIFFUSION = 5; // 5 kmph
 constexpr size_t MEASURE_COUNT = 30; // measuring 30 values = 3 s
 constexpr unsigned ADAPT_MAX_TICKS = 4; // maximum speed adaptation ticks (~15 s)
-constexpr unsigned SP_ADAPT_PERIOD_MS = 500;
 constexpr unsigned DEFAULT_STOP_MIN =
     10; // we must measure 10 times 0 kmph to determnine that loco has stopped
 
