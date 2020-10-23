@@ -49,7 +49,8 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	m_pm.addOrUpdate(m_last_power, speed);
 
 	double speed_abs_deviation = std::abs(speed - m_target_speed);
-	if (speed_abs_deviation < abs_deviation || speed_abs_deviation <= m_target_speed*rel_deviation) {
+	if (speed_abs_deviation < abs_deviation ||
+	    speed_abs_deviation <= m_target_speed * rel_deviation) {
 		done(m_step, m_last_power);
 		return;
 	}

@@ -7,7 +7,8 @@ namespace Cr {
 CalibRange::CalibRange(Xn::XpressNet &xn, Wsm::Wsm &wsm, QObject *parent)
     : QObject(parent), m_xn(xn), m_wsm(wsm) {}
 
-void CalibRange::measure(const unsigned loco_addr, const unsigned step, Xn::Direction dir, unsigned spkmph) {
+void CalibRange::measure(const unsigned loco_addr, const unsigned step, Xn::Direction dir,
+                         unsigned spkmph) {
 	m_loco_addr = loco_addr;
 	m_step = step;
 	m_dir = dir;
@@ -17,29 +18,22 @@ void CalibRange::measure(const unsigned loco_addr, const unsigned step, Xn::Dire
 }
 
 void CalibRange::loco_go() {
-	m_xn.setSpeed(
-		Xn::LocoAddr(m_loco_addr),
-		m_step,
-		m_dir,
-		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_ok(s, d); }),
-		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_err(s, d); })
-	);
+	m_xn.setSpeed(Xn::LocoAddr(m_loco_addr), m_step, m_dir,
+	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_ok(s, d); }),
+	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_err(s, d); }));
 }
 
 void CalibRange::loco_stop() {
-	m_xn.setSpeed(
-		Xn::LocoAddr(m_loco_addr),
-		0,
-		m_dir,
-		nullptr,
-		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_err(s, d); })
-	);
+	m_xn.setSpeed(Xn::LocoAddr(m_loco_addr), 0, m_dir, nullptr,
+	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_err(s, d); }));
 }
 
 void CalibRange::wsm_dist_read(double, uint32_t dist_raw) {
 	// Once the distance in read, stop the loco and record distance
-	QObject::disconnect(&m_wsm, SIGNAL(distanceRead(double, uint32_t)), this, SLOT(wsm_dist_read(double, uint32_t)));
-	QObject::connect(&m_wsm, SIGNAL(speedRead(double, uint16_t)), this, SLOT(wsm_speed_read(double, uint16_t)));
+	QObject::disconnect(&m_wsm, SIGNAL(distanceRead(double, uint32_t)), this,
+	                    SLOT(wsm_dist_read(double, uint32_t)));
+	QObject::connect(&m_wsm, SIGNAL(speedRead(double, uint16_t)), this,
+	                 SLOT(wsm_speed_read(double, uint16_t)));
 
 	loco_stop();
 	m_start_dist = dist_raw;
@@ -67,8 +61,7 @@ void CalibRange::wsm_speed_read(double speed, uint16_t) {
 
 void CalibRange::wsm_lt_read(double speed, double diffusion) {
 	if (diffusion > MAX_DIFFUSION || std::abs(speed - m_expected_speed_kmph) > EPSILON) {
-		if (m_speed_err_count >= ADAPT_MAX_TICKS ||
-				(m_speed_err_count > 0 && speed < 10)) {
+		if (m_speed_err_count >= ADAPT_MAX_TICKS || (m_speed_err_count > 0 && speed < 10)) {
 			disconnect_signals();
 			loco_stop();
 			on_error(CrError::SpeedMeasure, m_step);
@@ -111,7 +104,8 @@ void CalibRange::wsm_error() {
 }
 
 void CalibRange::disconnect_signals() {
-	QObject::disconnect(&m_wsm, SIGNAL(distanceRead(double, uint32_t)), this, SLOT(wsm_dist_read(double, uint32_t)));
+	QObject::disconnect(&m_wsm, SIGNAL(distanceRead(double, uint32_t)), this,
+	                    SLOT(wsm_dist_read(double, uint32_t)));
 	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
 	                    SLOT(wsm_lt_read(double, double)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedRead(double, uint16_t)), this,
