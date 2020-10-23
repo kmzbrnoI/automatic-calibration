@@ -33,7 +33,8 @@ speed step.
 
 namespace Cs {
 
-constexpr double DEFAULT_EPSILON = 1; // +- 1 kmph
+constexpr double DEFAULT_ABS_DEVIATION = 0.5; // +- 0.5 kmph
+constexpr double DEFAULT_REL_DEVIATION = 0.025; // +- 2.5 %
 constexpr double DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
 constexpr size_t DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
 constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
@@ -55,7 +56,8 @@ class CalibStep : public QObject {
 	Q_OBJECT
 
 public:
-	double epsilon = DEFAULT_EPSILON;
+	double abs_deviation = DEFAULT_ABS_DEVIATION; // this OR rel_deviation must match
+	double rel_deviation = DEFAULT_REL_DEVIATION; // this OR abs_deviation must match
 	double max_diffusion = DEFAULT_MAX_DIFFUSION;
 	unsigned measure_count = DEFAULT_MEASURE_COUNT;
 	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;

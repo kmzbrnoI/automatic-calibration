@@ -1382,7 +1382,8 @@ void MainWindow::a_config_load(bool) {
 
 	auto& calcfg = s["Calibration"];
 
-	Settings::cfgToDouble(calcfg, "epsilon", cm.cs.epsilon);
+	Settings::cfgToDouble(calcfg, "absDeviation", cm.cs.abs_deviation);
+	Settings::cfgToDouble(calcfg, "relDeviation", cm.cs.rel_deviation);
 	Settings::cfgToDouble(calcfg, "maxDiffusion", cm.cs.max_diffusion);
 	Settings::cfgToDouble(calcfg, "maxDiffusion", cm.co.max_diffusion);
 	Settings::cfgToUnsigned(calcfg, "measureCount", cm.cs.measure_count);
