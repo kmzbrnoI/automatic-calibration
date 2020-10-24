@@ -38,7 +38,8 @@ of the loco and the power of maximum speed of the loco.
 namespace Co {
 
 constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // speed timeout, 2 s
-constexpr double DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
+constexpr double DEFAULT_MAX_ABS_DIFFUSION = 3; // 3 kmph
+constexpr double DEFAULT_MAX_REL_DIFFUSION = 0.06; // 6 %
 constexpr unsigned DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
 constexpr unsigned DEFAULT_SPEED_MAX = 120;
 constexpr unsigned DEFAULT_OVERVIEW_STEP = 2;
@@ -60,7 +61,8 @@ class CalibOverview : public QObject {
 
 public:
 	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;
-	double max_diffusion = DEFAULT_MAX_DIFFUSION;
+	double max_abs_diffusion = DEFAULT_MAX_ABS_DIFFUSION;
+	double max_rel_diffusion = DEFAULT_MAX_REL_DIFFUSION;
 	unsigned measure_count = DEFAULT_MEASURE_COUNT;
 	unsigned overview_step = DEFAULT_OVERVIEW_STEP;
 	unsigned overview_start = DEFAULT_OVERVIEW_START;

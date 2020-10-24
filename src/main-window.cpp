@@ -1384,8 +1384,10 @@ void MainWindow::a_config_load(bool) {
 
 	Settings::cfgToDouble(calcfg, "absDeviation", cm.cs.abs_deviation);
 	Settings::cfgToDouble(calcfg, "relDeviation", cm.cs.rel_deviation);
-	Settings::cfgToDouble(calcfg, "maxDiffusion", cm.cs.max_diffusion);
-	Settings::cfgToDouble(calcfg, "maxDiffusion", cm.co.max_diffusion);
+	Settings::cfgToDouble(calcfg, "maxAbsDiffusion", cm.cs.max_abs_diffusion);
+	Settings::cfgToDouble(calcfg, "maxAbsDiffusion", cm.co.max_abs_diffusion);
+	Settings::cfgToDouble(calcfg, "maxRelDiffusion", cm.cs.max_rel_diffusion);
+	Settings::cfgToDouble(calcfg, "maxRelDiffusion", cm.co.max_rel_diffusion);
 	Settings::cfgToUnsigned(calcfg, "measureCount", cm.cs.measure_count);
 	Settings::cfgToUnsigned(calcfg, "measureCount", cm.co.measure_count);
 	Settings::cfgToUnsigned(calcfg, "spAdaptTimeout", cm.cs.sp_adapt_timeout);

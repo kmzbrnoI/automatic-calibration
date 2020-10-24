@@ -31,7 +31,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step, const d
 void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	wsm_lt_done();
 
-	if (diffusion > max_diffusion) {
+	if (diffusion > max_abs_diffusion && diffusion > speed*max_rel_diffusion) {
 		if (m_diff_count >= ADAPT_MAX_TICKS) {
 			on_error(CsError::LargeDiffusion, m_step);
 			return;

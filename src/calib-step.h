@@ -35,7 +35,8 @@ namespace Cs {
 
 constexpr double DEFAULT_ABS_DEVIATION = 0.5; // +- 0.5 kmph
 constexpr double DEFAULT_REL_DEVIATION = 0.025; // +- 2.5 %
-constexpr double DEFAULT_MAX_DIFFUSION = 3; // 3 kmph
+constexpr double DEFAULT_MAX_ABS_DIFFUSION = 3; // 3 kmph
+constexpr double DEFAULT_MAX_REL_DIFFUSION = 0.06; // 6 %
 constexpr size_t DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
 constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
 
@@ -58,7 +59,8 @@ class CalibStep : public QObject {
 public:
 	double abs_deviation = DEFAULT_ABS_DEVIATION; // this OR rel_deviation must match
 	double rel_deviation = DEFAULT_REL_DEVIATION; // this OR abs_deviation must match
-	double max_diffusion = DEFAULT_MAX_DIFFUSION;
+	double max_abs_diffusion = DEFAULT_MAX_ABS_DIFFUSION;
+	double max_rel_diffusion = DEFAULT_MAX_REL_DIFFUSION;
 	unsigned measure_count = DEFAULT_MEASURE_COUNT;
 	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;
 

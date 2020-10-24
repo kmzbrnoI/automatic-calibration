@@ -81,7 +81,7 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 		return;
 	}
 
-	if (diffusion > max_diffusion) {
+	if (diffusion > max_abs_diffusion && diffusion > speed*max_rel_diffusion) {
 		if (m_diff_count >= ADAPT_MAX_TICKS) {
 			on_error(Co::Error::LargeDiffusion, overview_step);
 			return;
