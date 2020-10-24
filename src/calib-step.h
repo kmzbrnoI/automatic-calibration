@@ -33,12 +33,12 @@ speed step.
 
 namespace Cs {
 
-constexpr double DEFAULT_ABS_DEVIATION = 0.5; // +- 0.5 kmph
-constexpr double DEFAULT_REL_DEVIATION = 0.025; // +- 2.5 %
-constexpr double DEFAULT_MAX_ABS_DIFFUSION = 3; // 3 kmph
+constexpr double DEFAULT_ABS_DEVIATION = 0.5; // +- x kmph
+constexpr double DEFAULT_REL_DEVIATION = 0.025; // +- x %
+constexpr double DEFAULT_MAX_ABS_DIFFUSION = 1; // kmph
 constexpr double DEFAULT_MAX_REL_DIFFUSION = 0.06; // 6 %
 constexpr size_t DEFAULT_MEASURE_COUNT = 30; // measuring 30 values = 3 s
-constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // 2 s
+constexpr unsigned DEFAULT_SP_ADAPT_TIMEOUT = 2000; // ms
 
 constexpr unsigned CV_START = 67; // cv 67 = step 1
 constexpr unsigned ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
