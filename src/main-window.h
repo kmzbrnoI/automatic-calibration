@@ -149,7 +149,7 @@ private slots:
 
 	// Calibration range events:
 	void cr_measured(double distance);
-	void cr_error(Cr::CrError, unsigned step);
+	void cr_error(Cr::CrError, unsigned step, const QString&);
 
 private:
 	Ui::MainWindow ui;

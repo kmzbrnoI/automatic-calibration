@@ -26,6 +26,7 @@ enum class CrError {
 	XnNoResponse,
 	WsmNoResponse,
 	SpeedMeasure,
+	WsmCannotStartLt,
 };
 
 constexpr double EPSILON = 3; // +- 3 kmph
@@ -72,7 +73,7 @@ private slots:
 	void wsm_lt_read(double speed, double diffusion);
 
 signals:
-	void on_error(Cr::CrError, unsigned step);
+	void on_error(Cr::CrError, unsigned step, const QString&);
 	void measured(double distance);
 };
 

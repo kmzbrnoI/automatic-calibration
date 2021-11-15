@@ -163,8 +163,8 @@ MainWindow::MainWindow(QWidget *parent)
 	m_pm.clear();
 
 	// Range Calibration
-	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError, unsigned)), this,
-	                 SLOT(cr_error(Cr::CrError, unsigned)));
+	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError, unsigned, const QString&)), this,
+	                 SLOT(cr_error(Cr::CrError, unsigned, const QString&)));
 	QObject::connect(&cr, SIGNAL(measured(double)), this, SLOT(cr_measured(double)));
 
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
@@ -1336,16 +1336,10 @@ void MainWindow::cr_measured(double distance) {
 	ui.b_decel_measure->setEnabled(true);
 }
 
-void MainWindow::cr_error(Cr::CrError ce, unsigned) {
+void MainWindow::cr_error(Cr::CrError, unsigned, const QString& message) {
 	log("Range calibration error!", LOGC_ERROR);
 	ui.b_decel_measure->setEnabled(true);
-
-	if (ce == Cr::CrError::XnNoResponse)
-		log("No response from XpressNET!", LOGC_ERROR);
-	else if (ce == Cr::CrError::WsmNoResponse)
-		log("No response from WSM!", LOGC_ERROR);
-	else if (ce == Cr::CrError::SpeedMeasure)
-		log("Unable to measure speed!", LOGC_ERROR);
+	log(message, LOGC_ERROR);
 }
 
 void MainWindow::b_decel_measure_handle() {
