@@ -73,6 +73,8 @@ void CalibRange::wsm_lt_read(double speed, double diffusion) {
 	}
 
 	// Speed ok -> stop & measure distance
+	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
+	                    SLOT(wsm_lt_read(double, double)));
 	QObject::connect(&m_wsm, SIGNAL(distanceRead(double, uint32_t)), this,
 	                 SLOT(wsm_dist_read(double, uint32_t)));
 }
