@@ -16,6 +16,8 @@ MainWindow::MainWindow(QWidget *parent)
 	QString text = QString::asprintf("Automatic Calibration v%d.%d", VERSION_MAJOR, VERSION_MINOR);
 	this->setWindowTitle(text);
 	this->setFixedSize(this->size());
+
+    this->config_fn = QCoreApplication::arguments().size() > 1 ? QCoreApplication::arguments()[1] : DEFAULT_CONFIG_FN;
 	a_config_load(true);
 	ui.b_start->setFocus();
 
@@ -1367,8 +1369,8 @@ void MainWindow::reset() {
 //////////////////////////////////////////////////////////////////////////////
 // Config IO:
 
-void MainWindow::a_config_load(bool) {
-	s.load(CONFIG_FN);
+void MainWindow::a_config_load(bool) {    
+    s.load(this->config_fn);
 
 	wsm.scale = s["WSM"]["scale"].toInt();
 	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();
@@ -1391,12 +1393,12 @@ void MainWindow::a_config_load(bool) {
 	Settings::cfgToUnsigned(calcfg, "overviewMinSpeed", cm.co.min_speed);
 	Settings::cfgToUnsigned(calcfg, "rangeStopMinTimes", cr.stop_min);
 
-	log("Loaded config from " + QString(CONFIG_FN));
+    log("Loaded config from " + this->config_fn);
 }
 
 void MainWindow::a_config_save(bool) {
-	s.save(CONFIG_FN);
-	log("Saved config to " + QString(CONFIG_FN));
+    s.save(this->config_fn);
+    log("Saved config to " + this->config_fn);
 }
 
 void MainWindow::a_speed_load(bool) {

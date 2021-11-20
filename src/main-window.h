@@ -27,7 +27,7 @@ forwarded to Calibration Manager as a references.
 #include "speed-map.h"
 #include "ui_main-window.h"
 
-constexpr char CONFIG_FN[] = "config.ini";
+constexpr char DEFAULT_CONFIG_FN[] = "config.ini";
 constexpr unsigned STEPS_CNT = 28;
 
 constexpr unsigned CV_ADDR_SHORT = 1;
@@ -170,6 +170,7 @@ private:
 	Ssm::StepsToSpeedMap m_ssm;
 	Cm::CalibMan cm;
 	Cr::CalibRange cr;
+    QString config_fn;
 
 	// Callbacks from XpressNET library:
 	void xn_onDccGoError(void *, void *);
