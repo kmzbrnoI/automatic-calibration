@@ -40,7 +40,7 @@ void StepsToSpeedMap::load(const QString &filename) {
 			continue;
 
 		m_map[step-1] = speed;
-        emit onAddOrUpdate(step-1, *at(step-1));
+		emit onAddOrUpdate(step-1, *at(step-1));
 	}
 }
 
@@ -79,9 +79,9 @@ void StepsToSpeedMap::setMaxSpeed(const unsigned new_speed) {
 	for (size_t i = 0; i < STEPS_CNT; i++) {
 		if (EMPTY_VALUE != m_map[i]) {
 			if (m_map[i] > m_max_speed && m_map[i] <= new_speed)
-                emit onAddOrUpdate(i, m_map[i]);
+				emit onAddOrUpdate(i, m_map[i]);
 			else if (m_map[i] > new_speed)
-                emit onAddOrUpdate(i, new_speed);
+				emit onAddOrUpdate(i, new_speed);
 		}
 	}
 	m_max_speed = new_speed;

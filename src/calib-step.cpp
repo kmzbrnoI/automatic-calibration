@@ -21,7 +21,7 @@ void CalibStep::calibrate(const unsigned loco_addr, const unsigned step, const d
 		m_last_power = m_pm.power(m_target_speed);
 	}
 	catch (const Pm::ENoMap&) {
-        emit on_error(CsError::NoStep, m_step);
+		emit on_error(CsError::NoStep, m_step);
 		return;
 	}
 
@@ -33,7 +33,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 
 	if (diffusion > max_abs_diffusion && diffusion > speed*max_rel_diffusion) {
 		if (m_diff_count >= ADAPT_MAX_TICKS) {
-            emit on_error(CsError::LargeDiffusion, m_step);
+			emit on_error(CsError::LargeDiffusion, m_step);
 			return;
 		}
 		// Wait for speed...
@@ -42,7 +42,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		return;
 	}
 	if (speed == 0) {
-        emit on_error(CsError::LocoStopped, m_step);
+		emit on_error(CsError::LocoStopped, m_step);
 		return;
 	}
 
@@ -51,12 +51,12 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 	double speed_abs_deviation = std::abs(speed - m_target_speed);
 	if (speed_abs_deviation < abs_deviation ||
 	    speed_abs_deviation <= m_target_speed * rel_deviation) {
-        emit done(m_step, m_last_power);
+		emit done(m_step, m_last_power);
 		return;
 	}
 
 	if (is_oscilating()) {
-        emit on_error(CsError::Oscilation, speed);
+		emit on_error(CsError::Oscilation, speed);
 		return;
 	}
 
@@ -65,7 +65,7 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 		new_power = m_pm.power(m_target_speed);
 	}
 	catch (const Pm::ENoMap&) {
-        emit on_error(CsError::NoStep, m_step);
+		emit on_error(CsError::NoStep, m_step);
 		return;
 	}
 
@@ -92,7 +92,7 @@ void CalibStep::set_power(unsigned power) {
 	);
 
 	power_history.push_back(m_last_power);
-    emit step_power_changed(m_step, m_last_power);
+	emit step_power_changed(m_step, m_last_power);
 }
 
 void CalibStep::t_sp_adapt_tick() {
@@ -104,7 +104,7 @@ void CalibStep::t_sp_adapt_tick() {
 	}
 	catch (const Wsm::QStrException& e) {
 		wsm_lt_done();
-        emit on_error(CsError::WsmError, m_step);
+		emit on_error(CsError::WsmError, m_step);
 	}
 }
 
@@ -119,7 +119,7 @@ void CalibStep::xn_pom_ok(void *source, void *data) {
 void CalibStep::xn_pom_err(void *source, void *data) {
 	(void)source;
 	(void)data;
-    emit on_error(CsError::XnNoResponse, m_step);
+	emit on_error(CsError::XnNoResponse, m_step);
 }
 
 void CalibStep::wsm_lt_error() {

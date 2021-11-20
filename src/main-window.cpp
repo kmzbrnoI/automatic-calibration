@@ -25,15 +25,15 @@ MainWindow::MainWindow(QWidget *parent)
 	init_calib_graph();
 
 	// Steps to Speed map
-    QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(uint,uint)), this,
-                     SLOT(ssm_onAddOrUpdate(uint,uint)));
+	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(uint,uint)), this,
+					 SLOT(ssm_onAddOrUpdate(uint,uint)));
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	a_speed_load(true);
 	m_ssm.setMaxSpeed(m_ssm.maxSpeedInFile());
 
 	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
-    QObject::connect(&xn, SIGNAL(onLog(QString,Xn::LogLevel)), this,
+	QObject::connect(&xn, SIGNAL(onLog(QString,Xn::LogLevel)), this,
                      SLOT(xn_onLog(QString,Xn::LogLevel)));
 	QObject::connect(&xn, SIGNAL(onConnect()), this, SLOT(xn_onConnect()));
 	QObject::connect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
@@ -77,7 +77,7 @@ MainWindow::MainWindow(QWidget *parent)
 	ui.sb_vmax->setValue(cm.vmax);
 	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this,
 	                 SLOT(sb_max_speed_changed(int)));
-    QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
+	QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
                      SLOT(lv_log_dblclick(QListWidgetItem*)));
     QObject::connect(ui.tw_xn_log, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this,
                      SLOT(tw_xn_log_dblclick(QTreeWidgetItem*,int)));
@@ -1227,18 +1227,18 @@ void MainWindow::a_loco_load(bool) {
 		if (xr.isStartElement()) {
             if (xr.name() == QString("powerToSpeed")) {
 				xr.readNext();
-                while (xr.name() != QString("powerToSpeed")) {
-                    if (xr.name() == QString("record") && xr.attributes().hasAttribute("power") &&
-					    xr.attributes().hasAttribute("speed")) {
+				while (xr.name() != QString("powerToSpeed")) {
+					if (xr.name() == QString("record") && xr.attributes().hasAttribute("power") &&
+						xr.attributes().hasAttribute("speed")) {
 						int power = xr.attributes().value("power").toInt();
 						float speed = xr.attributes().value("speed").toFloat();
 						m_pm.addOrUpdate(power, speed);
 					}
 					xr.readNext();
 				}
-            } else if (xr.name() == QString("dcclocoaddress") && xr.attributes().hasAttribute("number")) {
+			} else if (xr.name() == QString("dcclocoaddress") && xr.attributes().hasAttribute("number")) {
 				ui.sb_loco->setValue(xr.attributes().value("number").toInt());
-            } else if (xr.name() == QString("locomotive") && xr.attributes().hasAttribute("maxSpeed")) {
+			} else if (xr.name() == QString("locomotive") && xr.attributes().hasAttribute("maxSpeed")) {
 				ui.sb_max_speed->setValue(xr.attributes().value("maxSpeed").toInt());
 			}
 		}

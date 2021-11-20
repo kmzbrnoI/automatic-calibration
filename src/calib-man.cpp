@@ -28,12 +28,12 @@ void CalibMan::done() {
 
 void CalibMan::error(const Cm::CmError e, const unsigned step) {
 	updateProg(CalibState::Stopped, 0, 1);
-    emit onError(e, step);
+	emit onError(e, step);
 }
 
 void CalibMan::updateProg(const CalibState cs, const size_t progress, const size_t max) {
 	m_progress = cs;
-    emit onProgressUpdate(getProgress(cs, progress, max));
+	emit onProgressUpdate(getProgress(cs, progress, max));
 }
 
 size_t CalibMan::getProgress(const CalibState cs, const size_t progress, const size_t max) {
@@ -71,7 +71,7 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
 			this->power[i] = m_step_power;
-            emit onStepPowerChanged(i+1, power);
+			emit onStepPowerChanged(i+1, power);
 			return;
 		}
 	}
@@ -109,12 +109,12 @@ void CalibMan::coError(Co::Error co, unsigned step) {
 
 void CalibMan::cStepPowerChanged(unsigned step, unsigned power) {
 	this->power[step-1] = power;
-    emit onStepPowerChanged(step, power);
+	emit onStepPowerChanged(step, power);
 }
 
 void CalibMan::xnStepWritten(void *, void *) {
 	state[m_step_writing] = StepState::Calibred;
-    emit onStepDone(m_step_writing+1, m_step_power);
+	emit onStepDone(m_step_writing+1, m_step_power);
 
 	for (size_t i = m_step_writing+1; i < Xn::_STEPS_CNT; i++) {
 		if (nullptr != m_ssm[i] && *(m_ssm[i]) == *(m_ssm[m_step_writing]) &&
@@ -128,7 +128,7 @@ void CalibMan::xnStepWritten(void *, void *) {
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
 			power[i] = m_step_power;
-            emit onStepPowerChanged(i+1, m_step_power);
+			emit onStepPowerChanged(i+1, m_step_power);
 			return;
 		}
 	}
@@ -222,7 +222,7 @@ void CalibMan::stop() {
 
 	csSigDisconnect();
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
-    emit onLocoSpeedChanged(0);
+	emit onLocoSpeedChanged(0);
 	updateProg(CalibState::Stopped, 0, 1);
 }
 
@@ -232,7 +232,7 @@ void CalibMan::calibrateNextStep() {
 		// No more steps to calibrate
 		csSigDisconnect();
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
-        emit onLocoSpeedChanged(0);
+		emit onLocoSpeedChanged(0);
 
 		// Phase 3: Interpolate the rest of the steps
 		interpolateAll();
@@ -240,9 +240,9 @@ void CalibMan::calibrateNextStep() {
 		return;
 	}
 
-    emit onStepStart((*next) + 1);
+	emit onStepStart((*next) + 1);
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), (*next) + 1, direction);
-    emit onLocoSpeedChanged((*next) + 1);
+	emit onLocoSpeedChanged((*next) + 1);
 	cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm[*next]));
 }
 
@@ -363,8 +363,8 @@ void CalibMan::interpolateNext() {
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xnIPError(s, d); })
 	);
 	this->power[m_thisIPstep] = power;
-    emit onStepPowerChanged(m_thisIPstep+1, power);
-    emit onStepDone(m_thisIPstep+1, power);
+	emit onStepPowerChanged(m_thisIPstep+1, power);
+	emit onStepDone(m_thisIPstep+1, power);
 }
 
 void CalibMan::xnIPError(void *, void *) {
@@ -426,7 +426,7 @@ void CalibMan::initCVsWriteNext() {
 		// Go to phase 1: make an overview of mapping steps to speed
 		updateProg(CalibState::Overview, 0, 1);
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), co.overview_step, direction);
-        emit onLocoSpeedChanged(co.overview_step);
+		emit onLocoSpeedChanged(co.overview_step);
 		co.makeOverview(m_locoAddr);
 		return;
 	}

@@ -56,7 +56,7 @@ void CalibRange::wsm_speed_read(double speed, uint16_t) {
 	                    SLOT(wsm_speed_read(double, uint16_t)));
 	QObject::disconnect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_error()));
 
-    emit measured(m_wsm.calcDist(m_wsm.distRaw() - m_start_dist));
+	emit measured(m_wsm.calcDist(m_wsm.distRaw() - m_start_dist));
 }
 
 void CalibRange::wsm_lt_read(double speed, double diffusion) {
@@ -64,7 +64,7 @@ void CalibRange::wsm_lt_read(double speed, double diffusion) {
 		if (m_speed_err_count >= ADAPT_MAX_TICKS || (m_speed_err_count > 0 && speed < 10)) {
 			disconnect_signals();
 			loco_stop();
-            emit on_error(CrError::SpeedMeasure, m_step, "Unable to measure speed!");
+			emit on_error(CrError::SpeedMeasure, m_step, "Unable to measure speed!");
 			return;
 		}
 		m_speed_err_count++;
@@ -86,7 +86,7 @@ void CalibRange::start_lt() {
 	catch (const Wsm::QStrException& e) {
 		disconnect_signals();
 		loco_stop();
-        emit on_error(CrError::WsmCannotStartLt, m_step,
+		emit on_error(CrError::WsmCannotStartLt, m_step,
                       "Unable to start WSM long-term measure: "+e.str());
 	}
 }
@@ -101,13 +101,13 @@ void CalibRange::xn_speed_ok(void *, void *) {
 }
 
 void CalibRange::xn_speed_err(void *, void *) {
-    emit on_error(CrError::XnNoResponse, m_step, "No response from XpressNET!");
+	emit on_error(CrError::XnNoResponse, m_step, "No response from XpressNET!");
 }
 
 void CalibRange::wsm_error() {
 	disconnect_signals();
 	loco_stop();
-    emit on_error(CrError::WsmNoResponse, m_step, "No response from WSM!");
+	emit on_error(CrError::WsmNoResponse, m_step, "No response from WSM!");
 }
 
 void CalibRange::disconnect_signals() {
