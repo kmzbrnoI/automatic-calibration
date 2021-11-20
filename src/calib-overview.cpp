@@ -51,11 +51,11 @@ void CalibOverview::do_next_step() {
 	if (nullptr == next) {
 		// Set some "normal" value to step 1
 		reset_step();
-		done();
+        emit done();
 		return;
 	}
 	m_last_power = *next;
-	progress_update(m_last_power, POWER_CNT);
+    emit progress_update(m_last_power, POWER_CNT);
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
@@ -64,7 +64,7 @@ void CalibOverview::do_next_step() {
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
-	step_power_changed(overview_step, m_last_power);
+    emit step_power_changed(overview_step, m_last_power);
 }
 
 void CalibOverview::wsm_lt_read(double speed, double diffusion) {
@@ -83,7 +83,7 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 
 	if (diffusion > max_abs_diffusion && diffusion > speed*max_rel_diffusion) {
 		if (m_diff_count >= ADAPT_MAX_TICKS) {
-			on_error(Co::Error::LargeDiffusion, overview_step);
+            emit on_error(Co::Error::LargeDiffusion, overview_step);
 			return;
 		}
 		// Wait for speed...
@@ -97,8 +97,8 @@ void CalibOverview::wsm_lt_read(double speed, double diffusion) {
 }
 
 void CalibOverview::t_sp_adapt_tick() {
-	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double, double)), this,
-	                 SLOT(wsm_lt_read(double, double)));
+    QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double,double)), this,
+                     SLOT(wsm_lt_read(double,double)));
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_lt_error()));
 	m_wsm.startLongTermMeasure(measure_count);
 }
@@ -109,7 +109,7 @@ void CalibOverview::xn_pom_ok(void *, void *) {
 }
 
 void CalibOverview::xn_pom_err(void *, void *) {
-	on_error(Co::Error::XnNoResponse, overview_step);
+    emit on_error(Co::Error::XnNoResponse, overview_step);
 }
 
 void CalibOverview::wsm_lt_error() {
@@ -126,7 +126,7 @@ void CalibOverview::reset_step() {
 		CV_START - 1 + overview_step,
 		STEP_RESET_VALUE
 	);
-	step_power_changed(overview_step, STEP_RESET_VALUE);
+    emit step_power_changed(overview_step, STEP_RESET_VALUE);
 }
 
 void CalibOverview::stop() { wsm_lt_error(); }

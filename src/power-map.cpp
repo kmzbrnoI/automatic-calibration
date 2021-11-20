@@ -8,13 +8,13 @@ void PowerToSpeedMap::clear() {
 	for (auto &item : map)
 		item = EMPTY_VALUE;
 	map[0] = 0;
-	onClear();
-	onAddOrUpdate(0, 0);
+    emit onClear();
+    emit onAddOrUpdate(0, 0);
 }
 
 void PowerToSpeedMap::addOrUpdate(const unsigned power, const float speed) {
 	map[power] = speed;
-	onAddOrUpdate(power, speed);
+    emit onAddOrUpdate(power, speed);
 }
 
 unsigned PowerToSpeedMap::power(const float speed) const {

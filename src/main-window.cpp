@@ -17,23 +17,24 @@ MainWindow::MainWindow(QWidget *parent)
 	this->setWindowTitle(text);
 	this->setFixedSize(this->size());
 
-    this->config_fn = QCoreApplication::arguments().size() > 1 ? QCoreApplication::arguments()[1] : DEFAULT_CONFIG_FN;
+    const QStringList args = QCoreApplication::arguments();
+    this->config_fn = args.size() > 1 ? args.at(1) : DEFAULT_CONFIG_FN;
 	a_config_load(true);
 	ui.b_start->setFocus();
 
 	init_calib_graph();
 
 	// Steps to Speed map
-	QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(unsigned, unsigned)), this,
-	                 SLOT(ssm_onAddOrUpdate(unsigned, unsigned)));
+    QObject::connect(&m_ssm, SIGNAL(onAddOrUpdate(uint,uint)), this,
+                     SLOT(ssm_onAddOrUpdate(uint,uint)));
 	QObject::connect(&m_ssm, SIGNAL(onClear()), this, SLOT(ssm_onClear()));
 	a_speed_load(true);
 	m_ssm.setMaxSpeed(m_ssm.maxSpeedInFile());
 
 	// XN init
 	QObject::connect(&xn, SIGNAL(onError(QString)), this, SLOT(xn_onError(QString)));
-	QObject::connect(&xn, SIGNAL(onLog(QString, Xn::LogLevel)), this,
-	                 SLOT(xn_onLog(QString, Xn::LogLevel)));
+    QObject::connect(&xn, SIGNAL(onLog(QString,Xn::LogLevel)), this,
+                     SLOT(xn_onLog(QString,Xn::LogLevel)));
 	QObject::connect(&xn, SIGNAL(onConnect()), this, SLOT(xn_onConnect()));
 	QObject::connect(&xn, SIGNAL(onDisconnect()), this, SLOT(xn_onDisconnect()));
 	QObject::connect(&xn, SIGNAL(onTrkStatusChanged(Xn::TrkStatus)), this,
@@ -76,10 +77,10 @@ MainWindow::MainWindow(QWidget *parent)
 	ui.sb_vmax->setValue(cm.vmax);
 	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this,
 	                 SLOT(sb_max_speed_changed(int)));
-	QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this,
-	                 SLOT(lv_log_dblclick(QListWidgetItem *)));
-	QObject::connect(ui.tw_xn_log, SIGNAL(itemDoubleClicked(QTreeWidgetItem *, int)), this,
-	                 SLOT(tw_xn_log_dblclick(QTreeWidgetItem *, int)));
+    QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
+                     SLOT(lv_log_dblclick(QListWidgetItem*)));
+    QObject::connect(ui.tw_xn_log, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this,
+                     SLOT(tw_xn_log_dblclick(QTreeWidgetItem*,int)));
 
 	t_xn_disconnect.setSingleShot(true);
 	QObject::connect(&t_xn_disconnect, SIGNAL(timeout()), this, SLOT(t_xn_disconnect_tick()));
@@ -130,43 +131,43 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(ui.a_speed_load, SIGNAL(triggered(bool)), this, SLOT(a_speed_load(bool)));
 
 	// WSM init
-	QObject::connect(&wsm, SIGNAL(speedRead(double, uint16_t)), this,
-	                 SLOT(mc_speedRead(double, uint16_t)));
+    QObject::connect(&wsm, SIGNAL(speedRead(double,uint16_t)), this,
+                     SLOT(mc_speedRead(double,uint16_t)));
 	QObject::connect(&wsm, SIGNAL(onError(QString)), this, SLOT(mc_onError(QString)));
-	QObject::connect(&wsm, SIGNAL(batteryRead(double, uint16_t)), this,
-	                 SLOT(mc_batteryRead(double, uint16_t)));
+    QObject::connect(&wsm, SIGNAL(batteryRead(double,uint16_t)), this,
+                     SLOT(mc_batteryRead(double,uint16_t)));
 	QObject::connect(&wsm, SIGNAL(batteryCritical()), this, SLOT(mc_batteryCritical()));
-	QObject::connect(&wsm, SIGNAL(distanceRead(double, uint32_t)), this,
-	                 SLOT(mc_distanceRead(double, uint32_t)));
+    QObject::connect(&wsm, SIGNAL(distanceRead(double,uint32_t)), this,
+                     SLOT(mc_distanceRead(double,uint32_t)));
 	QObject::connect(&wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(mc_speedReceiveTimeout()));
-	QObject::connect(&wsm, SIGNAL(longTermMeasureDone(double, double)), this,
-	                 SLOT(mc_longTermMeasureDone(double, double)));
+    QObject::connect(&wsm, SIGNAL(longTermMeasureDone(double,double)), this,
+                     SLOT(mc_longTermMeasureDone(double,double)));
 	QObject::connect(&wsm, SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
 
 	// Calibration Manager signals
-	QObject::connect(&cm, SIGNAL(onStepStart(unsigned)), this, SLOT(cm_stepStart(unsigned)));
-	QObject::connect(&cm, SIGNAL(onStepDone(unsigned, unsigned)),
-	                 this, SLOT(cm_stepDone(unsigned, unsigned)));
-	QObject::connect(&cm, SIGNAL(onError(Cm::CmError, unsigned)),
-	                 this, SLOT(cm_stepError(Cm::CmError, unsigned)));
-	QObject::connect(&cm, SIGNAL(onLocoSpeedChanged(unsigned)),
-	                 this, SLOT(cm_locoSpeedChanged(unsigned)));
+    QObject::connect(&cm, SIGNAL(onStepStart(uint)), this, SLOT(cm_stepStart(uint)));
+    QObject::connect(&cm, SIGNAL(onStepDone(uint,uint)),
+                     this, SLOT(cm_stepDone(uint,uint)));
+    QObject::connect(&cm, SIGNAL(onError(Cm::CmError,uint)),
+                     this, SLOT(cm_stepError(Cm::CmError,uint)));
+    QObject::connect(&cm, SIGNAL(onLocoSpeedChanged(uint)),
+                     this, SLOT(cm_locoSpeedChanged(uint)));
 	QObject::connect(&cm, SIGNAL(onDone()), this, SLOT(cm_done()));
-	QObject::connect(&cm, SIGNAL(onStepPowerChanged(unsigned, unsigned)),
-	                 this, SLOT(cm_step_power_changed(unsigned, unsigned)));
+    QObject::connect(&cm, SIGNAL(onStepPowerChanged(uint,uint)),
+                     this, SLOT(cm_step_power_changed(uint,uint)));
 	QObject::connect(&cm, SIGNAL(onProgressUpdate(size_t)), this, SLOT(cm_progress_update(size_t)));
-	QObject::connect(&cm, SIGNAL(onAccelChanged(unsigned)), this, SLOT(cm_accelChanged(unsigned)));
-	QObject::connect(&cm, SIGNAL(onDecelChanged(unsigned)), this, SLOT(cm_decelChanged(unsigned)));
+    QObject::connect(&cm, SIGNAL(onAccelChanged(uint)), this, SLOT(cm_accelChanged(uint)));
+    QObject::connect(&cm, SIGNAL(onDecelChanged(uint)), this, SLOT(cm_decelChanged(uint)));
 
 	// Connect power-to-map with GUI
-	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(unsigned, float)), &w_pg,
-	                 SLOT(addOrUpdate(unsigned, float)));
+    QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(uint,float)), &w_pg,
+                     SLOT(addOrUpdate(uint,float)));
 	QObject::connect(&m_pm, SIGNAL(onClear()), &w_pg, SLOT(clear()));
 	m_pm.clear();
 
 	// Range Calibration
-	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError, unsigned, const QString&)), this,
-	                 SLOT(cr_error(Cr::CrError, unsigned, const QString&)));
+    QObject::connect(&cr, SIGNAL(on_error(Cr::CrError,uint,QString)), this,
+                     SLOT(cr_error(Cr::CrError,uint,QString)));
 	QObject::connect(&cr, SIGNAL(measured(double)), this, SLOT(cr_measured(double)));
 
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);

@@ -23,17 +23,17 @@ CalibState CalibMan::progress() const { return m_progress; }
 
 void CalibMan::done() {
 	updateProg(CalibState::Stopped, 1, 1);
-	onDone();
+    emit onDone();
 }
 
 void CalibMan::error(const Cm::CmError e, const unsigned step) {
 	updateProg(CalibState::Stopped, 0, 1);
-	onError(e, step);
+    emit onError(e, step);
 }
 
 void CalibMan::updateProg(const CalibState cs, const size_t progress, const size_t max) {
 	m_progress = cs;
-	onProgressUpdate(getProgress(cs, progress, max));
+    emit onProgressUpdate(getProgress(cs, progress, max));
 }
 
 size_t CalibMan::getProgress(const CalibState cs, const size_t progress, const size_t max) {
@@ -52,7 +52,7 @@ size_t CalibMan::getProgress(const CalibState cs, const size_t progress, const s
 // Calibration Step events:
 
 void CalibMan::csDone(unsigned step, unsigned power) {
-	onStepDone(step, power);
+    emit onStepDone(step, power);
 	step = step - 1; // convert step to step index
 	state[step] = StepState::Calibred;
 	m_no_calibrated++;
@@ -71,7 +71,7 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
 			this->power[i] = m_step_power;
-			onStepPowerChanged(i+1, power);
+            emit onStepPowerChanged(i+1, power);
 			return;
 		}
 	}
@@ -109,12 +109,12 @@ void CalibMan::coError(Co::Error co, unsigned step) {
 
 void CalibMan::cStepPowerChanged(unsigned step, unsigned power) {
 	this->power[step-1] = power;
-	onStepPowerChanged(step, power);
+    emit onStepPowerChanged(step, power);
 }
 
 void CalibMan::xnStepWritten(void *, void *) {
 	state[m_step_writing] = StepState::Calibred;
-	onStepDone(m_step_writing+1, m_step_power);
+    emit onStepDone(m_step_writing+1, m_step_power);
 
 	for (size_t i = m_step_writing+1; i < Xn::_STEPS_CNT; i++) {
 		if (nullptr != m_ssm[i] && *(m_ssm[i]) == *(m_ssm[m_step_writing]) &&
@@ -128,7 +128,7 @@ void CalibMan::xnStepWritten(void *, void *) {
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
 			power[i] = m_step_power;
-			onStepPowerChanged(i+1, m_step_power);
+            emit onStepPowerChanged(i+1, m_step_power);
 			return;
 		}
 	}
@@ -222,7 +222,7 @@ void CalibMan::stop() {
 
 	csSigDisconnect();
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
-	onLocoSpeedChanged(0);
+    emit onLocoSpeedChanged(0);
 	updateProg(CalibState::Stopped, 0, 1);
 }
 
@@ -232,7 +232,7 @@ void CalibMan::calibrateNextStep() {
 		// No more steps to calibrate
 		csSigDisconnect();
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
-		onLocoSpeedChanged(0);
+        emit onLocoSpeedChanged(0);
 
 		// Phase 3: Interpolate the rest of the steps
 		interpolateAll();
@@ -240,26 +240,26 @@ void CalibMan::calibrateNextStep() {
 		return;
 	}
 
-	onStepStart((*next) + 1);
+    emit onStepStart((*next) + 1);
 	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), (*next) + 1, direction);
-	onLocoSpeedChanged((*next) + 1);
+    emit onLocoSpeedChanged((*next) + 1);
 	cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm[*next]));
 }
 
 void CalibMan::csSigConnect() {
-	QObject::connect(&cs, SIGNAL(on_error(Cs::CsError, unsigned)), this,
-	                 SLOT(csError(Cs::CsError, unsigned)));
-	QObject::connect(&cs, SIGNAL(done(unsigned, unsigned)), this, SLOT(csDone(unsigned, unsigned)));
-	QObject::connect(&cs, SIGNAL(step_power_changed(unsigned, unsigned)),
-	                 this, SLOT(cStepPowerChanged(unsigned, unsigned)));
+    QObject::connect(&cs, SIGNAL(on_error(Cs::CsError,uint)), this,
+                     SLOT(csError(Cs::CsError,uint)));
+    QObject::connect(&cs, SIGNAL(done(uint,uint)), this, SLOT(csDone(uint,uint)));
+    QObject::connect(&cs, SIGNAL(step_power_changed(uint,uint)),
+                     this, SLOT(cStepPowerChanged(uint,uint)));
 
-	QObject::connect(&co, SIGNAL(on_error(Co::Error, unsigned)), this,
-	                 SLOT(coError(Co::Error, unsigned)));
-	QObject::connect(&co, SIGNAL(done()), this, SLOT(coDone()));
-	QObject::connect(&co, SIGNAL(step_power_changed(unsigned, unsigned)),
-	                 this, SLOT(cStepPowerChanged(unsigned, unsigned)));
-	QObject::connect(&co, SIGNAL(progress_update(size_t, size_t)),
-	                 this, SLOT(coProgressUpdate(size_t, size_t)));
+    QObject::connect(&co, SIGNAL(on_error(Co::Error,uint)), this,
+                     SLOT(coError(Co::Error,uint)));
+    QObject::connect(&co, SIGNAL(done()), this, SLOT(coDone()));
+    QObject::connect(&co, SIGNAL(step_power_changed(uint,uint)),
+                     this, SLOT(cStepPowerChanged(uint,uint)));
+    QObject::connect(&co, SIGNAL(progress_update(size_t,size_t)),
+                     this, SLOT(coProgressUpdate(size_t,size_t)));
 }
 
 void CalibMan::csSigDisconnect() {
@@ -363,8 +363,8 @@ void CalibMan::interpolateNext() {
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xnIPError(s, d); })
 	);
 	this->power[m_thisIPstep] = power;
-	onStepPowerChanged(m_thisIPstep+1, power);
-	onStepDone(m_thisIPstep+1, power);
+    emit onStepPowerChanged(m_thisIPstep+1, power);
+    emit onStepDone(m_thisIPstep+1, power);
 }
 
 void CalibMan::xnIPError(void *, void *) {
@@ -426,7 +426,7 @@ void CalibMan::initCVsWriteNext() {
 		// Go to phase 1: make an overview of mapping steps to speed
 		updateProg(CalibState::Overview, 0, 1);
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), co.overview_step, direction);
-		onLocoSpeedChanged(co.overview_step);
+        emit onLocoSpeedChanged(co.overview_step);
 		co.makeOverview(m_locoAddr);
 		return;
 	}
