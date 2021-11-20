@@ -1222,10 +1222,10 @@ void MainWindow::a_loco_load(bool) {
 
 	while (!xr.atEnd()) {
 		if (xr.isStartElement()) {
-			if (xr.name() == "powerToSpeed") {
+            if (xr.name() == QString("powerToSpeed")) {
 				xr.readNext();
-				while (xr.name() != "powerToSpeed") {
-					if (xr.name() == "record" && xr.attributes().hasAttribute("power") &&
+                while (xr.name() != QString("powerToSpeed")) {
+                    if (xr.name() == QString("record") && xr.attributes().hasAttribute("power") &&
 					    xr.attributes().hasAttribute("speed")) {
 						int power = xr.attributes().value("power").toInt();
 						float speed = xr.attributes().value("speed").toFloat();
@@ -1233,9 +1233,9 @@ void MainWindow::a_loco_load(bool) {
 					}
 					xr.readNext();
 				}
-			} else if (xr.name() == "dcclocoaddress" && xr.attributes().hasAttribute("number")) {
+            } else if (xr.name() == QString("dcclocoaddress") && xr.attributes().hasAttribute("number")) {
 				ui.sb_loco->setValue(xr.attributes().value("number").toInt());
-			} else if (xr.name() == "locomotive" && xr.attributes().hasAttribute("maxSpeed")) {
+            } else if (xr.name() == QString("locomotive") && xr.attributes().hasAttribute("maxSpeed")) {
 				ui.sb_max_speed->setValue(xr.attributes().value("maxSpeed").toInt());
 			}
 		}

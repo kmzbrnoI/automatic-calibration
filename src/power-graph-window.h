@@ -11,8 +11,6 @@ power steps in decoder.
 #include <QtCharts/QChartView>
 #include <QtCharts/QLineSeries>
 
-QT_CHARTS_USE_NAMESPACE
-
 #include "ui_power-graph-window.h"
 
 class PowerGraphWindow : public QMainWindow {
