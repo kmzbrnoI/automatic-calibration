@@ -20,7 +20,7 @@ const Config DEFAULTS {
 		{"baudrate", 19200},
 		{"flowcontrol", 1},
 		{"loglevel", 1},
-		{"port", "/dev/ttyUSB0"},
+		{"port", "auto"},
 		{"logfile", ""},
 		{"interface", "uLI"},
 	}},

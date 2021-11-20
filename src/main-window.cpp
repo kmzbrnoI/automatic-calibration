@@ -604,7 +604,7 @@ void MainWindow::a_xn_connect(bool) {
 		    s["XN"]["baudrate"].toString()+"...");
 		xn.connect(s["XN"]["port"].toString(), s["XN"]["baudrate"].toInt(),
 		           static_cast<QSerialPort::FlowControl>(s["XN"]["flowcontrol"].toInt()),
-		           Xn::interface(s["XN"]["interface"].toString()));
+				   Xn::liInterface(s["XN"]["interface"].toString()));
 	} catch (const Xn::QStrException &e) {
 		widget_set_color(*(ui.l_xn), Qt::red);
 		show_error("XN connect error while opening serial port '" +

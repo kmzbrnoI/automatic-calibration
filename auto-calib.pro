@@ -24,6 +24,7 @@ SOURCES += \
 	lib/xn/xn-receive.cpp \
 	lib/xn/xn-send.cpp \
 	lib/xn/xn-hist.cpp \
+	lib/xn/xn-win-com-discover.cpp \
 	src/main.cpp \
 	src/main-window.cpp \
 	src/settings.cpp \
@@ -42,6 +43,7 @@ HEADERS += \
 	lib/xn/xn.h \
 	lib/xn/xn-loco-addr.h \
 	lib/xn/xn-commands.h \
+	lib/xn/xn-win-com-discover.h \
 	lib/xn/q-str-exception.h \
 	src/main-window.h \
 	src/settings.h \
@@ -66,6 +68,13 @@ QT += charts
 
 RESOURCES += auto-calib.qrc
 win32:RC_ICONS += icon/app-icon.ico
+
+win32 {
+	LIBS += -lsetupapi
+}
+win64 {
+	LIBS += -lsetupapi
+}
 
 VERSION_MAJOR = 1
 VERSION_MINOR = 4
