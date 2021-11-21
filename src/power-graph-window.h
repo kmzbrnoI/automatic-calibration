@@ -26,8 +26,8 @@ public slots:
 
 private:
 	Ui::PowerGraphWindow ui;
-	QLineSeries series;
-	QChart chart;
+	QtCharts::QLineSeries series;
+	QtCharts::QChart chart;
 };
 
 #endif // POWERGRAPHWINDOW_H
