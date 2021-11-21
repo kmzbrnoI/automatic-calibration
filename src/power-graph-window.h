@@ -13,6 +13,10 @@ power steps in decoder.
 
 #include "ui_power-graph-window.h"
 
+#if QT_VERSION < 0x060000
+using namespace QtCharts;
+#endif
+
 class PowerGraphWindow : public QMainWindow {
 	Q_OBJECT
 
@@ -26,8 +30,8 @@ public slots:
 
 private:
 	Ui::PowerGraphWindow ui;
-	QtCharts::QLineSeries series;
-	QtCharts::QChart chart;
+	QLineSeries series;
+	QChart chart;
 };
 
 #endif // POWERGRAPHWINDOW_H
