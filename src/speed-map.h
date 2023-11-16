@@ -17,6 +17,7 @@ interpolated.
 #include <QObject>
 #include <cstddef>
 #include <memory>
+#include <array>
 
 namespace Ssm {
 

@@ -60,7 +60,7 @@ FORMS += \
 	form/power-graph-window.ui
 
 CONFIG += c++14
-QMAKE_CXXFLAGS += -Wall -Wextra -pedantic
+QMAKE_CXXFLAGS += -Wall -Wextra -pedantic -std=c++14
 UI_DIR = src
 
 QT += serialport

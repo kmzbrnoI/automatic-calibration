@@ -12,6 +12,7 @@ This file defines power-to-speed mapping via PowerToSpeedMap class.
 #include <QObject>
 #include <cstddef>
 #include <memory>
+#include <array>
 
 #include "lib/q-str-exception.h"
 
