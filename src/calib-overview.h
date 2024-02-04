@@ -92,6 +92,7 @@ private:
 
 	void do_next_step();
 	void reset_step();
+	void pom_write_power(unsigned power, std::unique_ptr<Xn::Cb> ok = {}, std::unique_ptr<Xn::Cb> err = {});
 
 private slots:
 	void wsm_lt_read(double speed, double diffusion);

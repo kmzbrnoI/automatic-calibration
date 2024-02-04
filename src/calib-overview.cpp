@@ -57,14 +57,11 @@ void CalibOverview::do_next_step() {
 	m_last_power = *next;
 	emit progress_update(m_last_power, POWER_CNT);
 
-	m_xn.pomWriteCv(
-		Xn::LocoAddr(m_loco_addr),
-		CV_START - 1 + overview_step,
+	this->pom_write_power(
 		m_last_power,
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
-	emit step_power_changed(overview_step, m_last_power);
 }
 
 void CalibOverview::wsm_lt_read(double speed, double diffusion) {
@@ -121,14 +118,38 @@ void CalibOverview::wsm_lt_error() {
 }
 
 void CalibOverview::reset_step() {
-	m_xn.pomWriteCv(
-		Xn::LocoAddr(m_loco_addr),
-		CV_START - 1 + overview_step,
-		STEP_RESET_VALUE
-	);
-	emit step_power_changed(overview_step, STEP_RESET_VALUE);
+	this->pom_write_power(STEP_RESET_VALUE);
 }
 
 void CalibOverview::stop() { wsm_lt_error(); }
+
+void CalibOverview::pom_write_power(unsigned power, std::unique_ptr<Xn::Cb> ok, std::unique_ptr<Xn::Cb> err) {
+	if (overview_step > 1) {
+		m_xn.pomWriteCv(
+			Xn::LocoAddr(m_loco_addr),
+			CV_START - 1 + overview_step - 1,
+			power
+		);
+		emit step_power_changed(overview_step-1, power);
+	}
+
+	m_xn.pomWriteCv(
+		Xn::LocoAddr(m_loco_addr),
+		CV_START - 1 + overview_step,
+		power,
+		std::move(ok),
+		std::move(err)
+	);
+	emit step_power_changed(overview_step, power);
+
+	if (overview_step < Xn::_STEPS_CNT) {
+		m_xn.pomWriteCv(
+			Xn::LocoAddr(m_loco_addr),
+			CV_START - 1 + overview_step + 1,
+			power
+		);
+		emit step_power_changed(overview_step+1, power);
+	}
+}
 
 } // namespace Co
