@@ -3,7 +3,7 @@
 
 /*
 This file defines a CalibOverview class which manages creating of a basic
-overview of power-to-speed mapping. This overview is generated at beginnging
+overview of power-to-speed mapping. This overview is generated at beginning
 of the calibration process to make some basic knowledge of power-to-speed
 mapping of a specific vehicle. The process is started by callong makeOverview
 function. It could be manually stopped anytime by calling stop() function.
@@ -12,7 +12,7 @@ The process ends either by calling done() XOR on_error() event.
 The whole process goes as followed:
 
  1) Set power.
- 2) If spped > threshold, create new entry in power-to-speed graph.
+ 2) If speed > threshold, create new entry in power-to-speed graph.
  3) GOTO 1) (for another power).
 
 Powers are tested from lowest to highest based on this procedure:
