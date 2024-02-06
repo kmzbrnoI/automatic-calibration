@@ -27,6 +27,7 @@ speed step.
 #include <QObject>
 #include <QTimer>
 #include <vector>
+#include <functional>
 
 #include "lib/wsm/wsm.h"
 #include "lib/xn/xn.h"
@@ -54,6 +55,9 @@ enum class CsError {
 	WsmError,
 };
 
+using NeighAsker = std::function<unsigned(unsigned midldeStep, unsigned neighStep)>;
+using SetPower = std::function<unsigned(unsigned step)>;
+
 class CalibStep : public QObject {
 	Q_OBJECT
 
@@ -65,7 +69,8 @@ public:
 	unsigned measure_count = DEFAULT_MEASURE_COUNT;
 	unsigned sp_adapt_timeout = DEFAULT_SP_ADAPT_TIMEOUT;
 
-	CalibStep(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm, QObject *parent = nullptr);
+	CalibStep(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm,
+		const NeighAsker &neighAsker, const SetPower &setPower, QObject *parent = nullptr);
 	void calibrate(unsigned loco_addr, unsigned step, double speed);
 	void stop();
 
@@ -76,6 +81,8 @@ private:
 	unsigned m_loco_addr;
 	unsigned m_step;
 	double m_target_speed;
+	const NeighAsker& neighAsker;
+	const SetPower& setPower;
 
 	QTimer t_sp_adapt;
 	unsigned m_last_power;
@@ -87,6 +94,7 @@ private:
 	void xn_pom_err(void *, void *);
 	bool is_oscilating() const;
 	void set_power(unsigned power);
+	void pom_write_step(unsigned step, unsigned power, Xn::UPCb ok = {}, Xn::UPCb err = {});
 
 private slots:
 	void wsm_lt_read(double speed, double diffusion);

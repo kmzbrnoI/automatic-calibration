@@ -4,8 +4,9 @@
 
 namespace Cs {
 
-CalibStep::CalibStep(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm, QObject *parent)
-    : QObject(parent), m_xn(xn), m_pm(pm), m_wsm(wsm) {
+CalibStep::CalibStep(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm, const NeighAsker &neighAsker,
+                     const SetPower &setPower, QObject *parent)
+    : QObject(parent), m_xn(xn), m_pm(pm), m_wsm(wsm), neighAsker(neighAsker), setPower(setPower) {
 	t_sp_adapt.setSingleShot(true);
 	QObject::connect(&t_sp_adapt, SIGNAL(timeout()), this, SLOT(t_sp_adapt_tick()));
 }
@@ -82,17 +83,35 @@ void CalibStep::wsm_lt_read(double speed, double diffusion) {
 
 void CalibStep::set_power(unsigned power) {
 	m_last_power = power;
+	emit step_power_changed(m_step, m_last_power); // to calculate neighbor steps correctly
 
-	m_xn.pomWriteCv(
-		Xn::LocoAddr(m_loco_addr),
-		CV_START - 1 + m_step,
+	// Set also neighbour speeds: -1, +1
+	if (m_step > 1)
+		this->pom_write_step(m_step-1, neighAsker(m_step, m_step-1));
+	if (m_step < Xn::_STEPS_CNT)
+		this->pom_write_step(m_step+1, neighAsker(m_step, m_step+1));
+
+	// Send last to indicate possible errors
+	this->pom_write_step(
+		m_step,
 		m_last_power,
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_ok(s, d); }),
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_err(s, d); })
 	);
-
 	power_history.push_back(m_last_power);
-	emit step_power_changed(m_step, m_last_power);
+}
+
+void CalibStep::pom_write_step(unsigned step, unsigned power, Xn::UPCb ok, Xn::UPCb err) {
+	if (power != this->setPower(step)) {
+		m_xn.pomWriteCv(
+			Xn::LocoAddr(m_loco_addr),
+			CV_START - 1 + step,
+			power,
+			std::move(ok),
+			std::move(err)
+		);
+		emit step_power_changed(step, power);
+	}
 }
 
 void CalibStep::t_sp_adapt_tick() {

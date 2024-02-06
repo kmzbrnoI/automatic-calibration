@@ -974,7 +974,7 @@ void MainWindow::b_calibrate_handle() {
 			std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_stepWritten(s, d); }, reinterpret_cast<void*>(stepi)),
 			std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_stepWriteError(s, d); }, reinterpret_cast<void*>(stepi))
 		);
-		cm.setStepManually(stepi, ui_steps[stepi].slider->value());
+		cm.setStepManually(stepi+1, ui_steps[stepi].slider->value());
 	}
 }
 

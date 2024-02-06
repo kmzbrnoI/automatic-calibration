@@ -6,7 +6,13 @@ namespace Cm {
 
 CalibMan::CalibMan(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm,
                    Ssm::StepsToSpeedMap &ssm, QObject *parent)
-    : QObject(parent), cs(xn, pm, wsm), co(xn, pm, wsm, ssm.maxSpeed()), m_ssm(ssm), m_xn(xn) {
+    : QObject(parent),
+      cs(xn, pm, wsm,
+          {[this](unsigned a, unsigned b) { return this->csNeighbourPower(a, b); }},
+          {[this](unsigned step) { return this->power[step-1]; }}),
+      co(xn, pm, wsm, ssm.maxSpeed()),
+      m_ssm(ssm),
+      m_xn(xn) {
 	reset();
 }
 
@@ -23,7 +29,7 @@ CalibState CalibMan::progress() const { return m_progress; }
 
 void CalibMan::done() {
 	updateProg(CalibState::Stopped, 1, 1);
-    emit onDone();
+	emit onDone();
 }
 
 void CalibMan::error(const Cm::CmError e, const unsigned step) {
@@ -247,19 +253,19 @@ void CalibMan::calibrateNextStep() {
 }
 
 void CalibMan::csSigConnect() {
-    QObject::connect(&cs, SIGNAL(on_error(Cs::CsError,uint)), this,
-                     SLOT(csError(Cs::CsError,uint)));
-    QObject::connect(&cs, SIGNAL(done(uint,uint)), this, SLOT(csDone(uint,uint)));
-    QObject::connect(&cs, SIGNAL(step_power_changed(uint,uint)),
-                     this, SLOT(cStepPowerChanged(uint,uint)));
+	QObject::connect(&cs, SIGNAL(on_error(Cs::CsError,uint)), this,
+	                 SLOT(csError(Cs::CsError,uint)));
+	QObject::connect(&cs, SIGNAL(done(uint,uint)), this, SLOT(csDone(uint,uint)));
+	QObject::connect(&cs, SIGNAL(step_power_changed(uint,uint)),
+	                 this, SLOT(cStepPowerChanged(uint,uint)));
 
-    QObject::connect(&co, SIGNAL(on_error(Co::Error,uint)), this,
-                     SLOT(coError(Co::Error,uint)));
-    QObject::connect(&co, SIGNAL(done()), this, SLOT(coDone()));
-    QObject::connect(&co, SIGNAL(step_power_changed(uint,uint)),
-                     this, SLOT(cStepPowerChanged(uint,uint)));
-    QObject::connect(&co, SIGNAL(progress_update(size_t,size_t)),
-                     this, SLOT(coProgressUpdate(size_t,size_t)));
+	QObject::connect(&co, SIGNAL(on_error(Co::Error,uint)), this,
+	                 SLOT(coError(Co::Error,uint)));
+	QObject::connect(&co, SIGNAL(done()), this, SLOT(coDone()));
+	QObject::connect(&co, SIGNAL(step_power_changed(uint,uint)),
+	                 this, SLOT(cStepPowerChanged(uint,uint)));
+	QObject::connect(&co, SIGNAL(progress_update(size_t,size_t)),
+	                 this, SLOT(coProgressUpdate(size_t,size_t)));
 }
 
 void CalibMan::csSigDisconnect() {
@@ -282,13 +288,18 @@ void CalibMan::csSigDisconnect() {
 ///////////////////////////////////////////////////////////////////////////////
 // Steps interpolation
 
-unsigned CalibMan::getIPpower(const unsigned left, const unsigned right, const unsigned step) {
-	// Get power for step 'step' interpolated from speed [left -- right]
-	// Input condition: step \in [left--right]
+unsigned CalibMan::getIPpower(const unsigned boundai, const unsigned boundbi, const unsigned stepi) const {
+	// Get power for step 'step' interpolated from speed [bounda -- boundb]
+	// Input condition: step \in [bounda--boundb]
+	unsigned lefti = std::min(boundai, boundbi);
+	unsigned righti = std::max(boundai, boundbi);
 
-	float deltaPower = static_cast<int>(power[right]) - static_cast<int>(power[left]);
-	float distPower = right - left;
-	return power[left] + ((deltaPower / distPower) * (step - left));
+	if (stepi < lefti || stepi > righti)
+		throw QStrException("CalibMan::getIPpower out of range!");
+
+	float deltaPower = static_cast<int>(power[righti]) - static_cast<int>(power[lefti]);
+	float distPower = righti - lefti;
+	return power[lefti] + ((deltaPower / distPower) * (stepi - lefti));
 }
 
 void CalibMan::interpolateAll() {
@@ -371,21 +382,45 @@ void CalibMan::xnIPError(void *, void *) {
 	error(CmError::XnNoResponse, m_thisIPstep);
 }
 
+// Return power of neighbour step to 'CalibStep'
+unsigned CalibMan::csNeighbourPower(unsigned middleStep, unsigned neighStep) const {
+	int direction = static_cast<int>(neighStep)-middleStep;
+	if (std::abs(direction) != 1)
+		throw QStrException("CalibMan::csNeighbourPower args out of range!");
+
+	const std::optional<unsigned> nearest = this->nearestCalibredOrSetStep(neighStep, direction);
+	return (nearest.has_value()) ? \
+		this->getIPpower(middleStep, nearest.value(), neighStep) : \
+		power[middleStep-1];
+}
+
+// Direction: -1, 1
+std::optional<unsigned> CalibMan::nearestCalibredOrSetStep(unsigned start, int direction) const {
+	if (std::abs(direction) != 1)
+		throw QStrException("CalibMan::nearestCalibredOrSetStep direction arg out of range!");
+
+	unsigned stepi = start-1;
+	while (stepi < Xn::_STEPS_CNT && this->state[stepi] == StepState::Uncalibred)
+		stepi += direction; // 0 -> MAX will overflow
+	return ((stepi < Xn::_STEPS_CNT) && (this->state[stepi] != StepState::Uncalibred)) ? \
+		std::optional<unsigned>{stepi+1} : std::optional<unsigned>{};
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 void CalibMan::setStepManually(const unsigned step, const unsigned power) {
-	state[step] = StepState::SetManually;
-	this->power[step] = power;
+	state[step-1] = StepState::SetManually;
+	this->power[step-1] = power;
 
 	// Set interpolated steps to Uncalibred
-	int i = step+1;
+	int i = step; // actually i = stepi+1
 	while (i < static_cast<int>(Xn::_STEPS_CNT) && nullptr == m_ssm[i] &&
 	       state[i] != StepState::SetManually) {
 		state[i] = StepState::Uncalibred;
 		i++;
 	}
 
-	i = step-1;
+	i = step-2; // actually i = stepi-1
 	while (i >= 0 && nullptr == m_ssm[i] && state[i] != StepState::SetManually) {
 		state[i] = StepState::Uncalibred;
 		i--;

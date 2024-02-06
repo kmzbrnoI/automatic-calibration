@@ -33,6 +33,7 @@ All programming is done via POM (it is fast!).
 #include <QObject>
 #include <memory>
 #include <vector>
+#include <optional>
 
 #include "calib-overview.h"
 #include "calib-step.h"
@@ -40,6 +41,8 @@ All programming is done via POM (it is fast!).
 #include "lib/xn/xn.h"
 #include "power-map.h"
 #include "speed-map.h"
+
+#include "lib/q-str-exception.h"
 
 namespace Cm {
 
@@ -94,6 +97,7 @@ public:
 	void unsetStep(unsigned step);
 	bool inProgress() const;
 	CalibState progress() const;
+	unsigned csNeighbourPower(unsigned middleStep, unsigned neighStep) const;
 
 private:
 	Ssm::StepsToSpeedMap &m_ssm;
@@ -129,7 +133,7 @@ private:
 	unsigned m_thisIPleft;
 	unsigned m_thisIPstep;
 	unsigned m_thisIPright;
-	unsigned getIPpower(unsigned left, unsigned right, unsigned step);
+	unsigned getIPpower(unsigned bounda, unsigned boundb, unsigned step) const;
 
 	void interpolateNext();
 	void xnIPWritten(void *, void *);
@@ -143,6 +147,8 @@ private:
 	void initCVsError(void *, void *);
 	void initCVsWriteNext();
 	void initSTWritten(void *, void *);
+
+	std::optional<unsigned> nearestCalibredOrSetStep(unsigned start, int direction) const;
 
 private slots:
 	void csDone(unsigned step, unsigned power);
