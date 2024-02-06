@@ -1370,8 +1370,21 @@ void MainWindow::reset() {
 //////////////////////////////////////////////////////////////////////////////
 // Config IO:
 
-void MainWindow::a_config_load(bool) {    
-    s.load(this->config_fn);
+void MainWindow::a_config_load(bool) {
+	s.load(this->config_fn);
+
+	try {
+		bool ok;
+		Xn::XNConfig xn_config;
+		xn_config.outInterval = s["XN"]["outIntervalMs"].toUInt(&ok);
+		if (ok) {
+			xn.setConfig(xn_config);
+		} else {
+			this->log("XN config load: unable to parse outIntervalMs", LOGC_ERROR);
+		}
+	} catch (const Xn::QStrException& e) {
+		this->log("XN config load: " + e.str(), LOGC_ERROR);
+	}
 
 	wsm.scale = s["WSM"]["scale"].toInt();
 	wsm.wheelDiameter = s["WSM"]["wheelDiameter"].toDouble();

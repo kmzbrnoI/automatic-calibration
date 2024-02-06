@@ -23,6 +23,7 @@ const Config DEFAULTS {
 		{"port", "auto"},
 		{"logfile", ""},
 		{"interface", "uLI"},
+		{"outIntervalMs", 50},
 	}},
 	{"Speed", {
 		{"file", "speed.csv"},
