@@ -32,9 +32,9 @@ void CalibMan::done() {
 	emit onDone();
 }
 
-void CalibMan::error(const Cm::CmError e, const unsigned step) {
+void CalibMan::error(const Cm::CmError e, const unsigned step, const QString note) {
 	updateProg(CalibState::Stopped, 0, 1);
-	emit onError(e, step);
+	emit onError(e, step, note);
 }
 
 void CalibMan::updateProg(const CalibState cs, const size_t progress, const size_t max) {
@@ -233,23 +233,31 @@ void CalibMan::stop() {
 }
 
 void CalibMan::calibrateNextStep() {
-	std::unique_ptr<unsigned> next = nextStep();
-	if (nullptr == next) {
-		// No more steps to calibrate
-		csSigDisconnect();
-		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
-		emit onLocoSpeedChanged(0);
+	try {
+		std::unique_ptr<unsigned> next = nextStep();
+		if (nullptr == next) {
+			// No more steps to calibrate
+			csSigDisconnect();
+			m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), 0, direction);
+			emit onLocoSpeedChanged(0);
 
-		// Phase 3: Interpolate the rest of the steps
-		interpolateAll();
+			// Phase 3: Interpolate the rest of the steps
+			interpolateAll();
 
-		return;
+			return;
+		}
+
+		emit onStepStart((*next) + 1);
+		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), (*next) + 1, direction);
+		emit onLocoSpeedChanged((*next) + 1);
+		cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm[*next]));
+	} catch (const QStrException& e) {
+		error(CmError::WsmError, 0, e.str());
+	} catch (const Xn::QStrException& e) {
+		error(CmError::WsmError, 0, e.str());
+	} catch (...) {
+		error(CmError::WsmError, 0);
 	}
-
-	emit onStepStart((*next) + 1);
-	m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), (*next) + 1, direction);
-	emit onLocoSpeedChanged((*next) + 1);
-	cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm[*next]));
 }
 
 void CalibMan::csSigConnect() {

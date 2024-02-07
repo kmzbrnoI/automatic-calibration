@@ -148,8 +148,8 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(&cm, SIGNAL(onStepStart(uint)), this, SLOT(cm_stepStart(uint)));
 	QObject::connect(&cm, SIGNAL(onStepDone(uint,uint)),
 	                 this, SLOT(cm_stepDone(uint,uint)));
-	QObject::connect(&cm, SIGNAL(onError(Cm::CmError,uint)),
-	                 this, SLOT(cm_stepError(Cm::CmError,uint)));
+	QObject::connect(&cm, SIGNAL(onError(Cm::CmError,uint,const QString&)),
+	                 this, SLOT(cm_stepError(Cm::CmError,uint,const QString&)));
 	QObject::connect(&cm, SIGNAL(onLocoSpeedChanged(uint)),
 	                 this, SLOT(cm_locoSpeedChanged(uint)));
 	QObject::connect(&cm, SIGNAL(onDone()), this, SLOT(cm_done()));
@@ -1019,14 +1019,16 @@ void MainWindow::cm_stepStart(unsigned step) {
 	log("Starting calibration of step " + QString::number(step));
 }
 
-void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
+void MainWindow::cm_stepError(Cm::CmError ce, unsigned step, const QString& note) {
 	if (step != 0)
 		step_set_color(step-1, STEPC_ERROR);
 	widget_set_color(*ui.l_calib_state, Qt::red);
 
 	log("Step " + QString::number(step) + " calibration error!", LOGC_ERROR);
 
-	if (ce == Cm::CmError::LargeDiffusion)
+	if (ce == Cm::CmError::Exception)
+		log("Exception!", LOGC_ERROR);
+	else if (ce == Cm::CmError::LargeDiffusion)
 		log("Loco speed too diffused!", LOGC_ERROR);
 	else if (ce == Cm::CmError::XnNoResponse)
 		log("No response from XpressNET!", LOGC_ERROR);
@@ -1038,6 +1040,9 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step) {
 		log("Unable to reach target speed due to low precision (try decreasing Vmax?)", LOGC_ERROR);
 	else if (ce == Cm::CmError::WsmError)
 		log("WSM read speed error!", LOGC_ERROR);
+
+	if (note != "")
+		log(note, LOGC_ERROR);
 
 	cm_done_gui();
 }

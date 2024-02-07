@@ -138,7 +138,7 @@ private slots:
 	// Calibration manager events:
 	void cm_stepStart(unsigned step);
 	void cm_stepDone(unsigned step, unsigned power);
-	void cm_stepError(Cm::CmError, unsigned step);
+	void cm_stepError(Cm::CmError, unsigned step, const QString& note);
 	void cm_locoSpeedChanged(unsigned step);
 	void cm_done();
 	void cm_step_power_changed(unsigned step, unsigned power);

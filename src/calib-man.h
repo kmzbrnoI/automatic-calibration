@@ -53,6 +53,7 @@ enum class StepState {
 };
 
 enum class CmError {
+	Exception,
 	LargeDiffusion,
 	XnNoResponse,
 	LocoStopped,
@@ -140,7 +141,7 @@ private:
 	void xnIPError(void *, void *);
 
 	void done();
-	void error(Cm::CmError, unsigned step);
+	void error(Cm::CmError, unsigned step, const QString note = "");
 
 	void initCVs();
 	void initCVsOk(void *, void *);
@@ -165,7 +166,7 @@ signals:
 	void onStepDone(unsigned step, unsigned power);
 
 	void onDone();
-	void onError(Cm::CmError, unsigned step);
+	void onError(Cm::CmError, unsigned step, const QString note);
 
 	void onLocoSpeedChanged(unsigned step);
 	void onStepPowerChanged(unsigned step, unsigned power);
