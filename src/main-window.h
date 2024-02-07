@@ -51,6 +51,8 @@ struct UiStep {
 	QSlider *slider;
 	QLabel *step, *speed_want, *value;
 	QCheckBox *selected;
+	QPushButton *read;
+	QPushButton *write;
 	QPushButton *calibrate;
 };
 
@@ -96,7 +98,9 @@ private slots:
 	void b_reset_handle();
 	void t_calib_active_tick();
 	void vs_steps_moved(int);
-	void b_calibrate_handle();
+	void b_step_read_handle();
+	void b_step_write_handle();
+	void b_step_calibrate_handle();
 	void chb_step_selected_clicked(bool);
 	void t_xn_disconnect_tick();
 	void cb_xn_ll_index_changed(int index);
@@ -170,7 +174,7 @@ private:
 	Ssm::StepsToSpeedMap m_ssm;
 	Cm::CalibMan cm;
 	Cr::CalibRange cr;
-    QString config_fn;
+	QString config_fn;
 
 	// Callbacks from XpressNET library:
 	void xn_onDccGoError(void *, void *);
@@ -201,6 +205,8 @@ private:
 	void init_calib_graph();
 	void reset();
 	void step_set_color(unsigned stepi, const QColor &color);
+	void gui_update_enabled();
+	void gui_step_update_enabled(UiStep&);
 };
 
 #endif // MAINWINDOW_H

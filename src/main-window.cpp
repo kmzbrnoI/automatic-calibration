@@ -105,6 +105,7 @@ MainWindow::MainWindow(QWidget *parent)
 	widget_set_color(*(ui.l_dcc), Qt::gray);
 	widget_set_color(*(ui.l_wsm), Qt::red);
 	widget_set_color(*(ui.l_wsm_alive), Qt::gray);
+	gui_update_enabled();
 
 	// XN UI
 	ui.cb_xn_loglevel->setCurrentIndex(s["XN"]["loglevel"].toInt());
@@ -240,6 +241,45 @@ void MainWindow::step_set_color(const unsigned stepi, const QColor &color) {
 	widget_set_color(*ui_steps[stepi].value, color);
 }
 
+void MainWindow::gui_update_enabled() {
+	// WSM
+	ui.a_wsm_connect->setEnabled(!wsm.connected());
+	ui.a_wsm_disconnect->setEnabled(wsm.connected());
+
+	// XpressNET
+	ui.a_xn_connect->setEnabled(!xn.connected());
+	ui.a_xn_disconnect->setEnabled(xn.connected());
+	ui.a_xn_dcc_go->setEnabled(xn.connected());
+	ui.a_xn_dcc_stop->setEnabled(xn.connected());
+	ui.gb_speed->setEnabled(xn.connected() && !cm.inProgress());
+
+	ui.gb_cal_graph->setEnabled(xn.connected() && !cm.inProgress());
+	ui.b_calib_start->setEnabled(!cm.inProgress());
+	ui.b_calib_stop->setEnabled(cm.inProgress());
+	ui.sb_max_speed->setEnabled(!cm.inProgress());
+	ui.sb_vmax->setEnabled(!cm.inProgress());
+	ui.gb_ad->setEnabled(xn.connected() && !cm.inProgress());
+	ui.b_wsm_lt->setEnabled(wsm.connected() && !cm.inProgress());
+	ui.a_loco_load->setEnabled(!cm.inProgress());
+	ui.a_speed_load->setEnabled(!cm.inProgress());
+	ui.b_reset->setEnabled(!cm.inProgress());
+	ui.b_read_all_steps->setEnabled(xn.connected() && !cm.inProgress());
+
+	for (auto& ui_step : ui_steps)
+		gui_step_update_enabled(ui_step);
+
+	if (!xn.connected()) {
+		ui.b_addr_set->setEnabled(true);
+		ui.b_addr_release->setEnabled(false);
+	}
+}
+
+void MainWindow::gui_step_update_enabled(UiStep& ui_step) {
+	ui_step.read->setEnabled(xn.connected() && !cm.inProgress());
+	ui_step.write->setEnabled(ui_step.selected->isChecked());
+	ui_step.calibrate->setEnabled(wsm.connected() && !ui_step.selected->isChecked());
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // XN Events
 
@@ -297,12 +337,7 @@ void MainWindow::xn_onLog(const QString &message, const Xn::LogLevel &loglevel) 
 
 void MainWindow::xn_onConnect() {
 	widget_set_color(*(ui.l_xn), Qt::green);
-	ui.a_xn_connect->setEnabled(false);
-	ui.a_xn_disconnect->setEnabled(true);
-	ui.a_xn_dcc_go->setEnabled(true);
-	ui.a_xn_dcc_stop->setEnabled(true);
-	ui.gb_speed->setEnabled(true);
-	ui.gb_cal_graph->setEnabled(true);
+	gui_update_enabled();
 
 	ui.vs_speed->setEnabled(false);
 	ui.sb_speed->setEnabled(false);
@@ -335,18 +370,12 @@ void MainWindow::xn_onConnect() {
 }
 
 void MainWindow::xn_onDisconnect() {
+	if (cm.inProgress())
+		cm.stop();
 	widget_set_color(*(ui.l_xn), Qt::red);
 	widget_set_color(*(ui.l_dcc), Qt::gray);
-	ui.a_xn_connect->setEnabled(true);
-	ui.a_xn_disconnect->setEnabled(false);
-	ui.a_xn_dcc_go->setEnabled(false);
-	ui.a_xn_dcc_stop->setEnabled(false);
-	ui.gb_speed->setEnabled(false);
-	ui.b_addr_set->setEnabled(true);
-	ui.b_addr_release->setEnabled(false);
-	ui.gb_ad->setEnabled(false);
-	ui.gb_cal_graph->setEnabled(false);
 	loco_released();
+	gui_update_enabled();
 	log("Disconnected from XpressNET");
 }
 
@@ -798,8 +827,7 @@ void MainWindow::a_wsm_connect(bool) {
 		widget_set_color(*(ui.l_wsm), Qt::yellow);
 		wsm.connect(s["WSM"]["port"].toString());
 
-		ui.a_wsm_connect->setEnabled(false);
-		ui.a_wsm_disconnect->setEnabled(true);
+		gui_update_enabled();
 		widget_set_color(*(ui.l_wsm), Qt::green);
 
 		log("Connected to WSM");
@@ -820,8 +848,7 @@ void MainWindow::a_wsm_disconnect(bool) {
 	ui.l_wsm_speed->setText("??.?");
 	ui.l_wsm_bat_voltage->setText("?.?? V");
 	widget_set_color(*(ui.l_wsm_alive), ui.l_wsm_speed->palette().color(QPalette::WindowText));
-	ui.a_wsm_connect->setEnabled(true);
-	ui.a_wsm_disconnect->setEnabled(false);
+	gui_update_enabled();
 	widget_set_color(*(ui.l_wsm), Qt::red);
 	log("Disconnected from WSM");
 }
@@ -910,46 +937,82 @@ void MainWindow::a_power_graph(bool) {
 
 void MainWindow::init_calib_graph() {
 	for(size_t i = 0; i < STEPS_CNT; i++) {
-		auto *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
-		step->setFont(QFont("Sans Serif", 9, QFont::Bold));
-		step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
-		ui_steps[i].step = step;
-		ui.l_cal_graph->addWidget(step, 0, i);
+		{
+			auto *step = new QLabel(QString::number(i+1), ui.gb_cal_graph);
+			step->setFont(QFont("Sans Serif", 9, QFont::Bold));
+			step->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+			ui_steps[i].step = step;
+			ui.l_cal_graph->addWidget(step, 0, i);
+		}
 
-		auto *speed_want = new QLabel("-", ui.gb_cal_graph);
-		speed_want->setFont(QFont("Sans Serif", 8));
-		speed_want->setAlignment(Qt::AlignmentFlag::AlignHCenter);
-		ui_steps[i].speed_want = speed_want;
-		ui.l_cal_graph->addWidget(speed_want, 1, i);
+		{
+			auto *speed_want = new QLabel("-", ui.gb_cal_graph);
+			speed_want->setFont(QFont("Sans Serif", 8));
+			speed_want->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+			ui_steps[i].speed_want = speed_want;
+			ui.l_cal_graph->addWidget(speed_want, 1, i);
+		}
 
-		auto *value = new QLabel("0", ui.gb_cal_graph);
-		value->setFont(QFont("Sans Serif", 8));
-		value->setAlignment(Qt::AlignmentFlag::AlignHCenter);
-		ui_steps[i].value = value;
-		ui.l_cal_graph->addWidget(value, 2, i);
+		{
+			auto *value = new QLabel("0", ui.gb_cal_graph);
+			value->setFont(QFont("Sans Serif", 8));
+			value->setAlignment(Qt::AlignmentFlag::AlignHCenter);
+			ui_steps[i].value = value;
+			ui.l_cal_graph->addWidget(value, 2, i);
+		}
 
-		auto *slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
-		slider->setMinimum(0);
-		slider->setMaximum(255);
-		slider->setProperty("step", static_cast<uint>(i));
-		slider->setEnabled(false);
-		QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(vs_steps_moved(int)));
-		ui_steps[i].slider = slider;
-		ui.l_cal_graph->addWidget(slider, 3, i);
+		{
+			auto *slider = new QSlider(Qt::Orientation::Vertical, ui.gb_cal_graph);
+			slider->setMinimum(0);
+			slider->setMaximum(255);
+			slider->setProperty("step", static_cast<uint>(i));
+			slider->setEnabled(false);
+			QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(vs_steps_moved(int)));
+			ui_steps[i].slider = slider;
+			ui.l_cal_graph->addWidget(slider, 3, i);
+		}
 
-		auto *selected = new QCheckBox(ui.gb_cal_graph);
-		selected->setProperty("step", static_cast<uint>(i));
-		ui_steps[i].selected = selected;
-		QObject::connect(selected, SIGNAL(clicked(bool)), this,
-		                 SLOT(chb_step_selected_clicked(bool)));
-		ui.l_cal_graph->addWidget(selected, 4, i);
+		{
+			auto *selected = new QCheckBox(ui.gb_cal_graph);
+			selected->setProperty("step", static_cast<uint>(i));
+			ui_steps[i].selected = selected;
+			QObject::connect(selected, SIGNAL(clicked(bool)), this,
+			                 SLOT(chb_step_selected_clicked(bool)));
+			ui.l_cal_graph->addWidget(selected, 4, i);
+		}
 
-		auto *calibrate = new QPushButton("C", ui.gb_cal_graph);
-		calibrate->setProperty("step", static_cast<uint>(i));
-		calibrate->setEnabled(false);
-		ui_steps[i].calibrate = calibrate;
-		QObject::connect(calibrate, SIGNAL(released()), this, SLOT(b_calibrate_handle()));
-		ui.l_cal_graph->addWidget(calibrate, 5, i);
+		{
+			auto *read = new QPushButton("R", ui.gb_cal_graph);
+			read->setProperty("step", static_cast<uint>(i));
+			read->setEnabled(false);
+			read->setFixedHeight(20);
+			read->setToolTip("Read value of this step from decoder");
+			ui_steps[i].read = read;
+			QObject::connect(read, SIGNAL(released()), this, SLOT(b_step_read_handle()));
+			ui.l_cal_graph->addWidget(read, 5, i);
+		}
+
+		{
+			auto *write = new QPushButton("W", ui.gb_cal_graph);
+			write->setProperty("step", static_cast<uint>(i));
+			write->setEnabled(false);
+			write->setFixedHeight(20);
+			write->setToolTip("Write this step to decoder");
+			ui_steps[i].write = write;
+			QObject::connect(write, SIGNAL(released()), this, SLOT(b_step_write_handle()));
+			ui.l_cal_graph->addWidget(write, 6, i);
+		}
+
+		{
+			auto *calibrate = new QPushButton("C", ui.gb_cal_graph);
+			calibrate->setProperty("step", static_cast<uint>(i));
+			calibrate->setEnabled(false);
+			calibrate->setFixedHeight(20);
+			calibrate->setToolTip("Calibrate this step");
+			ui_steps[i].calibrate = calibrate;
+			QObject::connect(calibrate, SIGNAL(released()), this, SLOT(b_step_calibrate_handle()));
+			ui.l_cal_graph->addWidget(calibrate, 7, i);
+		}
 	}
 }
 
@@ -961,7 +1024,15 @@ void MainWindow::vs_steps_moved(int value) {
 		step_set_color(stepi, STEPC_CHANGED);
 }
 
-void MainWindow::b_calibrate_handle() {
+void MainWindow::b_step_calibrate_handle() {
+	unsigned stepi = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt();
+}
+
+void MainWindow::b_step_read_handle() {
+	unsigned stepi = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt();
+}
+
+void MainWindow::b_step_write_handle() {
 	unsigned stepi = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt();
 
 	if (xn.connected() && !ui.sb_loco->isEnabled()) {
@@ -975,14 +1046,14 @@ void MainWindow::b_calibrate_handle() {
 			std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_stepWriteError(s, d); }, reinterpret_cast<void*>(stepi))
 		);
 		cm.setStepManually(stepi+1, ui_steps[stepi].slider->value());
+	} else {
+		QMessageBox::warning(this, "Command not executed", "Command not executed: either not connected to XpressNet or DCC address not set!");
 	}
 }
 
 void MainWindow::chb_step_selected_clicked(bool checked) {
 	unsigned stepi = qobject_cast<QCheckBox*>(QObject::sender())->property("step").toUInt();
-
-	ui_steps[stepi].calibrate->setEnabled(checked);
-	ui_steps[stepi].slider->setEnabled(checked);
+	gui_step_update_enabled(ui_steps[stepi]);
 
 	if (!checked)
 		cm.unsetStep(stepi);
@@ -1100,18 +1171,8 @@ void MainWindow::b_calib_start_handle() {
 
 	cm.vmax = ui.sb_vmax->value();
 
-	ui.b_calib_start->setEnabled(false);
-	ui.b_calib_stop->setEnabled(true);
-	ui.sb_max_speed->setEnabled(false);
-	ui.sb_vmax->setEnabled(false);
-	ui.gb_cal_graph->setEnabled(false);
-	ui.gb_ad->setEnabled(false);
-	ui.b_wsm_lt->setEnabled(false);
+	gui_update_enabled();
 	ui.pb_progress->setValue(0);
-	ui.a_loco_load->setEnabled(false);
-	ui.a_speed_load->setEnabled(false);
-	ui.b_reset->setEnabled(false);
-	ui.gb_speed->setEnabled(false);
 	widget_set_color(*ui.l_calib_state, Qt::yellow);
 	cm.calibrateAll(ui.sb_loco->value(),
 	                static_cast<Xn::Direction>(ui.rb_forward->isChecked()));
@@ -1128,17 +1189,7 @@ void MainWindow::b_calib_stop_handle() {
 }
 
 void MainWindow::cm_done_gui() {
-	ui.b_calib_start->setEnabled(true);
-	ui.b_calib_stop->setEnabled(false);
-	ui.sb_max_speed->setEnabled(true);
-	ui.sb_vmax->setEnabled(true);
-	ui.gb_cal_graph->setEnabled(true);
-	ui.gb_ad->setEnabled(true);
-	ui.b_wsm_lt->setEnabled(true);
-	ui.a_loco_load->setEnabled(true);
-	ui.a_speed_load->setEnabled(true);
-	ui.b_reset->setEnabled(true);
-	ui.gb_speed->setEnabled(true);
+	gui_update_enabled();
 }
 
 void MainWindow::b_reset_handle() {
@@ -1365,6 +1416,7 @@ void MainWindow::reset() {
 		ui_steps[i].slider->setValue(0);
 		ui_steps[i].slider->setEnabled(false);
 		ui_steps[i].selected->setChecked(false);
+		ui_steps[i].write->setEnabled(false);
 		ui_steps[i].calibrate->setEnabled(false);
 		step_set_color(i, Qt::black);
 	}

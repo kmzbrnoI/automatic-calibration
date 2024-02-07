@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1060</width>
-    <height>645</height>
+    <height>682</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -198,7 +198,7 @@
           <x>820</x>
           <y>10</y>
           <width>211</width>
-          <height>391</height>
+          <height>421</height>
          </rect>
         </property>
         <property name="title">
@@ -208,7 +208,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>310</y>
+           <y>340</y>
            <width>191</width>
            <height>41</height>
           </rect>
@@ -234,7 +234,7 @@
            <x>20</x>
            <y>60</y>
            <width>51</width>
-           <height>131</height>
+           <height>141</height>
           </rect>
          </property>
          <property name="maximum">
@@ -277,7 +277,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>360</y>
+           <y>390</y>
            <width>81</width>
            <height>22</height>
           </rect>
@@ -290,7 +290,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>360</y>
+           <y>390</y>
            <width>81</width>
            <height>22</height>
           </rect>
@@ -303,7 +303,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>280</y>
+           <y>310</y>
            <width>91</width>
            <height>16</height>
           </rect>
@@ -325,7 +325,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>256</y>
+           <y>286</y>
            <width>191</width>
            <height>20</height>
           </rect>
@@ -338,7 +338,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>230</y>
+           <y>250</y>
            <width>71</width>
            <height>22</height>
           </rect>
@@ -377,7 +377,7 @@
          <property name="geometry">
           <rect>
            <x>120</x>
-           <y>280</y>
+           <y>310</y>
            <width>81</width>
            <height>22</height>
           </rect>
@@ -464,7 +464,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>200</y>
+           <y>220</y>
            <width>71</width>
            <height>22</height>
           </rect>
@@ -477,7 +477,7 @@
          <property name="geometry">
           <rect>
            <x>150</x>
-           <y>230</y>
+           <y>250</y>
            <width>51</width>
            <height>22</height>
           </rect>
@@ -490,7 +490,7 @@
          <property name="geometry">
           <rect>
            <x>150</x>
-           <y>170</y>
+           <y>190</y>
            <width>51</width>
            <height>22</height>
           </rect>
@@ -503,7 +503,7 @@
          <property name="geometry">
           <rect>
            <x>150</x>
-           <y>200</y>
+           <y>220</y>
            <width>51</width>
            <height>22</height>
           </rect>
@@ -522,7 +522,7 @@
           <x>220</x>
           <y>260</y>
           <width>591</width>
-          <height>311</height>
+          <height>341</height>
          </rect>
         </property>
         <property name="title">
@@ -542,9 +542,25 @@
            <number>1</number>
           </property>
           <property name="verticalSpacing">
-           <number>6</number>
+           <number>4</number>
           </property>
          </layout>
+        </widget>
+        <widget class="QPushButton" name="b_read_all_steps">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>310</y>
+           <width>101</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Read all steps</string>
+         </property>
         </widget>
        </widget>
        <widget class="QGroupBox" name="gb_wsm">
@@ -662,7 +678,7 @@
           <x>10</x>
           <y>260</y>
           <width>201</width>
-          <height>311</height>
+          <height>341</height>
          </rect>
         </property>
         <property name="title">
@@ -672,7 +688,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>90</y>
+           <y>130</y>
            <width>181</width>
            <height>31</height>
           </rect>
@@ -684,9 +700,9 @@
         <widget class="QSpinBox" name="sb_max_speed">
          <property name="geometry">
           <rect>
-           <x>90</x>
+           <x>120</x>
            <y>30</y>
-           <width>101</width>
+           <width>71</width>
            <height>23</height>
           </rect>
          </property>
@@ -702,19 +718,19 @@
           <rect>
            <x>10</x>
            <y>30</y>
-           <width>81</width>
+           <width>101</width>
            <height>16</height>
           </rect>
          </property>
          <property name="text">
-          <string>Max. speed:</string>
+          <string>Max. calib. speed:</string>
          </property>
         </widget>
         <widget class="Line" name="line_2">
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>170</y>
+           <y>210</y>
            <width>181</width>
            <height>20</height>
           </rect>
@@ -727,7 +743,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>220</y>
+           <y>250</y>
            <width>181</width>
            <height>23</height>
           </rect>
@@ -740,7 +756,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>200</y>
+           <y>230</y>
            <width>59</width>
            <height>14</height>
           </rect>
@@ -756,7 +772,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>130</y>
+           <y>170</y>
            <width>181</width>
            <height>31</height>
           </rect>
@@ -769,7 +785,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>280</y>
+           <y>310</y>
            <width>181</width>
            <height>22</height>
           </rect>
@@ -782,7 +798,7 @@
          <property name="geometry">
           <rect>
            <x>10</x>
-           <y>250</y>
+           <y>280</y>
            <width>181</width>
            <height>21</height>
           </rect>
@@ -802,9 +818,9 @@
         <widget class="QSpinBox" name="sb_vmax">
          <property name="geometry">
           <rect>
-           <x>90</x>
+           <x>120</x>
            <y>60</y>
-           <width>101</width>
+           <width>71</width>
            <height>23</height>
           </rect>
          </property>
@@ -820,12 +836,41 @@
           <rect>
            <x>10</x>
            <y>60</y>
-           <width>41</width>
+           <width>71</width>
            <height>16</height>
           </rect>
          </property>
          <property name="text">
-          <string>Vmax:</string>
+          <string>Vmax (#5):</string>
+         </property>
+        </widget>
+        <widget class="QSpinBox" name="sb_voltage_reference">
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>90</y>
+           <width>71</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>255</number>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chb_voltage_reference">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>90</y>
+           <width>101</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Volt. ref. (#57):</string>
          </property>
         </widget>
        </widget>
@@ -836,7 +881,7 @@
         <property name="geometry">
          <rect>
           <x>820</x>
-          <y>410</y>
+          <y>440</y>
           <width>211</width>
           <height>161</height>
          </rect>
@@ -875,12 +920,12 @@
           <rect>
            <x>10</x>
            <y>30</y>
-           <width>81</width>
+           <width>101</width>
            <height>16</height>
           </rect>
          </property>
          <property name="text">
-          <string>Acceleration:</string>
+          <string>Acceleration (#3):</string>
          </property>
         </widget>
         <widget class="QLabel" name="label_11">
@@ -888,12 +933,12 @@
           <rect>
            <x>10</x>
            <y>60</y>
-           <width>81</width>
+           <width>101</width>
            <height>16</height>
           </rect>
          </property>
          <property name="text">
-          <string>Deceleration:</string>
+          <string>Deceleration (#4):</string>
          </property>
         </widget>
         <widget class="QPushButton" name="b_ad_write">
@@ -925,14 +970,14 @@
         <widget class="QPushButton" name="b_decel_measure">
          <property name="geometry">
           <rect>
-           <x>70</x>
+           <x>10</x>
            <y>130</y>
-           <width>131</width>
+           <width>191</width>
            <height>22</height>
           </rect>
          </property>
          <property name="text">
-          <string>Measure dec. dist.</string>
+          <string>Measure 40→0 distance</string>
          </property>
         </widget>
        </widget>
@@ -1061,7 +1106,7 @@
      <x>0</x>
      <y>0</y>
      <width>1060</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="m_xn">
