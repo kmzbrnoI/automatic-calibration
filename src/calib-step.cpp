@@ -92,6 +92,7 @@ void CalibStep::set_power(unsigned power) {
 		this->pom_write_step(m_step+1, neighAsker(m_step, m_step+1));
 
 	// Send last to indicate possible errors
+	emit step_power_changed(m_step, m_last_power-1); // to acually execute the command
 	this->pom_write_step(
 		m_step,
 		m_last_power,
