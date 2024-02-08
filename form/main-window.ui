@@ -562,6 +562,22 @@
           <string>Read all steps</string>
          </property>
         </widget>
+        <widget class="QPushButton" name="b_verify_all_steps">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>120</x>
+           <y>310</y>
+           <width>101</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Verify all steps</string>
+         </property>
+        </widget>
        </widget>
        <widget class="QGroupBox" name="gb_wsm">
         <property name="geometry">
