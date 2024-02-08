@@ -81,8 +81,8 @@ private:
 	unsigned m_loco_addr;
 	unsigned m_step;
 	double m_target_speed;
-	const NeighAsker& neighAsker;
-	const SetPower& setPower;
+	const NeighAsker neighAsker;
+	const SetPower setPower;
 
 	QTimer t_sp_adapt;
 	unsigned m_last_power;
