@@ -275,6 +275,7 @@ void MainWindow::gui_update_enabled() {
 }
 
 void MainWindow::gui_step_update_enabled(UiStep& ui_step) {
+	ui_step.slider->setEnabled(xn.connected() && !cm.inProgress() && ui_step.selected->isChecked());
 	ui_step.read->setEnabled(xn.connected() && !cm.inProgress());
 	ui_step.write->setEnabled(ui_step.selected->isChecked());
 	ui_step.calibrate->setEnabled(wsm.connected() && !ui_step.selected->isChecked());
@@ -1171,11 +1172,11 @@ void MainWindow::b_calib_start_handle() {
 
 	cm.vmax = ui.sb_vmax->value();
 
-	gui_update_enabled();
 	ui.pb_progress->setValue(0);
 	widget_set_color(*ui.l_calib_state, Qt::yellow);
 	cm.calibrateAll(ui.sb_loco->value(),
 	                static_cast<Xn::Direction>(ui.rb_forward->isChecked()));
+	gui_update_enabled();
 }
 
 void MainWindow::b_calib_stop_handle() {
