@@ -398,7 +398,7 @@ unsigned CalibMan::csNeighbourPower(unsigned middleStep, unsigned neighStep) con
 
 	const std::optional<unsigned> nearest = this->nearestCalibredOrSetStep(neighStep, direction);
 	return (nearest.has_value()) ? \
-		this->getIPpower(middleStep, nearest.value(), neighStep) : \
+		this->getIPpower(middleStep-1, nearest.value()-1, neighStep-1) : \
 		power[middleStep-1];
 }
 
