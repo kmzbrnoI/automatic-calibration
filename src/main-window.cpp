@@ -262,7 +262,9 @@ void MainWindow::gui_update_enabled() {
 	ui.b_calib_stop->setEnabled(cm.inProgress());
 	ui.sb_max_speed->setEnabled(!cm.inProgress());
 	ui.sb_vmax->setEnabled(!cm.inProgress() && ui.chb_vmax->isChecked());
+	ui.b_vmax_read->setEnabled(xn.connected());
 	ui.sb_volt_ref->setEnabled(!cm.inProgress() && ui.chb_volt_ref->isChecked());
+	ui.b_volt_ref_read->setEnabled(xn.connected());
 	ui.gb_ad->setEnabled(xn.connected() && !cm.inProgress());
 	ui.b_wsm_lt->setEnabled(wsm.connected() && !cm.inProgress());
 	ui.a_loco_load->setEnabled(!cm.inProgress());
@@ -1233,9 +1235,47 @@ void MainWindow::chb_volt_ref_clicked(bool checked) {
 }
 
 void MainWindow::b_vmax_read_handle() {
+	ui.b_vmax_read->setEnabled(false);
+	xn.readCVdirect(
+		CV_VMAX,
+		[this](void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
+			if (st == Xn::ReadCVStatus::Ok) {
+				log("Read CV " + QString::number(cv) + " = " + QString::number(value) +
+				    ", overriding "+QString::number(ui.sb_vmax->value()));
+				ui.sb_vmax->setValue(value);
+			} else {
+				show_error("Unable to read CV " + QString::number(cv) + ": " +
+				           Xn::XpressNet::xnReadCVStatusToQString(st));
+			}
+			ui.b_vmax_read->setEnabled(true);
+		},
+		std::make_unique<Xn::Cb>([this](void *, void *) {
+			ui.b_vmax_read->setEnabled(true);
+			show_error("Unable to read CV: no response from command station!");
+		})
+	);
 }
 
 void MainWindow::b_volt_ref_read_handle() {
+	ui.b_volt_ref_read->setEnabled(false);
+	xn.readCVdirect(
+		CV_UREF,
+		[this](void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
+			if (st == Xn::ReadCVStatus::Ok) {
+				log("Read CV " + QString::number(cv) + " = " + QString::number(value) +
+				    ", overriding "+QString::number(ui.sb_volt_ref->value()));
+				ui.sb_volt_ref->setValue(value);
+			} else {
+				show_error("Unable to read CV " + QString::number(cv) + ": " +
+				           Xn::XpressNet::xnReadCVStatusToQString(st));
+			}
+			ui.b_volt_ref_read->setEnabled(true);
+		},
+		std::make_unique<Xn::Cb>([this](void *, void *) {
+			ui.b_volt_ref_read->setEnabled(true);
+			show_error("Unable to read CV: no response from command station!");
+		})
+	);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1301,7 +1341,7 @@ void MainWindow::a_loco_load(bool) {
 
 	while (!xr.atEnd()) {
 		if (xr.isStartElement()) {
-            if (xr.name() == QString("powerToSpeed")) {
+			if (xr.name() == QString("powerToSpeed")) {
 				xr.readNext();
 				while (xr.name() != QString("powerToSpeed")) {
 					if (xr.name() == QString("record") && xr.attributes().hasAttribute("power") &&
