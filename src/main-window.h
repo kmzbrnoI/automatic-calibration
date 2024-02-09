@@ -84,6 +84,8 @@ private slots:
 	void rb_direction_toggled(bool);
 	void t_slider_tick();
 	void chb_f_clicked(bool);
+	void chb_vmax_clicked(bool);
+	void chb_volt_ref_clicked(bool);
 
 	void b_start_handle();
 	void b_calib_start_handle();

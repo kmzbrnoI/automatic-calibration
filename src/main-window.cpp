@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
 	                 SLOT(xn_onTrkStatusChanged(Xn::TrkStatus)));
 
 	// UI signals
+	QObject::connect(ui.chb_vmax, SIGNAL(clicked(bool)), this, SLOT(chb_vmax_clicked(bool)));
+	QObject::connect(ui.chb_volt_ref, SIGNAL(clicked(bool)), this, SLOT(chb_volt_ref_clicked(bool)));
 	QObject::connect(ui.b_start, SIGNAL(released()), this, SLOT(b_start_handle()));
 	QObject::connect(ui.b_addr_set, SIGNAL(released()), this, SLOT(b_addr_set_handle()));
 	QObject::connect(ui.b_addr_release, SIGNAL(released()), this, SLOT(b_addr_release_handle()));
@@ -257,7 +259,8 @@ void MainWindow::gui_update_enabled() {
 	ui.b_calib_start->setEnabled(!cm.inProgress());
 	ui.b_calib_stop->setEnabled(cm.inProgress());
 	ui.sb_max_speed->setEnabled(!cm.inProgress());
-	ui.sb_vmax->setEnabled(!cm.inProgress());
+	ui.sb_vmax->setEnabled(!cm.inProgress() && ui.chb_vmax->isChecked());
+	ui.sb_volt_ref->setEnabled(!cm.inProgress() && ui.chb_volt_ref->isChecked());
 	ui.gb_ad->setEnabled(xn.connected() && !cm.inProgress());
 	ui.b_wsm_lt->setEnabled(wsm.connected() && !cm.inProgress());
 	ui.a_loco_load->setEnabled(!cm.inProgress());
@@ -279,6 +282,14 @@ void MainWindow::gui_step_update_enabled(UiStep& ui_step) {
 	ui_step.read->setEnabled(xn.connected() && !cm.inProgress());
 	ui_step.write->setEnabled(ui_step.selected->isChecked());
 	ui_step.calibrate->setEnabled(wsm.connected() && !ui_step.selected->isChecked());
+}
+
+void MainWindow::chb_vmax_clicked(bool checked) {
+	ui.sb_vmax->setEnabled(checked);
+}
+
+void MainWindow::chb_volt_ref_clicked(bool checked) {
+	ui.sb_volt_ref->setEnabled(checked);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
