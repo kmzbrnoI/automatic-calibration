@@ -41,6 +41,8 @@ MainWindow::MainWindow(QWidget *parent)
 	                 SLOT(xn_onTrkStatusChanged(Xn::TrkStatus)));
 
 	// UI signals
+	QObject::connect(ui.b_vmax_read, SIGNAL(released()), this, SLOT(b_vmax_read_handle()));
+	QObject::connect(ui.b_volt_ref_read, SIGNAL(released()), this, SLOT(b_volt_ref_read_handle()));
 	QObject::connect(ui.chb_vmax, SIGNAL(clicked(bool)), this, SLOT(chb_vmax_clicked(bool)));
 	QObject::connect(ui.chb_volt_ref, SIGNAL(clicked(bool)), this, SLOT(chb_volt_ref_clicked(bool)));
 	QObject::connect(ui.b_start, SIGNAL(released()), this, SLOT(b_start_handle()));
@@ -282,14 +284,6 @@ void MainWindow::gui_step_update_enabled(UiStep& ui_step) {
 	ui_step.read->setEnabled(xn.connected() && !cm.inProgress());
 	ui_step.write->setEnabled(ui_step.selected->isChecked());
 	ui_step.calibrate->setEnabled(wsm.connected() && !ui_step.selected->isChecked());
-}
-
-void MainWindow::chb_vmax_clicked(bool checked) {
-	ui.sb_vmax->setEnabled(checked);
-}
-
-void MainWindow::chb_volt_ref_clicked(bool checked) {
-	ui.sb_volt_ref->setEnabled(checked);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1228,6 +1222,20 @@ void MainWindow::t_calib_active_tick() {
 		else
 			widget_set_color(*(ui.l_calib_state), Qt::yellow);
 	}
+}
+
+void MainWindow::chb_vmax_clicked(bool checked) {
+	ui.sb_vmax->setEnabled(checked);
+}
+
+void MainWindow::chb_volt_ref_clicked(bool checked) {
+	ui.sb_volt_ref->setEnabled(checked);
+}
+
+void MainWindow::b_vmax_read_handle() {
+}
+
+void MainWindow::b_volt_ref_read_handle() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
