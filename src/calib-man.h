@@ -100,7 +100,14 @@ public:
 	Cs::CalibStep cs;
 	Co::CalibOverview co;
 	Xn::Direction direction;
-	unsigned vmax = DEFAULT_VMAX;
+
+	using CVsConfig = std::map<unsigned, unsigned>;
+	CVsConfig init_cvs = { // (cv, value)
+		{CV_START_VOLTAGE, 1},
+		{CV_ACCEL, 0},
+		{CV_DECEL, 0},
+		{CV_MEDIUM_SPEED, 60},
+	};
 
 	CalibMan(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm, Ssm::StepsToSpeedMap &ssm,
 	         QObject *parent = nullptr);
@@ -126,10 +133,6 @@ private:
 	CalibState m_progress = CalibState::Stopped;
 	unsigned m_no_calibrated;
 
-	using CVsConfig = std::map<unsigned, unsigned>;
-	CVsConfig init_cvs = { // (cv, value)
-		{2, 1}, {3, 0}, {4, 0}, {VMAX_CV, DEFAULT_VMAX}, {6, 60},
-	};
 	CVsConfig::iterator m_init_cv_iterator;
 	unsigned m_init_cv_index;
 
@@ -185,7 +188,7 @@ signals:
 
 	void onDone();
 	void onError(Cm::CmError, unsigned step, const QString note);
-	void onLog(const QString &, LogLevel);
+	void onLog(const QString &, Cm::LogLevel);
 
 	void onLocoSpeedChanged(unsigned step);
 	void onStepPowerChanged(unsigned step, unsigned power);

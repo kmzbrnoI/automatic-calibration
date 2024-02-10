@@ -163,6 +163,7 @@ void CalibMan::xnStepWriteError(void *, void *) { error(CmError::XnNoResponse, m
 
 void CalibMan::coDone() {
 	// Phase 2: move from phase "Getting basic data" to phase "Calibration"
+	log("Overview finished.", LogLevel::Success);
 	updateProg(CalibState::Steps, 0, 1);
 	calibrateNextStep();
 }
@@ -230,6 +231,7 @@ void CalibMan::calibrateAll(const unsigned locoAddr, Xn::Direction dir) {
 	m_no_calibrated = 0;
 
 	// Phase 0: set CV defaults
+	log("Starting calibration of loco "+QString::number(locoAddr)+"...", LogLevel::Info);
 	updateProg(CalibState::InitProg, 1, 4);
 	initCVs();
 }
@@ -331,6 +333,7 @@ unsigned CalibMan::getIPpower(const unsigned boundai, const unsigned boundbi, co
 
 void CalibMan::interpolateAll() {
 	// Find first interval to interpolate.
+	log("Starting interpolation...", LogLevel::Info);
 	updateProg(CalibState::Interpolation, 0, 1);
 
 	m_thisIPleft = 0;
@@ -461,7 +464,9 @@ void CalibMan::unsetStep(const unsigned step) { state[step] = StepState::Uncalib
 void CalibMan::initCVs() {
 	updateProg(CalibState::InitProg, 1, init_cvs.size() + 2);
 
-	init_cvs[VMAX_CV] = vmax;
+	this->log("Activating speed curve: CV "+QString::number(CV_BASIC_CONFIG)+", bit " +
+		QString::number(CV_CONFIG_BIT_SPEED_TABLE) + " = " + QString::number(CV_CONFIG_SPEED_TABLE_VALUE),
+		LogLevel::Info);
 
 	m_xn.pomWriteBit(
 		Xn::LocoAddr(m_locoAddr),
@@ -485,6 +490,7 @@ void CalibMan::initCVsWriteNext() {
 
 	if (m_init_cv_iterator == init_cvs.end()) {
 		// Go to phase 1: make an overview of mapping steps to speed
+		log("Initial CVs written, startring CalibrationOverview phase...", LogLevel::Success);
 		updateProg(CalibState::Overview, 0, 1);
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), co.overview_step, direction);
 		emit onLocoSpeedChanged(co.overview_step);
@@ -492,10 +498,15 @@ void CalibMan::initCVsWriteNext() {
 		return;
 	}
 
+	unsigned cv = m_init_cv_iterator->first;
+	unsigned value = m_init_cv_iterator->second;
+
+	this->log("Write CV "+QString::number(cv)+" = "+QString::number(value), LogLevel::Info);
+
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_locoAddr),
-		m_init_cv_iterator->first,
-		m_init_cv_iterator->second,
+		cv,
+		value,
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { initCVsOk(s, d); }),
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { initCVsError(s, d); })
 	);

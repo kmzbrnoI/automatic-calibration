@@ -78,7 +78,6 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(ui.b_test3, SIGNAL(released()), this, SLOT(b_test3_handle()));
 
 	ui.sb_max_speed->setValue(m_ssm.maxSpeedInFile());
-	ui.sb_vmax->setValue(cm.vmax);
 	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this,
 	                 SLOT(sb_max_speed_changed(int)));
 	QObject::connect(ui.lv_log, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this,
@@ -1161,14 +1160,23 @@ void MainWindow::b_calib_start_handle() {
 		return;
 	}
 
-	if (m_pm.isAnyRecord() && static_cast<unsigned>(ui.sb_vmax->value()) != cm.vmax) {
+	if (ui.sb_loco->isEnabled()) {
+		show_error("Set loco address first!");
+		return;
+	}
+
+	bool changed = false;
+	changed |= ((ui.chb_vmax->isChecked() != (cm.init_cvs.find(Cm::CV_VMAX) != cm.init_cvs.end())) ||
+		((cm.init_cvs.find(Cm::CV_VMAX) != cm.init_cvs.end()) && (static_cast<int>(cm.init_cvs[Cm::CV_VMAX]) != ui.sb_vmax->value())));
+	changed |= ((ui.chb_volt_ref->isChecked() != (cm.init_cvs.find(Cm::CV_UREF) != cm.init_cvs.end())) ||
+		((cm.init_cvs.find(Cm::CV_UREF) != cm.init_cvs.end()) && (static_cast<int>(cm.init_cvs[Cm::CV_UREF]) != ui.sb_volt_ref->value())));
+
+	if (m_pm.isAnyRecord() && changed) {
 		QMessageBox::StandardButton reply;
 		reply = QMessageBox::question(
 			this,
 			"Question",
-			"Vmax has been changed from '" + QString::number(cm.vmax) +
-			"' to '" + QString::number(ui.sb_vmax->value()) +
-			"', so all the measured data must be erased and calibrated again.\nContinue?",
+			"Vmax and/or Uref have been changed, so all the measured data must be erased and calibrated again.\nContinue?",
 			QMessageBox::Yes|QMessageBox::No, QMessageBox::No
 		);
 		if (reply != QMessageBox::Yes)
@@ -1177,7 +1185,15 @@ void MainWindow::b_calib_start_handle() {
 		reset();
 	}
 
-	cm.vmax = ui.sb_vmax->value();
+	if (ui.chb_vmax->isChecked())
+		cm.init_cvs[Cm::CV_VMAX] = ui.sb_vmax->value();
+	else
+		cm.init_cvs.erase(Cm::CV_VMAX);
+
+	if (ui.chb_volt_ref->isChecked())
+		cm.init_cvs[Cm::CV_UREF] = ui.sb_volt_ref->value();
+	else
+		cm.init_cvs.erase(Cm::CV_UREF);
 
 	ui.pb_progress->setValue(0);
 	widget_set_color(*ui.l_calib_state, Qt::yellow);
