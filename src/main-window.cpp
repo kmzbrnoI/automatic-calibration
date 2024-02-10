@@ -328,9 +328,9 @@ void MainWindow::xn_onLog(const QString &message, const Xn::LogLevel &loglevel) 
 		item->setText(1, "Info");
 	else if (loglevel == Xn::LogLevel::Commands)
 		item->setText(1, "Commands");
-	else if (loglevel == Xn::LogLevel::Info)
-		item->setText(1, "Raw Data");
 	else if (loglevel == Xn::LogLevel::RawData)
+		item->setText(1, "Raw Data");
+	else if (loglevel == Xn::LogLevel::Debug)
 		item->setText(1, "Debug");
 
 	item->setText(2, message);
