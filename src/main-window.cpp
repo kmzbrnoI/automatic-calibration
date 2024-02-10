@@ -341,6 +341,9 @@ void MainWindow::xn_onLog(const QString &message, const Xn::LogLevel &loglevel) 
 		out << QTime::currentTime().toString("hh:mm:ss.zzz").toUtf8().data() << ": "
 		    << message.toUtf8().data() << std::endl;
 	}
+
+	if (loglevel == Xn::LogLevel::Error)
+		this->log("XN: "+message, LOGC_ERROR);
 }
 
 void MainWindow::xn_onConnect() {
