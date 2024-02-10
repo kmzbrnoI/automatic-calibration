@@ -70,7 +70,14 @@ enum class CalibState {
 	Interpolation,
 };
 
-constexpr unsigned CV_CONFIG = 29;
+enum class LogLevel {
+	Error,
+	Warning,
+	Info,
+	Success,
+};
+
+
 constexpr unsigned CV_CONFIG_BIT_SPEED_TABLE = 4;
 constexpr bool CV_CONFIG_SPEED_TABLE_VALUE = true;
 
@@ -150,6 +157,9 @@ private:
 
 	void done();
 	void error(Cm::CmError, unsigned step, const QString note = "");
+	void log(const QString &message, LogLevel);
+	void changeStepPower(unsigned step, unsigned power);
+	void stepDone(unsigned step, unsigned power);
 
 	void initCVs();
 	void initCVsOk(void *, void *);
@@ -175,11 +185,10 @@ signals:
 
 	void onDone();
 	void onError(Cm::CmError, unsigned step, const QString note);
+	void onLog(const QString &, LogLevel);
 
 	void onLocoSpeedChanged(unsigned step);
 	void onStepPowerChanged(unsigned step, unsigned power);
-	void onAccelChanged(unsigned accel);
-	void onDecelChanged(unsigned decel);
 
 	void onProgressUpdate(size_t val); // value 0-100
 };

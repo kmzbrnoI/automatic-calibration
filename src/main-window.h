@@ -144,13 +144,12 @@ private slots:
 	void cm_stepStart(unsigned step);
 	void cm_stepDone(unsigned step, unsigned power);
 	void cm_stepError(Cm::CmError, unsigned step, const QString& note);
+	void cm_onLog(const QString &, Cm::LogLevel);
 	void cm_locoSpeedChanged(unsigned step);
 	void cm_done();
 	void cm_step_power_changed(unsigned step, unsigned power);
 	void cm_progress_update(size_t val);
 	void cm_done_gui();
-	void cm_accelChanged(unsigned);
-	void cm_decelChanged(unsigned);
 
 	// Calibration range events:
 	void cr_measured(double distance);

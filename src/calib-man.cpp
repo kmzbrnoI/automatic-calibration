@@ -29,12 +29,18 @@ CalibState CalibMan::progress() const { return m_progress; }
 
 void CalibMan::done() {
 	updateProg(CalibState::Stopped, 1, 1);
+	log("Calibration done :)", LogLevel::Success);
 	emit onDone();
 }
 
 void CalibMan::error(const Cm::CmError e, const unsigned step, const QString note) {
 	updateProg(CalibState::Stopped, 0, 1);
+	log("Step " + QString::number(step) + " calibration error!", LogLevel::Error);
 	emit onError(e, step, note);
+}
+
+void CalibMan::log(const QString &message, LogLevel level) {
+	emit onLog(message, level);
 }
 
 void CalibMan::updateProg(const CalibState cs, const size_t progress, const size_t max) {
@@ -54,11 +60,25 @@ size_t CalibMan::getProgress(const CalibState cs, const size_t progress, const s
 	return 0;
 }
 
+void CalibMan::changeStepPower(unsigned step, unsigned power) {
+	if ((step < 1) || (step > Xn::_STEPS_CNT))
+		throw QInvalidArgument("step out of range!");
+	this->power[step-1] = power;
+
+	log("Step " + QString::number(step) + " set to " + QString::number(power), LogLevel::Info);
+	emit onStepPowerChanged(step, power);
+}
+
+void CalibMan::stepDone(unsigned step, unsigned power) {
+	log("Step " + QString::number(step) + " done", LogLevel::Success);
+	emit onStepDone(step, power);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Calibration Step events:
 
 void CalibMan::csDone(unsigned step, unsigned power) {
-    emit onStepDone(step, power);
+	this->stepDone(step, power);
 	step = step - 1; // convert step to step index
 	state[step] = StepState::Calibred;
 	m_no_calibrated++;
@@ -76,8 +96,7 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWritten(s, d); }),
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
-			this->power[i] = m_step_power;
-			emit onStepPowerChanged(i+1, power);
+			this->changeStepPower(i+1, power);
 			return;
 		}
 	}
@@ -114,13 +133,12 @@ void CalibMan::coError(Co::Error co, unsigned step) {
 }
 
 void CalibMan::cStepPowerChanged(unsigned step, unsigned power) {
-	this->power[step-1] = power;
-	emit onStepPowerChanged(step, power);
+	this->changeStepPower(step, power);
 }
 
 void CalibMan::xnStepWritten(void *, void *) {
 	state[m_step_writing] = StepState::Calibred;
-	emit onStepDone(m_step_writing+1, m_step_power);
+	this->stepDone(m_step_writing+1, m_step_power);
 
 	for (size_t i = m_step_writing+1; i < Xn::_STEPS_CNT; i++) {
 		if (nullptr != m_ssm[i] && *(m_ssm[i]) == *(m_ssm[m_step_writing]) &&
@@ -133,8 +151,7 @@ void CalibMan::xnStepWritten(void *, void *) {
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWritten(s, d); }),
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
 			);
-			power[i] = m_step_power;
-			emit onStepPowerChanged(i+1, m_step_power);
+			this->changeStepPower(i+1, m_step_power);
 			return;
 		}
 	}
@@ -247,10 +264,12 @@ void CalibMan::calibrateNextStep() {
 			return;
 		}
 
-		emit onStepStart((*next) + 1);
-		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), (*next) + 1, direction);
-		emit onLocoSpeedChanged((*next) + 1);
-		cs.calibrate(m_locoAddr, (*next) + 1, *(m_ssm[*next]));
+		unsigned step = (*next)+1;
+		log("Starting calibration of step " + QString::number(step), LogLevel::Info);
+		emit onStepStart(step);
+		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), step, direction);
+		emit onLocoSpeedChanged(step);
+		cs.calibrate(m_locoAddr, step, *(m_ssm[*next]));
 	} catch (const QStrException& e) {
 		error(CmError::WsmError, 0, e.str());
 	} catch (const Xn::QStrException& e) {
@@ -381,9 +400,8 @@ void CalibMan::interpolateNext() {
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xnIPWritten(s, d); }),
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xnIPError(s, d); })
 	);
-	this->power[m_thisIPstep] = power;
-	emit onStepPowerChanged(m_thisIPstep+1, power);
-	emit onStepDone(m_thisIPstep+1, power);
+	this->changeStepPower(m_thisIPstep+1, power);
+	this->stepDone(m_thisIPstep+1, power);
 }
 
 void CalibMan::xnIPError(void *, void *) {

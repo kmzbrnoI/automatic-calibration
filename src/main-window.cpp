@@ -150,19 +150,20 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(&wsm, SIGNAL(speedReceiveRestore()), this, SLOT(mc_speedReceiveRestore()));
 
 	// Calibration Manager signals
+
 	QObject::connect(&cm, SIGNAL(onStepStart(uint)), this, SLOT(cm_stepStart(uint)));
 	QObject::connect(&cm, SIGNAL(onStepDone(uint,uint)),
 	                 this, SLOT(cm_stepDone(uint,uint)));
 	QObject::connect(&cm, SIGNAL(onError(Cm::CmError,uint,const QString&)),
 	                 this, SLOT(cm_stepError(Cm::CmError,uint,const QString&)));
+	QObject::connect(&cm, SIGNAL(onLog(const QString&, Cm::LogLevel)),
+	                 this, SLOT(cm_onLog(const QString&, Cm::LogLevel)));
 	QObject::connect(&cm, SIGNAL(onLocoSpeedChanged(uint)),
 	                 this, SLOT(cm_locoSpeedChanged(uint)));
 	QObject::connect(&cm, SIGNAL(onDone()), this, SLOT(cm_done()));
 	QObject::connect(&cm, SIGNAL(onStepPowerChanged(uint,uint)),
 	                 this, SLOT(cm_step_power_changed(uint,uint)));
 	QObject::connect(&cm, SIGNAL(onProgressUpdate(size_t)), this, SLOT(cm_progress_update(size_t)));
-	QObject::connect(&cm, SIGNAL(onAccelChanged(uint)), this, SLOT(cm_accelChanged(uint)));
-	QObject::connect(&cm, SIGNAL(onDecelChanged(uint)), this, SLOT(cm_decelChanged(uint)));
 
 	// Connect power-to-map with GUI
 	QObject::connect(&m_pm, SIGNAL(onAddOrUpdate(uint,float)), &w_pg,
@@ -1084,26 +1085,21 @@ void MainWindow::ssm_onClear() {
 
 void MainWindow::cm_step_power_changed(unsigned step, unsigned power) {
 	ui_steps[step-1].slider->setValue(power);
-	log("Setting step " + QString::number(step) + " to " + QString::number(power));
 }
 
 void MainWindow::cm_stepDone(unsigned step, unsigned power) {
 	(void)power;
 	step_set_color(step-1, STEPC_DONE);
-	log("Step " + QString::number(step) + " done", LOGC_DONE);
 }
 
 void MainWindow::cm_stepStart(unsigned step) {
 	step_set_color(step-1, STEPC_CHANGED);
-	log("Starting calibration of step " + QString::number(step));
 }
 
 void MainWindow::cm_stepError(Cm::CmError ce, unsigned step, const QString& note) {
 	if (step != 0)
 		step_set_color(step-1, STEPC_ERROR);
 	widget_set_color(*ui.l_calib_state, Qt::red);
-
-	log("Step " + QString::number(step) + " calibration error!", LOGC_ERROR);
 
 	if (ce == Cm::CmError::Exception)
 		log("Exception!", LOGC_ERROR);
@@ -1133,17 +1129,21 @@ void MainWindow::cm_locoSpeedChanged(unsigned step) {
 }
 
 void MainWindow::cm_done() {
-	log("Calibration done :)", LOGC_DONE);
 	widget_set_color(*ui.l_calib_state, Qt::green);
 	ui.pb_progress->setValue(100);
 	cm_done_gui();
 }
 
+void MainWindow::cm_onLog(const QString &message, Cm::LogLevel level) {
+	switch (level) {
+		case Cm::LogLevel::Error: log(message, LOGC_ERROR); break;
+		case Cm::LogLevel::Warning: log(message, LOGC_WARN); break;
+		case Cm::LogLevel::Success: log(message, LOGC_DONE); break;
+		default: log(message, Qt::white); break;
+	}
+}
+
 void MainWindow::cm_progress_update(size_t val) { ui.pb_progress->setValue(val); }
-
-void MainWindow::cm_accelChanged(unsigned accel) { ui.sb_accel->setValue(accel); }
-
-void MainWindow::cm_decelChanged(unsigned decel) { ui.sb_decel->setValue(decel); }
 
 void MainWindow::b_calib_start_handle() {
 	if (!xn.connected()) {

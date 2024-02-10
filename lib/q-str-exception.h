@@ -14,4 +14,9 @@ public:
 	operator QString() const { return this->m_err_msg; }
 };
 
+class QInvalidArgument : public QStrException {
+public:
+	QInvalidArgument(const QString msg) : QStrException(msg) {}
+};
+
 #endif
