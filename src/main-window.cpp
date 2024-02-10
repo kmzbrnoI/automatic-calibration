@@ -305,7 +305,7 @@ void MainWindow::xn_onLog(const QString &message, const Xn::LogLevel &loglevel) 
 		ui.tw_xn_log->clear();
 
 	auto *item = new QTreeWidgetItem(ui.tw_xn_log);
-	item->setText(0, QTime::currentTime().toString("hh:mm:ss"));
+	item->setText(0, QTime::currentTime().toString("hh:mm:ss.zzz"));
 
 	if (message.startsWith("GET:"))
 		for (size_t i = 0; i < COLUMN_COUNT; i++)
