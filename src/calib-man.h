@@ -73,10 +73,18 @@ enum class CalibState {
 constexpr unsigned CV_CONFIG = 29;
 constexpr unsigned CV_CONFIG_BIT_SPEED_TABLE = 4;
 constexpr bool CV_CONFIG_SPEED_TABLE_VALUE = true;
+
+constexpr unsigned CV_ADDR_SHORT = 1;
+constexpr unsigned CV_START_VOLTAGE = 2;
 constexpr unsigned CV_ACCEL = 3;
 constexpr unsigned CV_DECEL = 4;
-constexpr unsigned DEFAULT_VMAX = 255;
-constexpr unsigned VMAX_CV = 5;
+constexpr unsigned CV_VMAX = 5;
+constexpr unsigned CV_MEDIUM_SPEED = 6;
+constexpr unsigned CV_ADDR_HI = 17;
+constexpr unsigned CV_ADDR_LO = 18;
+constexpr unsigned CV_BASIC_CONFIG = 29;
+constexpr unsigned CV_UREF = 57;
+
 
 class CalibMan : public QObject {
 	Q_OBJECT

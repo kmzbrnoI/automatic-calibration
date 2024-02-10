@@ -447,7 +447,7 @@ void CalibMan::initCVs() {
 
 	m_xn.pomWriteBit(
 		Xn::LocoAddr(m_locoAddr),
-		CV_CONFIG,
+		CV_BASIC_CONFIG,
 		CV_CONFIG_BIT_SPEED_TABLE,
 		CV_CONFIG_SPEED_TABLE_VALUE,
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { initSTWritten(s, d); }),

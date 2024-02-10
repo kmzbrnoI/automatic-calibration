@@ -551,17 +551,17 @@ void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t valu
 		show_error("Unable to read CV " + QString::number(cv) + ": " +
 		           Xn::XpressNet::xnReadCVStatusToQString(st));
 
-		if (cv == CV_ADDR_LO || cv == CV_ADDR_HI || cv == CV_ADDR_SHORT || cv == CV_BASIC_CONFIG) {
+		if (cv == Cm::CV_ADDR_LO || cv == CV_ADDR_HI || cv == Cm::CV_ADDR_SHORT || cv == Cm::CV_BASIC_CONFIG) {
 			ui.sb_loco->setEnabled(true);
 			ui.b_addr_set->setEnabled(true);
 			ui.b_addr_read->setEnabled(true);
-		} else if (cv == CV_ACCEL || cv == CV_DECEL) {
+		} else if (cv == Cm::CV_ACCEL || cv == Cm::CV_DECEL) {
 			ui.gb_ad->setEnabled(true);
 		}
 		return;
 	}
 
-	if (cv == CV_ADDR_LO) {
+	if (cv == Cm::CV_ADDR_LO) {
 		try {
 			ui.sb_loco->setValue(Xn::LocoAddr(value, 0xC0));
 		}
@@ -573,7 +573,7 @@ void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t valu
 			[this](void *s, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
 			std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_addrReadError(s, d); })
 		);
-	} else if (cv == CV_ADDR_HI) {
+	} else if (cv == Cm::CV_ADDR_HI) {
 		try {
 			ui.sb_loco->setValue(Xn::LocoAddr(ui.sb_loco->value(), value));
 		}
@@ -590,13 +590,13 @@ void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t valu
 		ui.b_addr_set->setEnabled(true);
 		ui.b_addr_read->setEnabled(true);
 		a_dcc_go(true);
-	} else if (cv == CV_ACCEL) {
+	} else if (cv == Cm::CV_ACCEL) {
 		ui.sb_accel->setValue(value);
-		xn.readCVdirect(CV_DECEL,
+		xn.readCVdirect(Cm::CV_DECEL,
 			[this](void *s, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
 			std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_adReadError(s, d); })
 		);
-	} else if (cv == CV_DECEL) {
+	} else if (cv == Cm::CV_DECEL) {
 		ui.sb_decel->setValue(value);
 		ui.gb_ad->setEnabled(true);
 		a_dcc_go(true);
@@ -609,7 +609,7 @@ void MainWindow::xn_adWriteError(void *, void *) {
 }
 
 void MainWindow::xn_accelWritten(void *, void *) {
-	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), CV_DECEL, ui.sb_decel->value(),
+	xn.pomWriteCv(Xn::LocoAddr(ui.sb_loco->value()), Cm::CV_DECEL, ui.sb_decel->value(),
 	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_decelWritten(s, d); }),
 	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_adWriteError(s, d); }));
 }
@@ -740,7 +740,7 @@ void MainWindow::b_addr_read_handle() {
 	ui.b_addr_read->setEnabled(false);
 
 	xn.readCVdirect(
-		CV_BASIC_CONFIG,
+		Cm::CV_BASIC_CONFIG,
 		[this](void*, Xn::ReadCVStatus, uint8_t, uint8_t value) {
 			// Configuration successfully read
 			const auto& next_cv = (((value >> 5) & 0x1) == 1) ? CV_ADDR_LO : CV_ADDR_SHORT;
@@ -1237,7 +1237,7 @@ void MainWindow::chb_volt_ref_clicked(bool checked) {
 void MainWindow::b_vmax_read_handle() {
 	ui.b_vmax_read->setEnabled(false);
 	xn.readCVdirect(
-		CV_VMAX,
+		Cm::CV_VMAX,
 		[this](void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
 			if (st == Xn::ReadCVStatus::Ok) {
 				log("Read CV " + QString::number(cv) + " = " + QString::number(value) +
@@ -1259,7 +1259,7 @@ void MainWindow::b_vmax_read_handle() {
 void MainWindow::b_volt_ref_read_handle() {
 	ui.b_volt_ref_read->setEnabled(false);
 	xn.readCVdirect(
-		CV_UREF,
+		Cm::CV_UREF,
 		[this](void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
 			if (st == Xn::ReadCVStatus::Ok) {
 				log("Read CV " + QString::number(cv) + " = " + QString::number(value) +
@@ -1284,7 +1284,7 @@ void MainWindow::b_volt_ref_read_handle() {
 void MainWindow::b_ad_read_handle() {
 	ui.gb_ad->setEnabled(false);
 	xn.readCVdirect(
-		CV_ACCEL,
+		Cm::CV_ACCEL,
 		[this](void *s, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) { xn_cvRead(s, st, cv, value); },
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_adReadError(s, d); })
 	);
@@ -1299,7 +1299,7 @@ void MainWindow::b_ad_write_handle() {
 	ui.gb_ad->setEnabled(false);
 
 	xn.pomWriteCv(Xn::LocoAddr(
-		ui.sb_loco->value()), CV_ACCEL, ui.sb_accel->value(),
+		ui.sb_loco->value()), Cm::CV_ACCEL, ui.sb_accel->value(),
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_accelWritten(s, d); }),
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_adWriteError(s, d); })
 	);
