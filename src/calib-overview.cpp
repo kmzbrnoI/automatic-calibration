@@ -127,7 +127,7 @@ void CalibOverview::pom_write_power(unsigned power, std::unique_ptr<Xn::Cb> ok, 
 	if (overview_step > 1) {
 		m_xn.pomWriteCv(
 			Xn::LocoAddr(m_loco_addr),
-			CV_START - 1 + overview_step - 1,
+			CV_CURVE_START - 1 + overview_step - 1,
 			power
 		);
 		emit step_power_changed(overview_step-1, power);
@@ -135,7 +135,7 @@ void CalibOverview::pom_write_power(unsigned power, std::unique_ptr<Xn::Cb> ok, 
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_loco_addr),
-		CV_START - 1 + overview_step,
+		CV_CURVE_START - 1 + overview_step,
 		power,
 		std::move(ok),
 		std::move(err)
@@ -145,7 +145,7 @@ void CalibOverview::pom_write_power(unsigned power, std::unique_ptr<Xn::Cb> ok, 
 	if (overview_step < Xn::_STEPS_CNT) {
 		m_xn.pomWriteCv(
 			Xn::LocoAddr(m_loco_addr),
-			CV_START - 1 + overview_step + 1,
+			CV_CURVE_START - 1 + overview_step + 1,
 			power
 		);
 		emit step_power_changed(overview_step+1, power);

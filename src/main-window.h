@@ -26,13 +26,10 @@ forwarded to Calibration Manager as a references.
 #include "settings.h"
 #include "speed-map.h"
 #include "ui_main-window.h"
+#include "cvs.h"
 
 constexpr char DEFAULT_CONFIG_FN[] = "config.ini";
 constexpr unsigned STEPS_CNT = 28;
-
-constexpr unsigned CV_ADDR_SHORT = 1;
-constexpr unsigned CV_ADDR_LO = 18;
-constexpr unsigned CV_ADDR_HI = 17;
 
 const QColor STEPC_DONE = QColor(50, 200, 50);
 const QColor STEPC_ERROR = Qt::red;

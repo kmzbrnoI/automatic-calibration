@@ -91,7 +91,7 @@ void CalibMan::csDone(unsigned step, unsigned power) {
 			m_step_power = power;
 			m_xn.pomWriteCv(
 				Xn::LocoAddr(m_locoAddr),
-				Cs::CV_START + i,
+				CV_CURVE_START + i,
 				power,
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWritten(s, d); }),
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
@@ -146,7 +146,7 @@ void CalibMan::xnStepWritten(void *, void *) {
 			m_step_writing = i;
 			m_xn.pomWriteCv(
 				Xn::LocoAddr(m_locoAddr),
-				Cs::CV_START + i,
+				CV_CURVE_START + i,
 				m_step_power,
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWritten(s, d); }),
 				std::make_unique<Xn::Cb>([this](void *s, void *d) { xnStepWriteError(s, d); })
@@ -398,7 +398,7 @@ void CalibMan::interpolateNext() {
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_locoAddr),
-		Cs::CV_START + m_thisIPstep,
+		CV_CURVE_START + m_thisIPstep,
 		power,
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xnIPWritten(s, d); }),
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xnIPError(s, d); })

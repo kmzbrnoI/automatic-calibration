@@ -106,7 +106,7 @@ void CalibStep::pom_write_step(unsigned step, unsigned power, Xn::UPCb ok, Xn::U
 	if (power != this->setPower(step)) {
 		m_xn.pomWriteCv(
 			Xn::LocoAddr(m_loco_addr),
-			CV_START - 1 + step,
+			CV_CURVE_START - 1 + step,
 			power,
 			std::move(ok),
 			std::move(err)

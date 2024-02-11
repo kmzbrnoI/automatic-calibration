@@ -34,6 +34,7 @@ of the loco and the power of maximum speed of the loco.
 #include "lib/wsm/wsm.h"
 #include "lib/xn/xn.h"
 #include "power-map.h"
+#include "cvs.h"
 
 namespace Co {
 
@@ -49,7 +50,6 @@ constexpr unsigned DEFAULT_MIN_SPEED = 5; // kmph
 constexpr unsigned STEP_RESET_VALUE = 10;
 constexpr unsigned ADAPT_MAX_TICKS = 3; // maximum adaptation ticks
 constexpr unsigned POWER_CNT = 256;
-constexpr unsigned CV_START = 67; // cv 67 = step 1
 
 enum class Error {
 	LargeDiffusion,
