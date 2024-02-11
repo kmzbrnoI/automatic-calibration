@@ -546,7 +546,7 @@
           </property>
          </layout>
         </widget>
-        <widget class="QPushButton" name="b_read_all_steps">
+        <widget class="QPushButton" name="b_verify_all_steps">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -559,10 +559,10 @@
           </rect>
          </property>
          <property name="text">
-          <string>Read all steps</string>
+          <string>Verify all steps</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="b_verify_all_steps">
+        <widget class="QPushButton" name="b_verify_stop">
          <property name="enabled">
           <bool>false</bool>
          </property>
@@ -570,12 +570,28 @@
           <rect>
            <x>120</x>
            <y>310</y>
-           <width>101</width>
+           <width>111</width>
            <height>25</height>
           </rect>
          </property>
          <property name="text">
-          <string>Verify all steps</string>
+          <string>Stop verification</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="b_verify_reset">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>240</x>
+           <y>310</y>
+           <width>111</width>
+           <height>25</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Reset verification</string>
          </property>
         </widget>
        </widget>
@@ -1312,10 +1328,9 @@
   <tabstop>b_calib_stop</tabstop>
   <tabstop>b_reset</tabstop>
   <tabstop>lv_log</tabstop>
-  <tabstop>b_read_all_steps</tabstop>
   <tabstop>b_verify_all_steps</tabstop>
-  <tabstop>vs_speed</tabstop>
-  <tabstop>b_loco_idle</tabstop>
+  <tabstop>b_verify_stop</tabstop>
+  <tabstop>b_verify_reset</tabstop>
   <tabstop>b_loco_stop</tabstop>
   <tabstop>sb_speed</tabstop>
   <tabstop>b_speed_set</tabstop>
@@ -1338,6 +1353,8 @@
   <tabstop>b_test3</tabstop>
   <tabstop>cb_xn_loglevel</tabstop>
   <tabstop>tw_xn_log</tabstop>
+  <tabstop>vs_speed</tabstop>
+  <tabstop>b_loco_idle</tabstop>
  </tabstops>
  <resources>
   <include location="../auto-calib.qrc"/>

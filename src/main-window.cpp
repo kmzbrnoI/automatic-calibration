@@ -64,6 +64,10 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(ui.b_calib_stop, SIGNAL(released()), this, SLOT(b_calib_stop_handle()));
 	QObject::connect(ui.b_reset, SIGNAL(released()), this, SLOT(b_reset_handle()));
 
+	QObject::connect(ui.b_verify_all_steps, SIGNAL(released()), this, SLOT(b_verify_all_steps_handle()));
+	QObject::connect(ui.b_verify_stop, SIGNAL(released()), this, SLOT(b_verify_stop_handle()));
+	QObject::connect(ui.b_verify_reset, SIGNAL(released()), this, SLOT(b_verify_reset_handle()));
+
 	ui.sb_loco->setKeyboardTracking(false);
 	QObject::connect(ui.sb_loco, SIGNAL(valueChanged(int)), this, SLOT(sb_loco_changed(int)));
 
@@ -203,6 +207,12 @@ void MainWindow::widget_set_color(QWidget &widget, const QColor &color) {
 	widget.setPalette(palette);
 }
 
+void MainWindow::widget_set_bgcolor(QWidget &widget, const QColor &color) {
+	QPalette palette = widget.palette();
+	palette.setColor(QPalette::Window, color);
+	widget.setPalette(palette);
+}
+
 void MainWindow::t_xn_disconnect_tick() {
 	log("XN error, disconnecting from XpressNET...");
 	a_xn_disconnect(true);
@@ -270,7 +280,7 @@ void MainWindow::gui_update_enabled() {
 	ui.a_loco_load->setEnabled(!cm.inProgress());
 	ui.a_speed_load->setEnabled(!cm.inProgress());
 	ui.b_reset->setEnabled(!cm.inProgress());
-	ui.b_read_all_steps->setEnabled(xn.connected() && !cm.inProgress());
+	ui.b_verify_all_steps->setEnabled(xn.connected() && !cm.inProgress() && !this->verif_in_progress);
 
 	for (auto& ui_step : ui_steps)
 		gui_step_update_enabled(ui_step);
@@ -381,6 +391,10 @@ void MainWindow::xn_onConnect() {
 }
 
 void MainWindow::xn_onDisconnect() {
+	if (verif_in_progress) {
+		verif_stop();
+		verif_reset();
+	}
 	if (cm.inProgress())
 		cm.stop();
 	widget_set_color(*(ui.l_xn), Qt::red);
@@ -1564,6 +1578,169 @@ void MainWindow::a_speed_load(bool) {
 	catch (const std::exception& e) {
 		log("Unable to load steps-to-speed file!", LOGC_ERROR);
 	}
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Steps verification:
+
+
+void MainWindow::b_verify_all_steps_handle() {
+	if (this->verif_next_step > 0) {
+		QMessageBox::StandardButton reply;
+		reply = QMessageBox::question(
+			this,
+			"Question",
+			"Verification has altready started, do you want to continue with it?",
+			QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes
+		);
+		if (reply == QMessageBox::No)
+			this->verif_next_step = 0;
+	}
+
+	try {
+		log("Steps verification start");
+		this->verif_init();
+	} catch (const QStrException& e) {
+		QMessageBox::critical(this, "Error!", e.str(), QMessageBox::Ok);
+	} catch (...) {
+		QMessageBox::critical(this, "Error!", "Unknown exception!", QMessageBox::Ok);
+	}
+}
+
+void MainWindow::b_verify_stop_handle() {
+	try {
+		this->verif_stop();
+		log("Steps verification manually stopped", LOGC_WARN);
+	} catch (const QStrException& e) {
+		QMessageBox::critical(this, "Error!", e.str(), QMessageBox::Ok);
+	} catch (...) {
+		QMessageBox::critical(this, "Error!", "Unknown exception!", QMessageBox::Ok);
+	}
+}
+
+void MainWindow::b_verify_reset_handle() {
+	QMessageBox::StandardButton reply;
+	reply = QMessageBox::question(
+		this,
+		"Question",
+		"Really reset verification?",
+		QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes
+	);
+	if (reply != QMessageBox::Yes)
+		return;
+
+	try {
+		log("Verification reset");
+		this->verif_reset();
+	} catch (const QStrException& e) {
+		QMessageBox::critical(this, "Error!", e.str(), QMessageBox::Ok);
+	} catch (...) {
+		QMessageBox::critical(this, "Error!", "Unknown exception!", QMessageBox::Ok);
+	}
+}
+
+void MainWindow::verif_init() {
+	this->verif_in_progress = true;
+	this->ui.b_verify_all_steps->setEnabled(false);
+	this->ui.b_verify_stop->setEnabled(true);
+
+	QPalette pal;
+	pal.setColor(QPalette::Window, QC_LIGHT_YELLOW);
+	for (unsigned i = this->verif_next_step; i < STEPS_CNT; i++) {
+		this->ui_steps[i].slider->setAutoFillBackground(true);
+		this->ui_steps[i].slider->setPalette(pal);
+	}
+
+	if (this->verif_next_step == 0)
+		this->verif_next_step = 1;
+	this->verif_next();
+}
+
+void MainWindow::verif_stop() {
+	this->verif_in_progress = false;
+	this->ui.b_verify_all_steps->setEnabled(true);
+	this->ui.b_verify_stop->setEnabled(false);
+	this->ui.b_verify_reset->setEnabled(true);
+}
+
+void MainWindow::verif_reset() {
+	if (this->verif_in_progress)
+		this->verif_stop();
+	this->verif_next_step = 0;
+
+	for (auto& step : this->ui_steps)
+		step.slider->setAutoFillBackground(false);
+
+	this->ui.b_verify_reset->setEnabled(false);
+}
+
+void MainWindow::verif_done() {
+	this->verif_stop();
+	log("Steps verification finished.", LOGC_DONE);
+}
+
+void MainWindow::verif_next() {
+	if ((this->verif_next_step < 1) || (this->verif_next_step > STEPS_CNT))
+		throw QStrException("verif_next: verif_next_step out of range!");
+
+	xn.readCVdirect(
+		CV_CURVE_START - 1 + this->verif_next_step,
+		[this](void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
+			this->verif_read(st, cv, value);
+		},
+		std::make_unique<Xn::Cb>([this](void *, void *) {
+			this->log("Unable to read step "+QString::number(this->verif_next_step), LOGC_ERROR);
+			this->verif_read_error(this->verif_next_step);
+		})
+	);
+}
+
+void MainWindow::verif_read(Xn::ReadCVStatus status, uint8_t cv, uint8_t value) {
+	try {
+		if (!this->verif_in_progress)
+			return;
+
+		this->verif_next_step = (cv - CV_CURVE_START) + 1;
+
+		if (status != Xn::ReadCVStatus::Ok) {
+			log("Unable to read step "+QString::number(this->verif_next_step)+
+				": "+Xn::XpressNet::xnReadCVStatusToQString(status), LOGC_ERROR);
+			this->verif_read_error(this->verif_next_step);
+			return;
+		}
+
+		unsigned slider_value = this->ui_steps[this->verif_next_step-1].slider->value();
+		bool match = (value == slider_value);
+		widget_set_bgcolor(*(this->ui_steps[this->verif_next_step-1].slider), match ? QC_LIGHT_GREEN : QC_LIGHT_BLUE);
+		QString text = "Step="+QString::number(this->verif_next_step)+" CV="+QString::number(cv)+
+			" read="+QString::number(value) + " slider="+QString::number(slider_value);
+		if (match)
+			log(text+" match.", LOGC_DONE);
+		else
+			log(text+" mismatch!", LOGC_ERROR);
+
+		if (this->verif_next_step == STEPS_CNT) {
+			this->verif_done();
+		} else {
+			this->verif_next_step++;
+			this->verif_next();
+		}
+
+	} catch (const QStrException& e) {
+		this->verif_stop();
+		this->show_error("verif_next: "+e.str());
+	} catch (...) {
+		this->verif_stop();
+		this->show_error("verif_next: unknown exception!");
+	}
+}
+
+void MainWindow::verif_read_error(unsigned step) {
+	if ((step < 1) || (step > STEPS_CNT))
+		throw QStrException("verif_read_error: step out of range!");
+
+	widget_set_bgcolor(*(this->ui_steps[step-1].slider), QC_LIGHT_RED);
+	this->verif_stop();
 }
 
 //////////////////////////////////////////////////////////////////////////////

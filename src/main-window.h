@@ -35,10 +35,15 @@ const QColor STEPC_DONE = QColor(50, 200, 50);
 const QColor STEPC_ERROR = Qt::red;
 const QColor STEPC_CHANGED = Qt::blue;
 
-const QColor LOGC_ERROR = QColor(0xFF, 0xAA, 0xAA);
-const QColor LOGC_WARN = QColor(0xFF, 0xFF, 0xAA);
-const QColor LOGC_DONE = QColor(0xAA, 0xFF, 0xAA);
-const QColor LOGC_GET = QColor(0xE0, 0xE0, 0xFF);
+const QColor QC_LIGHT_RED = QColor(0xFF, 0xAA, 0xAA);
+const QColor QC_LIGHT_YELLOW = QColor(0xFF, 0xFF, 0xAA);
+const QColor QC_LIGHT_GREEN = QColor(0xAA, 0xFF, 0xAA);
+const QColor QC_LIGHT_BLUE = QColor(0xE0, 0xE0, 0xFF);
+
+const QColor LOGC_ERROR = QC_LIGHT_RED;
+const QColor LOGC_WARN = QC_LIGHT_YELLOW;
+const QColor LOGC_DONE = QC_LIGHT_GREEN;
+const QColor LOGC_GET = QC_LIGHT_BLUE;
 const QColor LOGC_PUT = QColor(0xE0, 0xFF, 0xE0);
 
 struct UiStep {
@@ -102,6 +107,10 @@ private slots:
 	void chb_step_selected_clicked(bool);
 	void t_xn_disconnect_tick();
 	void cb_xn_ll_index_changed(int index);
+
+	void b_verify_all_steps_handle();
+	void b_verify_stop_handle();
+	void b_verify_reset_handle();
 
 	// Test buttons:
 	void b_test1_handle();
@@ -172,6 +181,8 @@ private:
 	Cm::CalibMan cm;
 	Cr::CalibRange cr;
 	QString config_fn;
+	unsigned verif_next_step = 0; // 0 = no verification in progress
+	bool verif_in_progress;
 
 	// Callbacks from XpressNET library:
 	void xn_onDccGoError(void *, void *);
@@ -194,6 +205,7 @@ private:
 	void xn_stepWriteError(void *, void *);
 
 	void widget_set_color(QWidget &, const QColor &);
+	void widget_set_bgcolor(QWidget &, const QColor &);
 	void show_response_error(const QString &command);
 	void log(const QString &message, const QColor &color = Qt::white);
 	void wsm_status_blink();
@@ -204,6 +216,14 @@ private:
 	void step_set_color(unsigned stepi, const QColor &color);
 	void gui_update_enabled();
 	void gui_step_update_enabled(UiStep&);
+
+	void verif_init();
+	void verif_reset();
+	void verif_stop();
+	void verif_next();
+	void verif_done();
+	void verif_read(Xn::ReadCVStatus, uint8_t cv, uint8_t value);
+	void verif_read_error(unsigned step);
 };
 
 #endif // MAINWINDOW_H
