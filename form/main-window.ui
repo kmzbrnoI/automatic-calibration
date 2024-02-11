@@ -1157,11 +1157,12 @@
     <addaction name="a_wsm_connect"/>
     <addaction name="a_wsm_disconnect"/>
    </widget>
-   <widget class="QMenu" name="m_power_graph">
+   <widget class="QMenu" name="m_calibration">
     <property name="title">
-     <string>Power graph</string>
+     <string>Calibration</string>
     </property>
     <addaction name="a_power_graph"/>
+    <addaction name="a_use_speed_table"/>
    </widget>
    <widget class="QMenu" name="menuLoco">
     <property name="title">
@@ -1186,7 +1187,7 @@
    <addaction name="menuLoco"/>
    <addaction name="m_xn"/>
    <addaction name="m_wsm"/>
-   <addaction name="m_power_graph"/>
+   <addaction name="m_calibration"/>
    <addaction name="m_debug"/>
   </widget>
   <action name="a_xn_connect">
@@ -1304,6 +1305,11 @@
   <action name="a_debug2">
    <property name="text">
     <string>Debug2</string>
+   </property>
+  </action>
+  <action name="a_use_speed_table">
+   <property name="text">
+    <string>Use speed table (service mode)</string>
    </property>
   </action>
  </widget>

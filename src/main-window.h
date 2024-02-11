@@ -107,6 +107,7 @@ private slots:
 	void chb_step_selected_clicked(bool);
 	void t_xn_disconnect_tick();
 	void cb_xn_ll_index_changed(int index);
+	void a_use_speed_table(bool);
 
 	void b_verify_all_steps_handle();
 	void b_verify_stop_handle();
@@ -224,6 +225,9 @@ private:
 	void verif_done();
 	void verif_read(Xn::ReadCVStatus, uint8_t cv, uint8_t value);
 	void verif_read_error(unsigned step);
+
+	void use_speed_table_read_basic_config(Xn::ReadCVStatus, uint8_t value);
+	static QString explain_cv29(uint8_t value);
 };
 
 #endif // MAINWINDOW_H

@@ -130,6 +130,7 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(ui.b_wsm_lt, SIGNAL(released()), this, SLOT(b_wsm_lt_handle()));
 
 	QObject::connect(ui.a_power_graph, SIGNAL(triggered(bool)), this, SLOT(a_power_graph(bool)));
+	QObject::connect(ui.a_use_speed_table, SIGNAL(triggered(bool)), this, SLOT(a_use_speed_table(bool)));
 	QObject::connect(ui.a_loco_load, SIGNAL(triggered(bool)), this, SLOT(a_loco_load(bool)));
 	QObject::connect(ui.a_loco_save, SIGNAL(triggered(bool)), this, SLOT(a_loco_save(bool)));
 	QObject::connect(ui.a_config_load, SIGNAL(triggered(bool)), this, SLOT(a_config_load(bool)));
@@ -1373,8 +1374,8 @@ void MainWindow::a_debug_interpolate(bool) { cm.interpolateAll(); }
 
 void MainWindow::a_debug2(bool) {
 	xn.writeCVdirect(
-		CV_BASIC_CONFIG,
-		0x12,
+		CV_RESET,
+		CV_RESET_RESET,
 		std::make_unique<Xn::Cb>([this](void *, void *) { log("Ok"); }),
 		std::make_unique<Xn::Cb>([this](void *, void *) { log("Error"); })
 	);
@@ -1772,6 +1773,68 @@ void MainWindow::verif_read_error(unsigned step) {
 
 	widget_set_bgcolor(*(this->ui_steps[step-1].slider), QC_LIGHT_RED);
 	this->verif_stop();
+}
+
+//////////////////////////////////////////////////////////////////////////////
+// Use speed table Service Mode
+
+void MainWindow::a_use_speed_table(bool) {
+	if (!xn.connected()) {
+		show_error("Not connected to XpressNET!");
+		return;
+	}
+
+	xn.readCVdirect(
+		CV_BASIC_CONFIG,
+		[this](void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
+			if (cv == CV_BASIC_CONFIG)
+				use_speed_table_read_basic_config(st, value);
+			else
+				show_error("Different CV read!");
+		},
+		std::make_unique<Xn::Cb>([this](void *, void *) {
+			show_error("Unable to read CV "+QString::number(CV_BASIC_CONFIG)+": no response from command station!");
+		})
+	);
+}
+
+void MainWindow::use_speed_table_read_basic_config(Xn::ReadCVStatus status, uint8_t value) {
+	if (status != Xn::ReadCVStatus::Ok) {
+		show_error("Unable to read CV " + QString::number(CV_BASIC_CONFIG) + ": " +
+		           Xn::XpressNet::xnReadCVStatusToQString(status));
+		return;
+	}
+
+	log("Read CV "+QString::number(CV_BASIC_CONFIG)+" value="+QString::number(value)+
+		" = 0b"+QString::number(value, 2) + " = 0x"+QString::number(value, 16) + ": "+explain_cv29(value));
+
+	if ((value >> CV_CONFIG_BIT_SPEED_TABLE) & 1) {
+		log("Speed table already enabled.", LOGC_DONE);
+	} else {
+		uint8_t new_value = value | (1 << CV_CONFIG_BIT_SPEED_TABLE);
+		log("Enable speed table: write value "+QString::number(new_value));
+		xn.writeCVdirect(
+			CV_BASIC_CONFIG,
+			new_value,
+			std::make_unique<Xn::Cb>([this](void *, void *) {
+				log("CV "+QString::number(CV_BASIC_CONFIG)+" succesfully written", LOGC_DONE);
+			}),
+			std::make_unique<Xn::Cb>([this](void *, void *) {
+				show_error("Unable to write CV "+QString::number(CV_BASIC_CONFIG)+": no response from command station!");
+			})
+		);
+	}
+}
+
+QString MainWindow::explain_cv29(uint8_t value) {
+	QString result;
+	result += QString("direction: ") + (((value >> CV_CONFIG_BIT_DIRECTION) & 1) ? "reversed" : "normal");
+	result += QString(", speed steps: ") + (((value >> CV_CONFIG_BIT_SPEED_STEPS) & 1) ? "28/128" : "14");
+	result += QString(", analog: ") + (((value >> CV_CONFIG_BIT_ANALOG) & 1) ? "on" : "off");
+	result += QString(", RailCom: ") + (((value >> CV_CONFIG_BIT_RAILCOM) & 1) ? "on" : "off");
+	result += QString(", speed table: ") + (((value >> CV_CONFIG_BIT_SPEED_TABLE) & 1) ? "on" : "off");
+	result += QString(", address: ") + (((value >> CV_CONFIG_BIT_EXTENDED_ADDR) & 1) ? "extended" : "primary");
+	return result;
 }
 
 //////////////////////////////////////////////////////////////////////////////
