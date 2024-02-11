@@ -113,9 +113,9 @@ private slots:
 	void b_verify_reset_handle();
 
 	// Test buttons:
-	void b_test1_handle();
-	void b_test2_handle();
-	void b_test3_handle();
+	void a_debug_interpolate(bool);
+	void a_debug1(bool);
+	void a_debug2(bool);
 
 	// GUI menu actions:
 	void a_xn_connect(bool);

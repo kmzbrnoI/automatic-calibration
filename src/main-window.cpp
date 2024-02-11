@@ -72,14 +72,12 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(ui.sb_loco, SIGNAL(valueChanged(int)), this, SLOT(sb_loco_changed(int)));
 
 #ifdef QT_NO_DEBUG
-	ui.b_test1->setVisible(false);
-	ui.b_test2->setVisible(false);
-	ui.b_test3->setVisible(false);
+	ui.mb_main->removeAction(ui.m_debug->menuAction());
 #endif
 
-	QObject::connect(ui.b_test1, SIGNAL(released()), this, SLOT(b_test1_handle()));
-	QObject::connect(ui.b_test2, SIGNAL(released()), this, SLOT(b_test2_handle()));
-	QObject::connect(ui.b_test3, SIGNAL(released()), this, SLOT(b_test3_handle()));
+	QObject::connect(ui.a_debug_interpolate, SIGNAL(triggered(bool)), this, SLOT(a_debug_interpolate(bool)));
+	QObject::connect(ui.a_debug1, SIGNAL(triggered(bool)), this, SLOT(a_debug1(bool)));
+	QObject::connect(ui.a_debug2, SIGNAL(triggered(bool)), this, SLOT(a_debug2(bool)));
 
 	ui.sb_max_speed->setValue(m_ssm.maxSpeedInFile());
 	QObject::connect(ui.sb_max_speed, SIGNAL(valueChanged(int)), this,
@@ -1362,11 +1360,25 @@ void MainWindow::b_ad_write_handle() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::b_test1_handle() {}
+void MainWindow::a_debug1(bool) {
+	xn.pomWriteBit(
+		Xn::LocoAddr(ui.sb_loco->value()),
+		CV_BASIC_CONFIG,
+		CV_CONFIG_BIT_SPEED_TABLE,
+		Cm::CV_CONFIG_SPEED_TABLE_VALUE
+	);
+}
 
-void MainWindow::b_test2_handle() { cm.interpolateAll(); }
+void MainWindow::a_debug_interpolate(bool) { cm.interpolateAll(); }
 
-void MainWindow::b_test3_handle() {}
+void MainWindow::a_debug2(bool) {
+	xn.writeCVdirect(
+		CV_BASIC_CONFIG,
+		0x12,
+		std::make_unique<Xn::Cb>([this](void *, void *) { log("Ok"); }),
+		std::make_unique<Xn::Cb>([this](void *, void *) { log("Error"); })
+	);
+}
 
 //////////////////////////////////////////////////////////////////////////////
 // Loco file IO:

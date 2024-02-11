@@ -473,45 +473,6 @@
           <string>Idle</string>
          </property>
         </widget>
-        <widget class="QPushButton" name="b_test3">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>250</y>
-           <width>51</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>test3</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="b_test1">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>190</y>
-           <width>51</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>test1</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="b_test2">
-         <property name="geometry">
-          <rect>
-           <x>170</x>
-           <y>220</y>
-           <width>51</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>test2</string>
-         </property>
-        </widget>
        </widget>
        <widget class="QGroupBox" name="gb_cal_graph">
         <property name="enabled">
@@ -1214,10 +1175,19 @@
     <addaction name="separator"/>
     <addaction name="a_speed_load"/>
    </widget>
+   <widget class="QMenu" name="m_debug">
+    <property name="title">
+     <string>Debug</string>
+    </property>
+    <addaction name="a_debug_interpolate"/>
+    <addaction name="a_debug1"/>
+    <addaction name="a_debug2"/>
+   </widget>
    <addaction name="menuLoco"/>
    <addaction name="m_xn"/>
    <addaction name="m_wsm"/>
    <addaction name="m_power_graph"/>
+   <addaction name="m_debug"/>
   </widget>
   <action name="a_xn_connect">
    <property name="text">
@@ -1312,6 +1282,30 @@
     <string>Reload speed mapping</string>
    </property>
   </action>
+  <action name="a_debug_interpolate">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Interpolate all</string>
+   </property>
+   <property name="visible">
+    <bool>true</bool>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="a_debug1">
+   <property name="text">
+    <string>Debug1</string>
+   </property>
+  </action>
+  <action name="a_debug2">
+   <property name="text">
+    <string>Debug2</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>tw_main</tabstop>
@@ -1348,9 +1342,6 @@
   <tabstop>b_ad_read</tabstop>
   <tabstop>b_ad_write</tabstop>
   <tabstop>b_decel_measure</tabstop>
-  <tabstop>b_test1</tabstop>
-  <tabstop>b_test2</tabstop>
-  <tabstop>b_test3</tabstop>
   <tabstop>cb_xn_loglevel</tabstop>
   <tabstop>tw_xn_log</tabstop>
   <tabstop>vs_speed</tabstop>
