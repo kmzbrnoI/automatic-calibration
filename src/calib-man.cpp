@@ -474,7 +474,13 @@ void CalibMan::initCVs() {
 		CV_CONFIG_BIT_SPEED_TABLE,
 		CV_CONFIG_SPEED_TABLE_VALUE,
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { initSTWritten(s, d); }),
-		std::make_unique<Xn::Cb>([this](void *s, void *d) { initCVsError(s, d); })
+		std::make_unique<Xn::Cb>([this](void *s, void *d) {
+			// Intentionally do not call initCVsError
+			// Digikeijs DR5000 cannot write bits in POM mode -> worksround
+			log("Unable to activate speed curve! Ensure curve is enabled by service mode programming!", LogLevel::Error);
+			log("Continuing...", LogLevel::Warning);
+			initSTWritten(s, d);
+		})
 	);
 }
 
