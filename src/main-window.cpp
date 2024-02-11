@@ -577,6 +577,8 @@ void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t valu
 		return;
 	}
 
+	log("Read CV "+QString::number(cv)+" = "+QString::number(value));
+
 	if (cv == CV_ADDR_LO) {
 		try {
 			ui.sb_loco->setValue(Xn::LocoAddr(value, 0xC0));
