@@ -1007,17 +1007,6 @@ void MainWindow::init_calib_graph() {
 		}
 
 		{
-			auto *read = new QPushButton("R", ui.gb_cal_graph);
-			read->setProperty("step", static_cast<uint>(i));
-			read->setEnabled(false);
-			read->setFixedHeight(20);
-			read->setToolTip("Read value of this step from decoder");
-			ui_steps[i].read = read;
-			QObject::connect(read, SIGNAL(released()), this, SLOT(b_step_read_handle()));
-			ui.l_cal_graph->addWidget(read, 5, i);
-		}
-
-		{
 			auto *write = new QPushButton("W", ui.gb_cal_graph);
 			write->setProperty("step", static_cast<uint>(i));
 			write->setEnabled(false);
@@ -1025,7 +1014,18 @@ void MainWindow::init_calib_graph() {
 			write->setToolTip("Write this step to decoder");
 			ui_steps[i].write = write;
 			QObject::connect(write, SIGNAL(released()), this, SLOT(b_step_write_handle()));
-			ui.l_cal_graph->addWidget(write, 6, i);
+			ui.l_cal_graph->addWidget(write, 5, i);
+		}
+
+		{
+			auto *read = new QPushButton("R", ui.gb_cal_graph);
+			read->setProperty("step", static_cast<uint>(i));
+			read->setEnabled(false);
+			read->setFixedHeight(20);
+			read->setToolTip("Read value of this step from decoder");
+			ui_steps[i].read = read;
+			QObject::connect(read, SIGNAL(released()), this, SLOT(b_step_read_handle()));
+			ui.l_cal_graph->addWidget(read, 6, i);
 		}
 
 		{
@@ -1055,6 +1055,27 @@ void MainWindow::b_step_calibrate_handle() {
 
 void MainWindow::b_step_read_handle() {
 	unsigned stepi = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt();
+
+	xn.readCVdirect(
+		CV_CURVE_START + stepi,
+		[this](void *, Xn::ReadCVStatus status, uint8_t cv, uint8_t value) {
+			unsigned stepi = cv-CV_CURVE_START;
+			if (status == Xn::ReadCVStatus::Ok) {
+				unsigned slider_value = this->ui_steps[stepi].slider->value();
+				QString text = "Step="+QString::number(stepi+1)+" CV="+QString::number(cv)+
+					" read="+QString::number(value) + " slider="+QString::number(slider_value);
+				bool match = (value == slider_value);
+				log(text+ (match ? " match." : " mismatch!"), match ? LOGC_DONE: LOGC_ERROR);
+			} else {
+				show_error("Unable to read step "+QString::number(stepi+1)+
+					": "+Xn::XpressNet::xnReadCVStatusToQString(status));
+				return;
+			}
+		},
+		std::make_unique<Xn::Cb>([this](void *, void *) {
+			show_error("Unable to read step "+QString::number(this->verif_next_step));
+		})
+	);
 }
 
 void MainWindow::b_step_write_handle() {
@@ -1212,6 +1233,7 @@ void MainWindow::b_calib_start_handle() {
 	else
 		cm.init_cvs.erase(CV_UREF);
 
+	verif_reset();
 	ui.pb_progress->setValue(0);
 	widget_set_color(*ui.l_calib_state, Qt::yellow);
 	cm.calibrateAll(ui.sb_loco->value(),
@@ -1714,10 +1736,7 @@ void MainWindow::verif_read(Xn::ReadCVStatus status, uint8_t cv, uint8_t value) 
 		widget_set_bgcolor(*(this->ui_steps[this->verif_next_step-1].slider), match ? QC_LIGHT_GREEN : QC_LIGHT_BLUE);
 		QString text = "Step="+QString::number(this->verif_next_step)+" CV="+QString::number(cv)+
 			" read="+QString::number(value) + " slider="+QString::number(slider_value);
-		if (match)
-			log(text+" match.", LOGC_DONE);
-		else
-			log(text+" mismatch!", LOGC_ERROR);
+		log(text+ (match ? " match." : " mismatch!"), match ? LOGC_DONE: LOGC_ERROR);
 
 		if (this->verif_next_step == STEPS_CNT) {
 			this->verif_done();
