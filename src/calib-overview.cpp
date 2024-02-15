@@ -42,6 +42,7 @@ std::unique_ptr<unsigned> CalibOverview::next_step() {
 void CalibOverview::makeOverview(const unsigned loco_addr) {
 	m_loco_addr = loco_addr;
 	m_diff_count = 0;
+	was_set = false;
 
 	do_next_step();
 }
@@ -49,14 +50,17 @@ void CalibOverview::makeOverview(const unsigned loco_addr) {
 void CalibOverview::do_next_step() {
 	std::unique_ptr<unsigned> next = next_step();
 	if (nullptr == next) {
-		// Set some "normal" value to step 1
-		reset_step();
+		if (was_set) {
+			// Set some "normal" value to step 1
+			reset_step();
+		}
 		emit done();
 		return;
 	}
 	m_last_power = *next;
 	emit progress_update(m_last_power, POWER_CNT);
 
+	was_set = true;
 	this->pom_write_power(
 		m_last_power,
 		std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_pom_ok(s, d); }),

@@ -84,6 +84,7 @@ private:
 	QTimer t_sp_adapt;
 	unsigned m_diff_count;
 	unsigned m_last_power;
+	bool was_set = false;
 
 	void xn_pom_ok(void *, void *);
 	void xn_pom_err(void *, void *);

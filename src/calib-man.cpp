@@ -449,7 +449,7 @@ void CalibMan::setStepManually(const unsigned step, const unsigned power) {
 		i++;
 	}
 
-	i = step-2; // actually i = stepi-1
+	i = static_cast<int>(step)-2; // actually i = stepi-1
 	while (i >= 0 && nullptr == m_ssm[i] && state[i] != StepState::SetManually) {
 		state[i] = StepState::Uncalibred;
 		i--;
