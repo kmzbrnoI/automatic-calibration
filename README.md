@@ -51,13 +51,13 @@ $ apt install bear
 
 Clone this repository (including submodules!):
 
-```
+```bash
 $ git clone --recurse-submodules https://github.com/kmzbrnoI/automatic-calibration
 ```
 
 And then build:
 
-```
+```bash
 $ mkdir build
 $ cd build
 $ qmake -spec linux-clang ..
@@ -66,7 +66,7 @@ $ bear make
 
 To make debug binary, run:
 
-```
+```bash
 $ qmake -spec linux-clang CONFIG+=debug ..
 $ make
 ```
@@ -79,7 +79,7 @@ You may use [this script](https://serverfault.com/questions/61659/can-you-get-an
    automatically
  * Linux: pair it with HC-05 module and map it to new serial device:
 
-    ```
+    ```bash
     $ rfcomm connect /dev/rfcomm0 hc-05-hw-address 2
     ```
 
@@ -132,7 +132,7 @@ Speed table is loaded from `speed.csv` file, where each line is of format
 
 ## Style checking
 
-```
+```bash
 $ clang-tidy-7 -p build -extra-arg-before=-x -extra-arg-before=c++ -extra-arg=-std=c++14 -header-filter=. src/*.cpp
 $ clang-format-7 *.cpp *.h
 ```
