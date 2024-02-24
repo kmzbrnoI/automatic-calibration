@@ -52,7 +52,6 @@ struct UiStep {
 	QCheckBox *selected;
 	QPushButton *read;
 	QPushButton *write;
-	QPushButton *calibrate;
 };
 
 class MainWindow : public QMainWindow {
@@ -103,7 +102,6 @@ private slots:
 	void vs_steps_moved(int);
 	void b_step_read_handle();
 	void b_step_write_handle();
-	void b_step_calibrate_handle();
 	void chb_step_selected_clicked(bool);
 	void t_xn_disconnect_tick();
 	void cb_xn_ll_index_changed(int index);

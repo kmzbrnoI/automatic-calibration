@@ -294,7 +294,6 @@ void MainWindow::gui_step_update_enabled(UiStep& ui_step) {
 	ui_step.slider->setEnabled(xn.connected() && !cm.inProgress() && ui_step.selected->isChecked());
 	ui_step.read->setEnabled(xn.connected() && !cm.inProgress());
 	ui_step.write->setEnabled(ui_step.selected->isChecked());
-	ui_step.calibrate->setEnabled(wsm.connected() && !ui_step.selected->isChecked());
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1028,17 +1027,6 @@ void MainWindow::init_calib_graph() {
 			QObject::connect(read, SIGNAL(released()), this, SLOT(b_step_read_handle()));
 			ui.l_cal_graph->addWidget(read, 6, i);
 		}
-
-		{
-			auto *calibrate = new QPushButton("C", ui.gb_cal_graph);
-			calibrate->setProperty("step", static_cast<uint>(i));
-			calibrate->setEnabled(false);
-			calibrate->setFixedHeight(20);
-			calibrate->setToolTip("Calibrate this step");
-			ui_steps[i].calibrate = calibrate;
-			QObject::connect(calibrate, SIGNAL(released()), this, SLOT(b_step_calibrate_handle()));
-			ui.l_cal_graph->addWidget(calibrate, 7, i);
-		}
 	}
 }
 
@@ -1048,10 +1036,6 @@ void MainWindow::vs_steps_moved(int value) {
 
 	if (ui_steps[stepi].slider->isEnabled())
 		step_set_color(stepi, STEPC_CHANGED);
-}
-
-void MainWindow::b_step_calibrate_handle() {
-	unsigned stepi = qobject_cast<QPushButton*>(QObject::sender())->property("step").toUInt();
 }
 
 void MainWindow::b_step_read_handle() {
@@ -1547,7 +1531,6 @@ void MainWindow::reset() {
 		ui_steps[i].slider->setEnabled(false);
 		ui_steps[i].selected->setChecked(false);
 		ui_steps[i].write->setEnabled(false);
-		ui_steps[i].calibrate->setEnabled(false);
 		step_set_color(i, Qt::black);
 	}
 	widget_set_color(*ui.l_calib_state, Qt::gray);
