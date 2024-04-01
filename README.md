@@ -17,7 +17,7 @@ decoder in the train and then measures real speed of the train. It repeats this
 process until the correct speed is assigned to the speed step. And the again
 for different speed step and different real speed...
 
-This application is developed in [QT](https://www.qt.io/) v5.
+This application is developed in [QT](https://www.qt.io/) v5 or v6.
 
 ## Resources
 
@@ -33,17 +33,17 @@ then you may use `clang-tools` during development process (see below).
 
 ### Prerequisities
 
- * Qt 5
+ * Qt 5/6
  * Qt's `serialport`
  * Qt's `charts`
  * Optional: clang build tools (see below)
  * Optional for clang: [Bear](https://github.com/rizsotto/Bear)
 
-### Example: toolchain setup on Debian
+### Example: toolchain setup on Debian 12 Bookworm
 
 ```bash
-$ apt install qt5-default libqt5serialport5-dev libqt5charts5-dev
-$ apt install clang-7 clang-tools-7 clang-tidy-7 clang-format-7
+$ apt install qt6-base-dev qt6-charts-dev qt6-serialport-dev
+$ apt install clang clang-tools clang-tidy clang-format
 $ apt install bear
 ```
 
@@ -60,14 +60,14 @@ And then build:
 ```bash
 $ mkdir build
 $ cd build
-$ qmake -spec linux-clang ..
-$ bear make
+$ qmake6 -spec linux-clang ..
+$ bear -- make
 ```
 
 To make debug binary, run:
 
 ```bash
-$ qmake -spec linux-clang CONFIG+=debug ..
+$ qmake6 -spec linux-clang CONFIG+=debug ..
 $ make
 ```
 
@@ -133,8 +133,8 @@ Speed table is loaded from `speed.csv` file, where each line is of format
 ## Style checking
 
 ```bash
-$ clang-tidy-7 -p build -extra-arg-before=-x -extra-arg-before=c++ -extra-arg=-std=c++14 -header-filter=. src/*.cpp
-$ clang-format-7 *.cpp *.h
+$ clang-tidy -p build src/*.cpp
+$ clang-format *.cpp *.h
 ```
 
 ## Authors
