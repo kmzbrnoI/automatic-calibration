@@ -13,8 +13,7 @@ const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), xn(this), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
-	QString text = QString::asprintf("Automatic Calibration v%d.%d", VERSION_MAJOR, VERSION_MINOR);
-	this->setWindowTitle(text);
+	this->setWindowTitle(QString("Automatic Calibration v%1.%2").arg(VERSION_MAJOR).arg(VERSION_MINOR));
 	this->setFixedSize(this->size());
 
 	const QStringList args = QCoreApplication::arguments();
@@ -903,12 +902,8 @@ void MainWindow::mc_onError(QString error) {
 
 void MainWindow::mc_batteryRead(double voltage, uint16_t voltage_raw) {
 	(void)voltage_raw;
-	QString text = QString::asprintf(
-		"%4.2f V (%s)",
-		voltage,
-		QTime::currentTime().toString().toUtf8().data()
-	);
-	ui.l_wsm_bat_voltage->setText(text);
+	ui.l_wsm_bat_voltage->setText(QString("%1 V (%2)").arg(voltage, 0, 'f', 2).\
+		arg(QTime::currentTime().toString().toUtf8().data()));
 }
 
 void MainWindow::mc_batteryCritical() {
