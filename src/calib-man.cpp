@@ -33,7 +33,7 @@ void CalibMan::done() {
 	emit onDone();
 }
 
-void CalibMan::error(const Cm::CmError e, const unsigned step, const QString note) {
+void CalibMan::error(const Cm::CmError e, const unsigned step, const QString &note) {
 	updateProg(CalibState::Stopped, 0, 1);
 	log("Step " + QString::number(step) + " calibration error!", LogLevel::Error);
 	emit onError(e, step, note);

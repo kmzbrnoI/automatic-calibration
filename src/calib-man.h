@@ -146,7 +146,7 @@ private:
 	void xnIPError(void *, void *);
 
 	void done();
-	void error(Cm::CmError, unsigned step, const QString note = "");
+	void error(Cm::CmError, unsigned step, const QString &note = "");
 	void log(const QString &message, LogLevel);
 	void changeStepPower(unsigned step, unsigned power);
 	void stepDone(unsigned step, unsigned power);
@@ -174,7 +174,7 @@ signals:
 	void onStepDone(unsigned step, unsigned power);
 
 	void onDone();
-	void onError(Cm::CmError, unsigned step, const QString note);
+	void onError(Cm::CmError, unsigned step, const QString &note);
 	void onLog(const QString &, Cm::LogLevel);
 
 	void onLocoSpeedChanged(unsigned step);
