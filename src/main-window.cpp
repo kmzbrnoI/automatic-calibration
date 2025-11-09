@@ -14,7 +14,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), xn(this), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
 	this->setWindowTitle(QString("Automatic Calibration v%1.%2").arg(VERSION_MAJOR).arg(VERSION_MINOR));
-	this->setFixedSize(this->size());
 
 	const QStringList args = QCoreApplication::arguments();
 	this->config_fn = args.size() > 1 ? args.at(1) : DEFAULT_CONFIG_FN;
@@ -126,7 +125,6 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(ui.a_wsm_connect, SIGNAL(triggered(bool)), this, SLOT(a_wsm_connect(bool)));
 	QObject::connect(ui.a_wsm_disconnect, SIGNAL(triggered(bool)), this,
 	                 SLOT(a_wsm_disconnect(bool)));
-	QObject::connect(ui.b_wsm_lt, SIGNAL(released()), this, SLOT(b_wsm_lt_handle()));
 
 	QObject::connect(ui.a_power_graph, SIGNAL(triggered(bool)), this, SLOT(a_power_graph(bool)));
 	QObject::connect(ui.a_use_speed_table, SIGNAL(triggered(bool)), this, SLOT(a_use_speed_table(bool)));
@@ -274,7 +272,6 @@ void MainWindow::gui_update_enabled() {
 	ui.sb_volt_ref->setEnabled(!cm.inProgress() && ui.chb_volt_ref->isChecked());
 	ui.b_volt_ref_read->setEnabled(xn.connected());
 	ui.gb_ad->setEnabled(xn.connected() && !cm.inProgress());
-	ui.b_wsm_lt->setEnabled(wsm.connected() && !cm.inProgress());
 	ui.a_loco_load->setEnabled(!cm.inProgress());
 	ui.a_speed_load->setEnabled(!cm.inProgress());
 	ui.b_reset->setEnabled(!cm.inProgress());
@@ -925,26 +922,12 @@ void MainWindow::mc_speedReceiveTimeout() {
 }
 
 void MainWindow::mc_speedReceiveRestore() {
-	ui.b_wsm_lt->setEnabled(true);
 	log("WSM speed receive restored");
 }
 
 void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
-	ui.b_wsm_lt->setEnabled(true);
 	log("WSM long term done: sp=" + QString::number(speed, 'f', 1) +
 	    ", diff=" + QString::number(diffusion, 'f', 1), LOGC_DONE);
-}
-
-void MainWindow::b_wsm_lt_handle() {
-	if (wsm.connected()) {
-		try {
-			wsm.startLongTermMeasure(30); // 3 s
-		}
-		catch (const Wsm::QStrException& e) {
-			show_error(e.str());
-		}
-		ui.b_wsm_lt->setEnabled(false);
-	}
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1006,6 +989,7 @@ void MainWindow::init_calib_graph() {
 			write->setProperty("step", static_cast<uint>(i));
 			write->setEnabled(false);
 			write->setFixedHeight(20);
+			write->setFixedWidth(20);
 			write->setToolTip("Write this step to decoder");
 			ui_steps[i].write = write;
 			QObject::connect(write, SIGNAL(released()), this, SLOT(b_step_write_handle()));
@@ -1017,6 +1001,7 @@ void MainWindow::init_calib_graph() {
 			read->setProperty("step", static_cast<uint>(i));
 			read->setEnabled(false);
 			read->setFixedHeight(20);
+			read->setFixedWidth(20);
 			read->setToolTip("Read value of this step from decoder");
 			ui_steps[i].read = read;
 			QObject::connect(read, SIGNAL(released()), this, SLOT(b_step_read_handle()));

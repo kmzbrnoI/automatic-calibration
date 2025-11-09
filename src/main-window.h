@@ -93,7 +93,6 @@ private slots:
 	void b_ad_read_handle();
 	void b_ad_write_handle();
 	void b_decel_measure_handle();
-	void b_wsm_lt_handle();
 	void sb_max_speed_changed(int value);
 	void lv_log_dblclick(QListWidgetItem *);
 	void tw_xn_log_dblclick(QTreeWidgetItem *, int column);
