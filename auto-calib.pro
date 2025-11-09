@@ -23,7 +23,7 @@ SOURCES += \
 	lib/xn/xn-api.cpp \
 	lib/xn/xn-receive.cpp \
 	lib/xn/xn-send.cpp \
-	lib/xn/xn-hist.cpp \
+	lib/xn/xn-pending.cpp \
 	lib/xn/xn-win-com-discover.cpp \
 	src/main.cpp \
 	src/main-window.cpp \
