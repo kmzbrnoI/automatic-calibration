@@ -988,7 +988,6 @@ void MainWindow::init_calib_graph() {
 			auto *write = new QPushButton("W", ui.gb_cal_graph);
 			write->setProperty("step", static_cast<uint>(i));
 			write->setEnabled(false);
-			write->setFixedHeight(20);
 			write->setFixedWidth(20);
 			write->setToolTip("Write this step to decoder");
 			ui_steps[i].write = write;
@@ -1000,7 +999,6 @@ void MainWindow::init_calib_graph() {
 			auto *read = new QPushButton("R", ui.gb_cal_graph);
 			read->setProperty("step", static_cast<uint>(i));
 			read->setEnabled(false);
-			read->setFixedHeight(20);
 			read->setFixedWidth(20);
 			read->setToolTip("Read value of this step from decoder");
 			ui_steps[i].read = read;
