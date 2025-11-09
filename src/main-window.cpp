@@ -1576,7 +1576,7 @@ void MainWindow::a_speed_load(bool) {
 		log("Loaded steps-to-speed mapping from " + filename);
 	}
 	catch (const std::exception& e) {
-		log("Unable to load steps-to-speed file!", LOGC_ERROR);
+		log("Unable to load steps-to-speed file "+filename+"!", LOGC_ERROR);
 	}
 }
 
