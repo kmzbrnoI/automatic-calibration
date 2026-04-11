@@ -14,7 +14,6 @@ const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), xn(this), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
-	this->setWindowTitle(QString(tr("Automatic Calibration") + " v%1.%2").arg(VERSION_MAJOR).arg(VERSION_MINOR));
 
 	const QStringList args = QCoreApplication::arguments();
 	this->config_fn = args.size() > 1 ? args.at(1) : DEFAULT_CONFIG_FN;
@@ -179,7 +178,8 @@ MainWindow::MainWindow(QWidget *parent)
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
 
 	ui.tw_main->setCurrentIndex(0);
-	log("Application launched.");
+	this->retranslate();
+	log(tr("Application launched."));
 }
 
 MainWindow::~MainWindow() {
@@ -214,7 +214,7 @@ void MainWindow::t_xn_disconnect_tick() {
 	log(tr("XN error, disconnecting from XpressNET..."));
 	a_xn_disconnect(true);
 
-	QMessageBox::warning(this, "Error!",
+	QMessageBox::warning(this, tr("Error!"),
 		tr("XN serial port error, more information in log!"), QMessageBox::Ok);
 }
 
@@ -225,7 +225,7 @@ void MainWindow::cb_xn_ll_index_changed(int index) {
 
 void MainWindow::show_error(const QString &error) {
 	log(error, LOGC_ERROR);
-	QMessageBox::warning(this, "Error!", error, QMessageBox::Ok);
+	QMessageBox::warning(this, tr("Error!"), error, QMessageBox::Ok);
 }
 
 void MainWindow::b_start_handle() {
@@ -320,23 +320,23 @@ void MainWindow::xn_onLog(const QString &message, const Xn::LogLevel &loglevel) 
 			item->setBackground(i, LOGC_PUT);
 
 	if (loglevel == Xn::LogLevel::None)
-		item->setText(1, "None");
+		item->setText(1, tr("None"));
 	else if (loglevel == Xn::LogLevel::Error) {
-		item->setText(1, "Error");
+		item->setText(1, tr("Error"));
 		for (size_t i = 0; i < COLUMN_COUNT; i++)
 			item->setBackground(i, LOGC_ERROR);
 	} else if (loglevel == Xn::LogLevel::Warning) {
-		item->setText(1, "Warning");
+		item->setText(1, tr("Warning"));
 		for (size_t i = 0; i < COLUMN_COUNT; i++)
 			item->setBackground(i, LOGC_WARN);
 	} else if (loglevel == Xn::LogLevel::Info)
-		item->setText(1, "Info");
+		item->setText(1, tr("Info"));
 	else if (loglevel == Xn::LogLevel::Commands)
-		item->setText(1, "Commands");
+		item->setText(1, tr("Commands"));
 	else if (loglevel == Xn::LogLevel::RawData)
-		item->setText(1, "Raw Data");
+		item->setText(1, tr("Raw Data"));
 	else if (loglevel == Xn::LogLevel::Debug)
-		item->setText(1, "Debug");
+		item->setText(1, tr("Debug"));
 
 	item->setText(2, message);
 	ui.tw_xn_log->addTopLevelItem(item);
@@ -372,7 +372,7 @@ void MainWindow::xn_onConnect() {
 	ui.b_speed_set->setEnabled(false);
 	ui.gb_ad->setEnabled(true);
 
-	log("Connected to XpressNET.");
+	log(tr("Connected to XpressNET."));
 
 	try {
 		xn.getLIVersion(
@@ -421,14 +421,14 @@ void MainWindow::xn_onDccStopError(void *, void *) { show_response_error("DCC ST
 
 void MainWindow::show_response_error(const QString &command) {
 	log(tr("Command station did not respond to ") + command + tr(" command!"));
-	QMessageBox::warning(this, "Error!",
+	QMessageBox::warning(this, tr("Error!"),
 	                     tr("Command station did not respond to ") + command + tr(" command!"));
 }
 
 void MainWindow::xn_onLIVersionError(void *, void *) {
 	m_starting = false;
 	log(tr("LI did not respond to version request!"));
-	QMessageBox::warning(this, "Error!",
+	QMessageBox::warning(this, tr("Error!"),
 		tr("LI did not respond to version request, are you really connected to the LI?!"));
 }
 
@@ -1224,7 +1224,7 @@ void MainWindow::b_reset_handle() {
 		return;
 
 	QMessageBox::StandardButton reply;
-	reply = QMessageBox::question(this, "Question", "Really erase all measured data?",
+	reply = QMessageBox::question(this, tr("Question"), tr("Really erase all measured data?"),
 	                              QMessageBox::Yes|QMessageBox::No, QMessageBox::No);
 	if (reply != QMessageBox::Yes)
 		return;
@@ -1561,7 +1561,7 @@ void MainWindow::a_config_load(bool) {
 	Settings::cfgToUnsigned(calcfg, "overviewMinSpeed", cm.co.min_speed);
 	Settings::cfgToUnsigned(calcfg, "rangeStopMinTimes", cr.stop_min);
 
-	log("Loaded config from " + this->config_fn);
+	log(tr("Loaded config from ") + this->config_fn);
 }
 
 void MainWindow::a_config_save(bool) {
@@ -1811,6 +1811,7 @@ QString MainWindow::explain_cv29(uint8_t value) {
 void MainWindow::retranslate() {
 	this->ui.retranslateUi(this);
 	w_pg.retranslate();
+	this->setWindowTitle(QString(tr("Automatic Calibration") + " v%1.%2").arg(VERSION_MAJOR).arg(VERSION_MINOR));
 }
 
 void MainWindow::translate_app_cz() {

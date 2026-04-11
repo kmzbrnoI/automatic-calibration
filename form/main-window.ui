@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>Automatic Calibration</string>
+   <string notr="true">Automatic Calibration</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../auto-calib.qrc">
