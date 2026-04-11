@@ -29,13 +29,13 @@ CalibState CalibMan::progress() const { return m_progress; }
 
 void CalibMan::done() {
 	updateProg(CalibState::Stopped, 1, 1);
-	log("Calibration done :)", LogLevel::Success);
+	log(tr("Calibration done :)"), LogLevel::Success);
 	emit onDone();
 }
 
 void CalibMan::error(const Cm::CmError e, const unsigned step, const QString &note) {
 	updateProg(CalibState::Stopped, 0, 1);
-	log("Step " + QString::number(step) + " calibration error!", LogLevel::Error);
+	log(tr("Step ") + QString::number(step) + tr(" calibration error!"), LogLevel::Error);
 	emit onError(e, step, note);
 }
 
@@ -65,12 +65,12 @@ void CalibMan::changeStepPower(unsigned step, unsigned power) {
 		throw QInvalidArgument("step out of range!");
 	this->power[step-1] = power;
 
-	log("Step " + QString::number(step) + " set to " + QString::number(power), LogLevel::Info);
+	log(tr("Step ") + QString::number(step) + tr(" set to ") + QString::number(power), LogLevel::Info);
 	emit onStepPowerChanged(step, power);
 }
 
 void CalibMan::stepDone(unsigned step, unsigned power) {
-	log("Step " + QString::number(step) + " done", LogLevel::Success);
+	log(tr("Step ") + QString::number(step) + tr(" done"), LogLevel::Success);
 	emit onStepDone(step, power);
 }
 
@@ -163,7 +163,7 @@ void CalibMan::xnStepWriteError(void *, void *) { error(CmError::XnNoResponse, m
 
 void CalibMan::coDone() {
 	// Phase 2: move from phase "Getting basic data" to phase "Calibration"
-	log("Overview finished.", LogLevel::Success);
+	log(tr("Overview finished."), LogLevel::Success);
 	updateProg(CalibState::Steps, 0, 1);
 	calibrateNextStep();
 }
@@ -231,7 +231,7 @@ void CalibMan::calibrateAll(const unsigned locoAddr, Xn::Direction dir) {
 	m_no_calibrated = 0;
 
 	// Phase 0: set CV defaults
-	log("Starting calibration of loco "+QString::number(locoAddr)+"...", LogLevel::Info);
+	log(tr("Starting calibration of loco ")+QString::number(locoAddr)+"...", LogLevel::Info);
 	updateProg(CalibState::InitProg, 1, 4);
 	initCVs();
 }
@@ -267,7 +267,7 @@ void CalibMan::calibrateNextStep() {
 		}
 
 		unsigned step = (*next)+1;
-		log("Starting calibration of step " + QString::number(step), LogLevel::Info);
+		log(tr("Starting calibration of step ") + QString::number(step), LogLevel::Info);
 		emit onStepStart(step);
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), step, direction);
 		emit onLocoSpeedChanged(step);
@@ -333,7 +333,7 @@ unsigned CalibMan::getIPpower(const unsigned boundai, const unsigned boundbi, co
 
 void CalibMan::interpolateAll() {
 	// Find first interval to interpolate.
-	log("Starting interpolation...", LogLevel::Info);
+	log(tr("Starting interpolation..."), LogLevel::Info);
 	updateProg(CalibState::Interpolation, 0, 1);
 
 	m_thisIPleft = 0;
@@ -464,7 +464,7 @@ void CalibMan::unsetStep(const unsigned step) { state[step] = StepState::Uncalib
 void CalibMan::initCVs() {
 	updateProg(CalibState::InitProg, 1, init_cvs.size() + 2);
 
-	this->log("Activating speed curve: CV "+QString::number(CV_BASIC_CONFIG)+", bit " +
+	this->log(tr("Activating speed curve: CV ")+QString::number(CV_BASIC_CONFIG)+", bit " +
 		QString::number(CV_CONFIG_BIT_SPEED_TABLE) + " = " + QString::number(CV_CONFIG_SPEED_TABLE_VALUE),
 		LogLevel::Info);
 
@@ -477,8 +477,8 @@ void CalibMan::initCVs() {
 		std::make_unique<Xn::Cb>([this](void *s, void *d) {
 			// Intentionally do not call initCVsError
 			// Digikeijs DR5000 cannot write bits in POM mode -> worksround
-			log("Unable to activate speed curve! Ensure curve is enabled by service mode programming!", LogLevel::Error);
-			log("Continuing...", LogLevel::Warning);
+			log(tr("Unable to activate speed curve! Ensure curve is enabled by service mode programming!"), LogLevel::Error);
+			log(tr("Continuing..."), LogLevel::Warning);
 			initSTWritten(s, d);
 		})
 	);
@@ -496,7 +496,7 @@ void CalibMan::initCVsWriteNext() {
 
 	if (m_init_cv_iterator == init_cvs.end()) {
 		// Go to phase 1: make an overview of mapping steps to speed
-		log("Initial CVs written, startring CalibrationOverview phase...", LogLevel::Success);
+		log(tr("Initial CVs written, startring CalibrationOverview phase..."), LogLevel::Success);
 		updateProg(CalibState::Overview, 0, 1);
 		m_xn.setSpeed(Xn::LocoAddr(m_locoAddr), co.overview_step, direction);
 		emit onLocoSpeedChanged(co.overview_step);
@@ -507,7 +507,7 @@ void CalibMan::initCVsWriteNext() {
 	unsigned cv = m_init_cv_iterator->first;
 	unsigned value = m_init_cv_iterator->second;
 
-	this->log("Write CV "+QString::number(cv)+" = "+QString::number(value), LogLevel::Info);
+	this->log(tr("Write CV ")+QString::number(cv)+" = "+QString::number(value), LogLevel::Info);
 
 	m_xn.pomWriteCv(
 		Xn::LocoAddr(m_locoAddr),

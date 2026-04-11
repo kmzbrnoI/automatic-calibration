@@ -14,7 +14,7 @@ const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), xn(this), cm(xn, m_pm, wsm, m_ssm), cr(xn, wsm) {
 	ui.setupUi(this);
-	this->setWindowTitle(QString("Automatic Calibration v%1.%2").arg(VERSION_MAJOR).arg(VERSION_MINOR));
+	this->setWindowTitle(QString(tr("Automatic Calibration") + " v%1.%2").arg(VERSION_MAJOR).arg(VERSION_MINOR));
 
 	const QStringList args = QCoreApplication::arguments();
 	this->config_fn = args.size() > 1 ? args.at(1) : DEFAULT_CONFIG_FN;
@@ -211,11 +211,11 @@ void MainWindow::widget_set_bgcolor(QWidget &widget, const QColor &color) {
 }
 
 void MainWindow::t_xn_disconnect_tick() {
-	log("XN error, disconnecting from XpressNET...");
+	log(tr("XN error, disconnecting from XpressNET..."));
 	a_xn_disconnect(true);
 
 	QMessageBox::warning(this, "Error!",
-		"XN serial port error, more information in log!", QMessageBox::Ok);
+		tr("XN serial port error, more information in log!"), QMessageBox::Ok);
 }
 
 void MainWindow::cb_xn_ll_index_changed(int index) {
@@ -396,22 +396,22 @@ void MainWindow::xn_onDisconnect() {
 	widget_set_color(*(ui.l_dcc), Qt::gray);
 	loco_released();
 	gui_update_enabled();
-	log("Disconnected from XpressNET");
+	log(tr("Disconnected from XpressNET"));
 }
 
 void MainWindow::xn_onTrkStatusChanged(Xn::TrkStatus status) {
 	if (status == Xn::TrkStatus::Unknown) {
 		widget_set_color(*(ui.l_dcc), Qt::gray);
-		log("CS status: Unknown");
+		log(tr("CS status: Unknown"));
 	} else if (status == Xn::TrkStatus::Off) {
 		widget_set_color(*(ui.l_dcc), Qt::red);
-		log("CS status: Off");
+		log(tr("CS status: Off"));
 	} else if (status == Xn::TrkStatus::On) {
 		widget_set_color(*(ui.l_dcc), Qt::green);
-		log("CS status: On");
+		log(tr("CS status: On"));
 	} else if (status == Xn::TrkStatus::Programming) {
 		widget_set_color(*(ui.l_dcc), Qt::yellow);
-		log("CS status: Programming");
+		log(tr("CS status: Programming"));
 	}
 }
 
@@ -420,23 +420,23 @@ void MainWindow::xn_onDccGoError(void *, void *) { show_response_error("DCC GO")
 void MainWindow::xn_onDccStopError(void *, void *) { show_response_error("DCC STOP"); }
 
 void MainWindow::show_response_error(const QString &command) {
-	log("Command station did not respond to " + command + " command!");
+	log(tr("Command station did not respond to ") + command + tr(" command!"));
 	QMessageBox::warning(this, "Error!",
-	                     "Command station did not respond to " + command + " command!");
+	                     tr("Command station did not respond to ") + command + tr(" command!"));
 }
 
 void MainWindow::xn_onLIVersionError(void *, void *) {
 	m_starting = false;
-	log("LI did not respond to version request!");
+	log(tr("LI did not respond to version request!"));
 	QMessageBox::warning(this, "Error!",
-		"LI did not respond to version request, are you really connected to the LI?!");
+		tr("LI did not respond to version request, are you really connected to the LI?!"));
 }
 
 void MainWindow::xn_onCSVersionError(void *, void *) {
-	log("Coomand station did not respond to version request!");
-	QMessageBox::warning(this, "Error!",
-		"Command station did not respond to version request"
-		", is the LI really connected to the command station?!");
+	log(tr("Coomand station did not respond to version request!"));
+	QMessageBox::warning(this, tr("Error!"),
+		tr("Command station did not respond to version request"
+		", is the LI really connected to the command station?!"));
 	m_starting = false;
 }
 
@@ -448,14 +448,14 @@ void MainWindow::xn_onCSStatusError(void *, void *) {
 void MainWindow::xn_onCSStatusOk(void *, void *) {
 	if (m_starting) {
 		m_starting = false;
-		log("Succesfully connected to Command station");
+		log(tr("Succesfully connected to Command station"));
 		if (!wsm.connected())
 			a_wsm_connect(true);
 	}
 }
 
 void MainWindow::xn_gotLIVersion(void *, unsigned hw, unsigned sw) {
-	log("Got LI version. HW: " + QString::number(hw) + ", SW: " + QString::number(sw));
+	log(tr("Got LI version. HW: ") + QString::number(hw) + ", SW: " + QString::number(sw));
 	try {
 		xn.getCommandStationStatus(
 			std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_onCSStatusOk(s, d); }),
@@ -468,7 +468,7 @@ void MainWindow::xn_gotLIVersion(void *, unsigned hw, unsigned sw) {
 }
 
 void MainWindow::xn_gotCSVersion(void *, unsigned major, unsigned minor) {
-	log("Got command station version:" + QString::number(major) + "." + QString::number(minor));
+	log(tr("Got command station version: ") + QString::number(major) + "." + QString::number(minor));
 }
 
 void MainWindow::xn_gotLocoInfo(void *, bool used, Xn::Direction direction, unsigned speed,
@@ -507,11 +507,11 @@ void MainWindow::xn_gotLocoInfo(void *, bool used, Xn::Direction direction, unsi
 	ui.b_loco_idle->setEnabled(true);
 	ui.b_speed_set->setEnabled(true);
 
-	log("Acquired loco " + QString::number(ui.sb_loco->value()));
+	log(tr("Acquired loco ") + QString::number(ui.sb_loco->value()));
 }
 
 void MainWindow::xn_onLocoInfoError(void *, void *) {
-	show_error("Unable to get loco information from Command station!");
+	show_error(tr("Unable to get loco information from Command station!"));
 	ui.b_addr_set->setEnabled(true);
 	ui.sb_loco->setEnabled(true);
 	ui.b_addr_read->setEnabled(true);
@@ -543,24 +543,24 @@ void MainWindow::loco_released() {
 	ui.b_loco_idle->setEnabled(false);
 	ui.b_speed_set->setEnabled(false);
 
-	log("Released loco " + QString::number(ui.sb_loco->value()));
+	log(tr("Released loco ") + QString::number(ui.sb_loco->value()));
 }
 
 void MainWindow::xn_addrReadError(void *, void *) {
-	show_error("Unable to read address: no response from command station!");
+	show_error(tr("Unable to read address: no response from command station!"));
 	ui.sb_loco->setEnabled(true);
 	ui.b_addr_set->setEnabled(true);
 	ui.b_addr_read->setEnabled(true);
 }
 
 void MainWindow::xn_adReadError(void *, void *) {
-	show_error("Unable to read CV: no response from command station!");
+	show_error(tr("Unable to read CV: no response from command station!"));
 	ui.gb_ad->setEnabled(true);
 }
 
 void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
 	if (st != Xn::ReadCVStatus::Ok) {
-		show_error("Unable to read CV " + QString::number(cv) + ": " +
+		show_error(tr("Unable to read CV ") + QString::number(cv) + ": " +
 		           Xn::XpressNet::xnReadCVStatusToQString(st));
 
 		if (cv == CV_ADDR_LO || cv == CV_ADDR_HI || cv == CV_ADDR_SHORT || cv == CV_BASIC_CONFIG) {
@@ -573,14 +573,14 @@ void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t valu
 		return;
 	}
 
-	log("Read CV "+QString::number(cv)+" = "+QString::number(value));
+	log(tr("Read CV ")+QString::number(cv)+" = "+QString::number(value));
 
 	if (cv == CV_ADDR_LO) {
 		try {
 			ui.sb_loco->setValue(Xn::LocoAddr(value, 0xC0));
 		}
 		catch (const Xn::EInvalidAddr&) {
-			show_error("Invalid address!");
+			show_error(tr("Invalid address!"));
 		}
 		xn.readCVdirect(
 			CV_ADDR_HI,
@@ -592,7 +592,7 @@ void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t valu
 			ui.sb_loco->setValue(Xn::LocoAddr(ui.sb_loco->value(), value));
 		}
 		catch (const Xn::EInvalidAddr&) {
-			show_error("Invalid address!");
+			show_error(tr("Invalid address!"));
 		}
 		ui.sb_loco->setEnabled(true);
 		ui.b_addr_set->setEnabled(true);
@@ -619,7 +619,7 @@ void MainWindow::xn_cvRead(void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t valu
 
 void MainWindow::xn_adWriteError(void *, void *) {
 	ui.gb_ad->setEnabled(true);
-	show_error("XN POM no response!");
+	show_error(tr("XN POM no response!"));
 }
 
 void MainWindow::xn_accelWritten(void *, void *) {
@@ -651,14 +651,14 @@ void MainWindow::a_xn_connect(bool) {
 
 	try {
 		widget_set_color(*(ui.l_xn), Qt::yellow);
-		log("Connecting to XN: "+s["XN"]["port"].toString()+":"+s["XN"]["interface"].toString()+":"+
+		log(tr("Connecting to XN: ")+s["XN"]["port"].toString()+":"+s["XN"]["interface"].toString()+":"+
 		    s["XN"]["baudrate"].toString()+"...");
 		xn.connect(s["XN"]["port"].toString(), s["XN"]["baudrate"].toInt(),
 		           static_cast<QSerialPort::FlowControl>(s["XN"]["flowcontrol"].toInt()),
 				   Xn::liInterface(s["XN"]["interface"].toString()));
 	} catch (const Xn::QStrException &e) {
 		widget_set_color(*(ui.l_xn), Qt::red);
-		show_error("XN connect error while opening serial port '" +
+		show_error(tr("XN connect error while opening serial port '") +
 		           s["XN"]["port"].toString() + "':\n" + e);
 	}
 }
@@ -668,7 +668,7 @@ void MainWindow::a_xn_disconnect(bool) {
 		return;
 
 	try {
-		log("Disconnecting from XN...");
+		log(tr("Disconnecting from XN..."));
 		xn.disconnect();
 		if (cm.inProgress())
 			b_calib_stop_handle();
@@ -843,7 +843,7 @@ void MainWindow::wsm_status_blink() {
 }
 
 void MainWindow::a_wsm_connect(bool) {
-	log("Connecting to WSM...");
+	log(tr("Connecting to WSM..."));
 
 	try {
 		widget_set_color(*(ui.l_wsm), Qt::yellow);
@@ -852,11 +852,11 @@ void MainWindow::a_wsm_connect(bool) {
 		gui_update_enabled();
 		widget_set_color(*(ui.l_wsm), Qt::green);
 
-		log("Connected to WSM");
+		log(tr("Connected to WSM"));
 		widget_set_color(*(ui.l_wsm), Qt::green);
 	} catch (const Wsm::EOpenError &e) {
 		widget_set_color(*(ui.l_wsm), Qt::red);
-		show_error("WSM connect error while opening serial port '" +
+		show_error(tr("WSM connect error while opening serial port '") +
 		           s["WSM"]["port"].toString() + "':\n" + e);
 	}
 }
@@ -872,7 +872,7 @@ void MainWindow::a_wsm_disconnect(bool) {
 	widget_set_color(*(ui.l_wsm_alive), ui.l_wsm_speed->palette().color(QPalette::WindowText));
 	gui_update_enabled();
 	widget_set_color(*(ui.l_wsm), Qt::red);
-	log("Disconnected from WSM");
+	log(tr("Disconnected from WSM"));
 }
 
 void MainWindow::mc_speedRead(double speed, uint16_t speed_raw) {
@@ -894,7 +894,7 @@ void MainWindow::mc_distanceRead(double distance, uint32_t distance_raw) {
 void MainWindow::mc_onError(QString error) {
 	if (!t_wsm_disconnect.isActive() && wsm.connected()) {
 		t_wsm_disconnect.start(0);
-		show_error("WSM serial port error: " + error + "!");
+		show_error(tr("WSM serial port error: ") + error + "!");
 	}
 }
 
@@ -906,29 +906,29 @@ void MainWindow::mc_batteryRead(double voltage, uint16_t voltage_raw) {
 
 void MainWindow::mc_batteryCritical() {
 	QMessageBox::warning(this, "Warning",
-		"Battery level critical, device is shutting down!");
+		tr("Battery level critical, device is shutting down!"));
 
 	if (!t_wsm_disconnect.isActive())
 		t_wsm_disconnect.start(0);
 }
 
 void MainWindow::t_mc_disconnect_tick() {
-	log("WSM error, disconnecting...", LOGC_ERROR);
+	log(tr("WSM error, disconnecting..."), LOGC_ERROR);
 	a_wsm_disconnect(true);
 }
 
 void MainWindow::mc_speedReceiveTimeout() {
-	log("WSM receive timeout!", LOGC_ERROR);
+	log(tr("WSM receive timeout!"), LOGC_ERROR);
 	widget_set_color(*(ui.l_wsm_alive), Qt::red);
 }
 
 void MainWindow::mc_speedReceiveRestore() {
-	log("WSM speed receive restored");
+	log(tr("WSM speed receive restored"));
 }
 
 void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
-	log("WSM long term done: sp=" + QString::number(speed, 'f', 1) +
-	    ", diff=" + QString::number(diffusion, 'f', 1), LOGC_DONE);
+	log(tr("WSM long term done: sp=") + QString::number(speed, 'f', 1) +
+	    tr(", diff=") + QString::number(diffusion, 'f', 1), LOGC_DONE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -990,7 +990,7 @@ void MainWindow::init_calib_graph() {
 			write->setProperty("step", static_cast<uint>(i));
 			write->setEnabled(false);
 			write->setFixedWidth(20);
-			write->setToolTip("Write this step to decoder");
+			write->setToolTip(tr("Write this step to decoder"));
 			ui_steps[i].write = write;
 			QObject::connect(write, SIGNAL(released()), this, SLOT(b_step_write_handle()));
 			ui.l_cal_graph->addWidget(write, 5, i);
@@ -1001,7 +1001,7 @@ void MainWindow::init_calib_graph() {
 			read->setProperty("step", static_cast<uint>(i));
 			read->setEnabled(false);
 			read->setFixedWidth(20);
-			read->setToolTip("Read value of this step from decoder");
+			read->setToolTip(tr("Read value of this step from decoder"));
 			ui_steps[i].read = read;
 			QObject::connect(read, SIGNAL(released()), this, SLOT(b_step_read_handle()));
 			ui.l_cal_graph->addWidget(read, 6, i);
@@ -1026,18 +1026,18 @@ void MainWindow::b_step_read_handle() {
 			unsigned stepi = cv-CV_CURVE_START;
 			if (status == Xn::ReadCVStatus::Ok) {
 				unsigned slider_value = this->ui_steps[stepi].slider->value();
-				QString text = "Step="+QString::number(stepi+1)+" CV="+QString::number(cv)+
-					" read="+QString::number(value) + " slider="+QString::number(slider_value);
+				QString text = tr("Step=")+QString::number(stepi+1)+" CV="+QString::number(cv)+
+					tr(" read=")+QString::number(value) + tr(" slider=")+QString::number(slider_value);
 				bool match = (value == slider_value);
 				log(text+ (match ? " match." : " mismatch!"), match ? LOGC_DONE: LOGC_ERROR);
 			} else {
-				show_error("Unable to read step "+QString::number(stepi+1)+
+				show_error(tr("Unable to read step ")+QString::number(stepi+1)+
 					": "+Xn::XpressNet::xnReadCVStatusToQString(status));
 				return;
 			}
 		},
 		std::make_unique<Xn::Cb>([this](void *, void *) {
-			show_error("Unable to read step "+QString::number(this->verif_next_step));
+			show_error(tr("Unable to read step ")+QString::number(this->verif_next_step));
 		})
 	);
 }
@@ -1047,7 +1047,7 @@ void MainWindow::b_step_write_handle() {
 
 	if (xn.connected() && !ui.sb_loco->isEnabled()) {
 		ui_steps[stepi].selected->setChecked(true);
-		log("Setting power of step " + QString::number(stepi+1) + " manually.");
+		log(tr("Setting power of step ") + QString::number(stepi+1) + tr(" manually."));
 		xn.pomWriteCv(
 			Xn::LocoAddr(ui.sb_loco->value()),
 			CV_CURVE_START + stepi,
@@ -1057,7 +1057,7 @@ void MainWindow::b_step_write_handle() {
 		);
 		cm.setStepManually(stepi+1, ui_steps[stepi].slider->value());
 	} else {
-		QMessageBox::warning(this, "Command not executed", "Command not executed: either not connected to XpressNet or DCC address not set!");
+		QMessageBox::warning(this, tr("Command not executed"), tr("Command not executed: either not connected to XpressNet or DCC address not set!"));
 	}
 }
 
@@ -1148,22 +1148,22 @@ void MainWindow::cm_progress_update(size_t val) { ui.pb_progress->setValue(val);
 
 void MainWindow::b_calib_start_handle() {
 	if (!xn.connected()) {
-		show_error("Not connected to XpressNET!");
+		show_error(tr("Not connected to XpressNET!"));
 		return;
 	}
 
 	if (!wsm.connected()) {
-		show_error("Not connected to WSM!");
+		show_error(tr("Not connected to WSM!"));
 		return;
 	}
 
 	if (!wsm.isSpeedOk()) {
-		show_error("No data from WSM!");
+		show_error(tr("No data from WSM!"));
 		return;
 	}
 
 	if (ui.sb_loco->isEnabled()) {
-		show_error("Set loco address first!");
+		show_error(tr("Set loco address first!"));
 		return;
 	}
 
@@ -1177,8 +1177,8 @@ void MainWindow::b_calib_start_handle() {
 		QMessageBox::StandardButton reply;
 		reply = QMessageBox::question(
 			this,
-			"Question",
-			"Vmax and/or Uref have been changed, so all the measured data must be erased and calibrated again.\nContinue?",
+			tr("Question"),
+			tr("Vmax and/or Uref have been changed, so all the measured data must be erased and calibrated again.\nContinue?"),
 			QMessageBox::Yes|QMessageBox::No, QMessageBox::No
 		);
 		if (reply != QMessageBox::Yes)
@@ -1231,7 +1231,7 @@ void MainWindow::b_reset_handle() {
 
 	reset();
 
-	QMessageBox::information(this, "Info", "All measured data have been erased.");
+	QMessageBox::information(this, tr("Info"), tr("All measured data have been erased."));
 }
 
 void MainWindow::t_calib_active_tick() {
@@ -1259,18 +1259,18 @@ void MainWindow::b_vmax_read_handle() {
 		CV_VMAX,
 		[this](void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
 			if (st == Xn::ReadCVStatus::Ok) {
-				log("Read CV " + QString::number(cv) + " = " + QString::number(value) +
-				    ", overriding "+QString::number(ui.sb_vmax->value()));
+				log(tr("Read CV ") + QString::number(cv) + " = " + QString::number(value) +
+				    tr(", overriding ")+QString::number(ui.sb_vmax->value()));
 				ui.sb_vmax->setValue(value);
 			} else {
-				show_error("Unable to read CV " + QString::number(cv) + ": " +
+				show_error(tr("Unable to read CV ") + QString::number(cv) + ": " +
 				           Xn::XpressNet::xnReadCVStatusToQString(st));
 			}
 			ui.b_vmax_read->setEnabled(true);
 		},
 		std::make_unique<Xn::Cb>([this](void *, void *) {
 			ui.b_vmax_read->setEnabled(true);
-			show_error("Unable to read CV: no response from command station!");
+			show_error(tr("Unable to read CV: no response from command station!"));
 		})
 	);
 }
@@ -1281,18 +1281,18 @@ void MainWindow::b_volt_ref_read_handle() {
 		CV_UREF,
 		[this](void *, Xn::ReadCVStatus st, uint8_t cv, uint8_t value) {
 			if (st == Xn::ReadCVStatus::Ok) {
-				log("Read CV " + QString::number(cv) + " = " + QString::number(value) +
-				    ", overriding "+QString::number(ui.sb_volt_ref->value()));
+				log(tr("Read CV ") + QString::number(cv) + " = " + QString::number(value) +
+				    tr(", overriding ")+QString::number(ui.sb_volt_ref->value()));
 				ui.sb_volt_ref->setValue(value);
 			} else {
-				show_error("Unable to read CV " + QString::number(cv) + ": " +
+				show_error(tr("Unable to read CV ") + QString::number(cv) + ": " +
 				           Xn::XpressNet::xnReadCVStatusToQString(st));
 			}
 			ui.b_volt_ref_read->setEnabled(true);
 		},
 		std::make_unique<Xn::Cb>([this](void *, void *) {
 			ui.b_volt_ref_read->setEnabled(true);
-			show_error("Unable to read CV: no response from command station!");
+			show_error(tr("Unable to read CV: no response from command station!"));
 		})
 	);
 }
@@ -1311,7 +1311,7 @@ void MainWindow::b_ad_read_handle() {
 
 void MainWindow::b_ad_write_handle() {
 	if (ui.sb_loco->isEnabled()) {
-		show_error("Loco must be set!");
+		show_error(tr("Loco must be set!"));
 		return;
 	}
 
@@ -1341,8 +1341,8 @@ void MainWindow::a_debug2(bool) {
 	xn.writeCVdirect(
 		CV_RESET,
 		CV_RESET_RESET,
-		std::make_unique<Xn::Cb>([this](void *, void *) { log("Ok"); }),
-		std::make_unique<Xn::Cb>([this](void *, void *) { log("Error"); })
+		std::make_unique<Xn::Cb>([this](void *, void *) { log(tr("Ok")); }),
+		std::make_unique<Xn::Cb>([this](void *, void *) { log(tr("Error")); })
 	);
 }
 
@@ -1365,7 +1365,7 @@ void MainWindow::a_loco_load(bool) {
 	QFile file(filename);
 	if (!file.open(QFile::ReadOnly | QFile::Text))
 	{
-		show_error("Cannot read file " + filename);
+		show_error(tr("Cannot read file ") + filename);
 		return;
 	}
 
@@ -1484,12 +1484,12 @@ void MainWindow::a_loco_save(bool) {
 // Range measuring:
 
 void MainWindow::cr_measured(double distance) {
-	log("Range measured: " + QString::number(distance*100, 'f', 1) + " cm");
+	log(tr("Range measured: ") + QString::number(distance*100, 'f', 1) + " cm");
 	ui.b_decel_measure->setEnabled(true);
 }
 
 void MainWindow::cr_error(Cr::CrError, unsigned, const QString& message) {
-	log("Range calibration error!", LOGC_ERROR);
+	log(tr("Range calibration error!"), LOGC_ERROR);
 	ui.b_decel_measure->setEnabled(true);
 	log(message, LOGC_ERROR);
 }
@@ -1537,7 +1537,7 @@ void MainWindow::a_config_load(bool) {
 			this->log("XN config load: unable to parse outIntervalMs", LOGC_ERROR);
 		}
 	} catch (const Xn::QStrException& e) {
-		this->log("XN config load: " + e.str(), LOGC_ERROR);
+		this->log(tr("XN config load: ") + e.str(), LOGC_ERROR);
 	}
 
 	wsm.scale = s["WSM"]["scale"].toInt();
@@ -1566,7 +1566,7 @@ void MainWindow::a_config_load(bool) {
 
 void MainWindow::a_config_save(bool) {
 	s.save(this->config_fn);
-	log("Saved config to " + this->config_fn);
+	log(tr("Saved config to ") + this->config_fn);
 }
 
 void MainWindow::a_speed_load(bool) {
@@ -1577,10 +1577,10 @@ void MainWindow::a_speed_load(bool) {
 	Settings::cfgToQString(s["Speed"], "file", filename);
 	try {
 		m_ssm.load(filename);
-		log("Loaded steps-to-speed mapping from " + filename);
+		log(tr("Loaded steps-to-speed mapping from ") + filename);
 	}
 	catch (const std::exception& e) {
-		log("Unable to load steps-to-speed file "+filename+"!", LOGC_ERROR);
+		log(tr("Unable to load steps-to-speed file ")+filename+"!", LOGC_ERROR);
 	}
 }
 
@@ -1593,8 +1593,8 @@ void MainWindow::b_verify_all_steps_handle() {
 		QMessageBox::StandardButton reply;
 		reply = QMessageBox::question(
 			this,
-			"Question",
-			"Verification has altready started, do you want to continue with it?",
+			tr("Question"),
+			tr("Verification has altready started, do you want to continue with it?"),
 			QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes
 		);
 		if (reply == QMessageBox::No)
@@ -1602,23 +1602,23 @@ void MainWindow::b_verify_all_steps_handle() {
 	}
 
 	try {
-		log("Steps verification start");
+		log(tr("Steps verification start"));
 		this->verif_init();
 	} catch (const QStrException& e) {
-		QMessageBox::critical(this, "Error!", e.str(), QMessageBox::Ok);
+		QMessageBox::critical(this, tr("Error!"), e.str(), QMessageBox::Ok);
 	} catch (...) {
-		QMessageBox::critical(this, "Error!", "Unknown exception!", QMessageBox::Ok);
+		QMessageBox::critical(this, tr("Error!"), tr("Unknown exception!"), QMessageBox::Ok);
 	}
 }
 
 void MainWindow::b_verify_stop_handle() {
 	try {
 		this->verif_stop();
-		log("Steps verification manually stopped", LOGC_WARN);
+		log(tr("Steps verification manually stopped"), LOGC_WARN);
 	} catch (const QStrException& e) {
-		QMessageBox::critical(this, "Error!", e.str(), QMessageBox::Ok);
+		QMessageBox::critical(this, tr("Error!"), e.str(), QMessageBox::Ok);
 	} catch (...) {
-		QMessageBox::critical(this, "Error!", "Unknown exception!", QMessageBox::Ok);
+		QMessageBox::critical(this, tr("Error!"), tr("Unknown exception!"), QMessageBox::Ok);
 	}
 }
 
@@ -1626,8 +1626,8 @@ void MainWindow::b_verify_reset_handle() {
 	QMessageBox::StandardButton reply;
 	reply = QMessageBox::question(
 		this,
-		"Question",
-		"Really reset verification?",
+		tr("Question"),
+		tr("Really reset verification?"),
 		QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes
 	);
 	if (reply != QMessageBox::Yes)
@@ -1637,9 +1637,9 @@ void MainWindow::b_verify_reset_handle() {
 		log("Verification reset");
 		this->verif_reset();
 	} catch (const QStrException& e) {
-		QMessageBox::critical(this, "Error!", e.str(), QMessageBox::Ok);
+		QMessageBox::critical(this, tr("Error!"), e.str(), QMessageBox::Ok);
 	} catch (...) {
-		QMessageBox::critical(this, "Error!", "Unknown exception!", QMessageBox::Ok);
+		QMessageBox::critical(this, tr("Error!"), tr("Unknown exception!"), QMessageBox::Ok);
 	}
 }
 
@@ -1680,7 +1680,7 @@ void MainWindow::verif_reset() {
 
 void MainWindow::verif_done() {
 	this->verif_stop();
-	log("Steps verification finished.", LOGC_DONE);
+	log(tr("Steps verification finished."), LOGC_DONE);
 }
 
 void MainWindow::verif_next() {
@@ -1693,7 +1693,7 @@ void MainWindow::verif_next() {
 			this->verif_read(st, cv, value);
 		},
 		std::make_unique<Xn::Cb>([this](void *, void *) {
-			this->log("Unable to read step "+QString::number(this->verif_next_step), LOGC_ERROR);
+			this->log(tr("Unable to read step ")+QString::number(this->verif_next_step), LOGC_ERROR);
 			this->verif_read_error(this->verif_next_step);
 		})
 	);
@@ -1707,7 +1707,7 @@ void MainWindow::verif_read(Xn::ReadCVStatus status, uint8_t cv, uint8_t value) 
 		this->verif_next_step = (cv - CV_CURVE_START) + 1;
 
 		if (status != Xn::ReadCVStatus::Ok) {
-			log("Unable to read step "+QString::number(this->verif_next_step)+
+			log(tr("Unable to read step ")+QString::number(this->verif_next_step)+
 				": "+Xn::XpressNet::xnReadCVStatusToQString(status), LOGC_ERROR);
 			this->verif_read_error(this->verif_next_step);
 			return;
@@ -1716,9 +1716,9 @@ void MainWindow::verif_read(Xn::ReadCVStatus status, uint8_t cv, uint8_t value) 
 		unsigned slider_value = this->ui_steps[this->verif_next_step-1].slider->value();
 		bool match = (value == slider_value);
 		widget_set_bgcolor(*(this->ui_steps[this->verif_next_step-1].slider), match ? QC_LIGHT_GREEN : QC_LIGHT_BLUE);
-		QString text = "Step="+QString::number(this->verif_next_step)+" CV="+QString::number(cv)+
-			" read="+QString::number(value) + " slider="+QString::number(slider_value);
-		log(text+ (match ? " match." : " mismatch!"), match ? LOGC_DONE: LOGC_ERROR);
+		QString text = tr("Step=")+QString::number(this->verif_next_step)+" CV="+QString::number(cv)+
+			tr(" read=")+QString::number(value) + tr(" slider=")+QString::number(slider_value);
+		log(text+ (match ? tr(" match.") : tr(" mismatch!")), match ? LOGC_DONE: LOGC_ERROR);
 
 		if (this->verif_next_step == STEPS_CNT) {
 			this->verif_done();
@@ -1732,13 +1732,13 @@ void MainWindow::verif_read(Xn::ReadCVStatus status, uint8_t cv, uint8_t value) 
 		this->show_error("verif_next: "+e.str());
 	} catch (...) {
 		this->verif_stop();
-		this->show_error("verif_next: unknown exception!");
+		this->show_error(tr("verif_next: unknown exception!"));
 	}
 }
 
 void MainWindow::verif_read_error(unsigned step) {
 	if ((step < 1) || (step > STEPS_CNT))
-		throw QStrException("verif_read_error: step out of range!");
+		throw QStrException(tr("verif_read_error: step out of range!"));
 
 	widget_set_bgcolor(*(this->ui_steps[step-1].slider), QC_LIGHT_RED);
 	this->verif_stop();
@@ -1749,7 +1749,7 @@ void MainWindow::verif_read_error(unsigned step) {
 
 void MainWindow::a_use_speed_table(bool) {
 	if (!xn.connected()) {
-		show_error("Not connected to XpressNET!");
+		show_error(tr("Not connected to XpressNET!"));
 		return;
 	}
 
@@ -1759,37 +1759,37 @@ void MainWindow::a_use_speed_table(bool) {
 			if (cv == CV_BASIC_CONFIG)
 				use_speed_table_read_basic_config(st, value);
 			else
-				show_error("Different CV read!");
+				show_error(tr("Different CV read!"));
 		},
 		std::make_unique<Xn::Cb>([this](void *, void *) {
-			show_error("Unable to read CV "+QString::number(CV_BASIC_CONFIG)+": no response from command station!");
+			show_error(tr("Unable to read CV ")+QString::number(CV_BASIC_CONFIG)+tr(": no response from command station!"));
 		})
 	);
 }
 
 void MainWindow::use_speed_table_read_basic_config(Xn::ReadCVStatus status, uint8_t value) {
 	if (status != Xn::ReadCVStatus::Ok) {
-		show_error("Unable to read CV " + QString::number(CV_BASIC_CONFIG) + ": " +
+		show_error(tr("Unable to read CV ") + QString::number(CV_BASIC_CONFIG) + ": " +
 		           Xn::XpressNet::xnReadCVStatusToQString(status));
 		return;
 	}
 
-	log("Read CV "+QString::number(CV_BASIC_CONFIG)+" value="+QString::number(value)+
+	log(tr("Read CV ")+QString::number(CV_BASIC_CONFIG)+tr(" value=")+QString::number(value)+
 		" = 0b"+QString::number(value, 2) + " = 0x"+QString::number(value, 16) + ": "+explain_cv29(value));
 
 	if ((value >> CV_CONFIG_BIT_SPEED_TABLE) & 1) {
-		log("Speed table already enabled.", LOGC_DONE);
+		log(tr("Speed table already enabled."), LOGC_DONE);
 	} else {
 		uint8_t new_value = value | (1 << CV_CONFIG_BIT_SPEED_TABLE);
-		log("Enable speed table: write value "+QString::number(new_value));
+		log(tr("Enable speed table: write value ")+QString::number(new_value));
 		xn.writeCVdirect(
 			CV_BASIC_CONFIG,
 			new_value,
 			std::make_unique<Xn::Cb>([this](void *, void *) {
-				log("CV "+QString::number(CV_BASIC_CONFIG)+" succesfully written", LOGC_DONE);
+				log("CV "+QString::number(CV_BASIC_CONFIG)+tr(" succesfully written"), LOGC_DONE);
 			}),
 			std::make_unique<Xn::Cb>([this](void *, void *) {
-				show_error("Unable to write CV "+QString::number(CV_BASIC_CONFIG)+": no response from command station!");
+				show_error(tr("Unable to write CV ")+QString::number(CV_BASIC_CONFIG)+tr(": no response from command station!"));
 			})
 		);
 	}
@@ -1797,12 +1797,12 @@ void MainWindow::use_speed_table_read_basic_config(Xn::ReadCVStatus status, uint
 
 QString MainWindow::explain_cv29(uint8_t value) {
 	QString result;
-	result += QString("direction: ") + (((value >> CV_CONFIG_BIT_DIRECTION) & 1) ? "reversed" : "normal");
-	result += QString(", speed steps: ") + (((value >> CV_CONFIG_BIT_SPEED_STEPS) & 1) ? "28/128" : "14");
-	result += QString(", analog: ") + (((value >> CV_CONFIG_BIT_ANALOG) & 1) ? "on" : "off");
-	result += QString(", RailCom: ") + (((value >> CV_CONFIG_BIT_RAILCOM) & 1) ? "on" : "off");
-	result += QString(", speed table: ") + (((value >> CV_CONFIG_BIT_SPEED_TABLE) & 1) ? "on" : "off");
-	result += QString(", address: ") + (((value >> CV_CONFIG_BIT_EXTENDED_ADDR) & 1) ? "extended" : "primary");
+	result += QString(tr("direction: ")) + (((value >> CV_CONFIG_BIT_DIRECTION) & 1) ? tr("reversed") : tr("normal"));
+	result += QString(tr(", speed steps: ")) + (((value >> CV_CONFIG_BIT_SPEED_STEPS) & 1) ? "28/128" : "14");
+	result += QString(tr(", analog: ")) + (((value >> CV_CONFIG_BIT_ANALOG) & 1) ? tr("on") : tr("off"));
+	result += QString(tr(", RailCom: ")) + (((value >> CV_CONFIG_BIT_RAILCOM) & 1) ? tr("on") : tr("off"));
+	result += QString(tr(", speed table: ")) + (((value >> CV_CONFIG_BIT_SPEED_TABLE) & 1) ? tr("on") : tr("off"));
+	result += QString(tr(", address: ")) + (((value >> CV_CONFIG_BIT_EXTENDED_ADDR) & 1) ? tr("extended") : tr("primary"));
 	return result;
 }
 
