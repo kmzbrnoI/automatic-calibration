@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1099</width>
-    <height>641</height>
+    <height>788</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -55,7 +55,7 @@
        <enum>QTabWidget::TabShape::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -119,7 +119,7 @@
               </font>
              </property>
              <property name="text">
-              <string>●</string>
+              <string notr="true">●</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -129,7 +129,7 @@
            <item row="2" column="0" colspan="2">
             <widget class="QLabel" name="l_wsm_bat_voltage">
              <property name="text">
-              <string>?.? V</string>
+              <string notr="true">?.? V</string>
              </property>
             </widget>
            </item>
@@ -141,7 +141,7 @@
               </font>
              </property>
              <property name="text">
-              <string>km/h</string>
+              <string notr="true">km/h</string>
              </property>
             </widget>
            </item>
@@ -153,7 +153,7 @@
               </font>
              </property>
              <property name="text">
-              <string>??.?</string>
+              <string notr="true">??.?</string>
              </property>
             </widget>
            </item>
@@ -414,7 +414,7 @@
               </font>
              </property>
              <property name="text">
-              <string>●</string>
+              <string notr="true">●</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -430,7 +430,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>DCC</string>
+              <string notr="true">DCC</string>
              </property>
             </widget>
            </item>
@@ -443,7 +443,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>XpressNET</string>
+              <string notr="true">XpressNET</string>
              </property>
             </widget>
            </item>
@@ -467,7 +467,7 @@
               </font>
              </property>
              <property name="text">
-              <string>●</string>
+              <string notr="true">●</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -483,7 +483,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>WSM</string>
+              <string notr="true">WSM</string>
              </property>
             </widget>
            </item>
@@ -507,7 +507,7 @@
               </font>
              </property>
              <property name="text">
-              <string>●</string>
+              <string notr="true">●</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -772,7 +772,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>F0</string>
+              <string notr="true">F0</string>
              </property>
             </widget>
            </item>
@@ -785,7 +785,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>F1</string>
+              <string notr="true">F1</string>
              </property>
             </widget>
            </item>
@@ -798,7 +798,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>F2</string>
+              <string notr="true">F2</string>
              </property>
             </widget>
            </item>
@@ -854,7 +854,7 @@
               </size>
              </property>
              <property name="text">
-              <string>R</string>
+              <string notr="true">R</string>
              </property>
             </widget>
            </item>
@@ -876,7 +876,7 @@
               </size>
              </property>
              <property name="text">
-              <string>R</string>
+              <string notr="true">R</string>
              </property>
             </widget>
            </item>
@@ -956,7 +956,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Uref (#57):</string>
+              <string notr="true">Uref (#57):</string>
              </property>
             </widget>
            </item>
@@ -998,7 +998,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Vmax (#5):</string>
+              <string notr="true">Vmax (#5):</string>
              </property>
             </widget>
            </item>
@@ -1019,7 +1019,7 @@
               </font>
              </property>
              <property name="text">
-              <string>■</string>
+              <string notr="true">■</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -1192,7 +1192,7 @@
      <x>0</x>
      <y>0</y>
      <width>1099</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
    <widget class="QMenu" name="m_xn">
@@ -1250,7 +1250,7 @@
     <string>Connect</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+X</string>
+    <string notr="true">Ctrl+X</string>
    </property>
   </action>
   <action name="a_xn_disconnect">
@@ -1271,7 +1271,7 @@
     <string>Connect</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+W</string>
+    <string notr="true">Ctrl+W</string>
    </property>
   </action>
   <action name="a_wsm_disconnect">
@@ -1290,7 +1290,7 @@
     <string>DCC Go</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+G</string>
+    <string notr="true">Ctrl+G</string>
    </property>
   </action>
   <action name="a_xn_dcc_stop">
@@ -1301,7 +1301,7 @@
     <string>DCC Stop</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+T</string>
+    <string notr="true">Ctrl+T</string>
    </property>
   </action>
   <action name="a_loco_load">
@@ -1309,7 +1309,7 @@
     <string>Load loco profile</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string notr="true">Ctrl+O</string>
    </property>
   </action>
   <action name="a_loco_save">
@@ -1317,7 +1317,7 @@
     <string>Save loco profile</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string notr="true">Ctrl+S</string>
    </property>
   </action>
   <action name="a_power_graph">
@@ -1325,7 +1325,7 @@
     <string>Power graph</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+P</string>
+    <string notr="true">Ctrl+P</string>
    </property>
   </action>
   <action name="a_config_save">
@@ -1354,17 +1354,20 @@
   </action>
   <action name="a_debug1">
    <property name="text">
-    <string>Debug1</string>
+    <string notr="true">Debug1</string>
    </property>
   </action>
   <action name="a_debug2">
    <property name="text">
-    <string>Debug2</string>
+    <string notr="true">Debug2</string>
    </property>
   </action>
   <action name="a_use_speed_table">
    <property name="text">
     <string>Use speed table (service mode)</string>
+   </property>
+   <property name="shortcut">
+    <string notr="true"/>
    </property>
   </action>
  </widget>

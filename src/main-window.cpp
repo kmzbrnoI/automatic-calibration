@@ -1810,6 +1810,7 @@ QString MainWindow::explain_cv29(uint8_t value) {
 
 void MainWindow::retranslate() {
 	this->ui.retranslateUi(this);
+	w_pg.retranslate();
 }
 
 void MainWindow::translate_app_cz() {

@@ -24,6 +24,8 @@ public:
 	PowerGraphWindow(QWidget *parent = nullptr);
 	~PowerGraphWindow() override;
 
+	void retranslate();
+
 public slots:
 	void addOrUpdate(unsigned step, float speed);
 	void clear();

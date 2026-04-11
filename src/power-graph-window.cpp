@@ -22,16 +22,13 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent) : QMainWindow(parent) {
 	axisX.setTickCount(9);
 	axisX.setMinorTickCount(1);
 	axisX.setLabelFormat("%d");
-	axisX.setTitleText("Power [decoder step]");
 
 	auto &axisY = dynamic_cast<QValueAxis &>(*chart.axes(Qt::Vertical)[0]);
 	axisY.setRange(0, 120);
 	axisY.setTickCount(7);
 	axisY.setMinorTickCount(1);
 	axisY.setLabelFormat("%d");
-	axisY.setTitleText("Speed [model km/h]");
 
-	chart.setTitle("Locomotive power-to-speed profile");
 	chart.setTitleFont(QFont("Sans Serif", 16, QFont::Bold));
 
 	auto *chartView = new QChartView(&chart);
@@ -39,6 +36,8 @@ PowerGraphWindow::PowerGraphWindow(QWidget *parent) : QMainWindow(parent) {
 	this->setCentralWidget(chartView);
 
 	series.append(100, 100);
+
+	retranslate();
 }
 
 PowerGraphWindow::~PowerGraphWindow() {
@@ -65,3 +64,13 @@ void PowerGraphWindow::addOrUpdate(unsigned step, float speed) {
 }
 
 void PowerGraphWindow::clear() { series.clear(); }
+
+void PowerGraphWindow::retranslate() {
+	this->ui.retranslateUi(this);
+
+	auto &axisX = dynamic_cast<QValueAxis &>(*chart.axes(Qt::Horizontal)[0]);
+	axisX.setTitleText(tr("Power [decoder step]"));
+	auto &axisY = dynamic_cast<QValueAxis &>(*chart.axes(Qt::Vertical)[0]);
+	axisY.setTitleText(tr("Speed [model km/h]"));
+	chart.setTitle(tr("Locomotive power-to-speed profile"));
+}
