@@ -810,7 +810,7 @@ Continue?</source>
     <message>
         <location filename="src/main-window.cpp" line="1580"/>
         <source>Loaded steps-to-speed mapping from </source>
-        <translation>Načteno mapování rychlostí na rychlostní kroky ze souboru </translation>
+        <translation>Načteno mapování rychlostních kroků na rychlosti ze souboru </translation>
     </message>
     <message>
         <location filename="src/main-window.cpp" line="1583"/>
