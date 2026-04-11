@@ -46,6 +46,7 @@ HEADERS += \
 	lib/xn/xn-win-com-discover.h \
 	lib/xn/q-str-exception.h \
 	src/main-window.h \
+	src/main.h \
 	src/settings.h \
 	src/power-map.h \
 	src/power-graph-window.h \
@@ -84,3 +85,8 @@ DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR" \
 
 #Target version
 VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}
+
+TRANSLATIONS += \
+    auto_calib_cs_CZ.ts
+
+CONFIG += lrelease embed_translations

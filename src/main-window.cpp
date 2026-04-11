@@ -7,6 +7,7 @@
 
 #include "main-window.h"
 #include "ui_main-window.h"
+#include "main.h"
 
 const unsigned int WSM_BLINK_TIMEOUT = 250; // ms
 
@@ -1521,6 +1522,11 @@ void MainWindow::reset() {
 void MainWindow::a_config_load(bool) {
 	s.load(this->config_fn);
 
+	if (s["Global"]["language"] == "cz")
+		translate_app_cz();
+	else
+		translate_app_en();
+
 	try {
 		bool ok;
 		Xn::XNConfig xn_config;
@@ -1801,3 +1807,23 @@ QString MainWindow::explain_cv29(uint8_t value) {
 }
 
 //////////////////////////////////////////////////////////////////////////////
+
+void MainWindow::retranslate() {
+	this->ui.retranslateUi(this);
+}
+
+void MainWindow::translate_app_cz() {
+	for (std::unique_ptr<QTranslator>& trans : cz_translators) {
+		qApp->removeTranslator(trans.get());
+		if (!qApp->installTranslator(trans.get()))
+			QMessageBox::critical(nullptr, "Error", "Unable to install translator " + trans->filePath() + "!");
+	}
+	this->retranslate();
+}
+
+void MainWindow::translate_app_en() {
+	for (std::unique_ptr<QTranslator>& trans : cz_translators)
+		qApp->removeTranslator(trans.get());
+	this->retranslate();
+}
+

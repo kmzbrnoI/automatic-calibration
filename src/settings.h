@@ -31,6 +31,9 @@ const Config DEFAULTS {
 	{"Logging", {
 		{"file", ""},
 	}},
+	{"Global", {
+		{"language", "en"},
+	}},
 };
 
 class Settings {

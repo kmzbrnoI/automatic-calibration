@@ -61,6 +61,8 @@ public:
 	explicit MainWindow(QWidget *parent = nullptr);
 	~MainWindow() override;
 
+	void retranslate();
+
 private slots:
 	// Signals from XpressNET library
 	void xn_onError(const QString &error);
@@ -225,6 +227,10 @@ private:
 
 	void use_speed_table_read_basic_config(Xn::ReadCVStatus, uint8_t value);
 	static QString explain_cv29(uint8_t value);
+
+	void translate_app_cz();
+	void translate_app_en();
+
 };
 
 #endif // MAINWINDOW_H
