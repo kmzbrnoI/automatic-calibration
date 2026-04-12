@@ -594,6 +594,13 @@
         <translation>Odpojování od XpressNETu...</translation>
     </message>
     <message>
+        <location filename="src/main-window.cpp" line="676"/>
+        <source>XN disconnect error:
+</source>
+        <translation>Chyba odpojování od XpressNETu:
+</translation>
+    </message>
+    <message>
         <location filename="src/main-window.cpp" line="846"/>
         <source>Connecting to WSM...</source>
         <translation>Připojování k měřicímu vozu WSM...</translation>
@@ -705,6 +712,41 @@
         <translation>Příkaz nevykonán: buď nepřipojeno k XpressNETu nebo nenastavena adresa lokomotivy!</translation>
     </message>
     <message>
+        <location filename="src/main-window.cpp" line="1106"/>
+        <source>Exception!</source>
+        <translation>Vnitřní chyba (výjimka)!</translation>
+    </message>
+    <message>
+        <location filename="src/main-window.cpp" line="1108"/>
+        <source>Loco speed too diffused!</source>
+        <translation>Rychlost lokomotivy není stabilní!</translation>
+    </message>
+    <message>
+        <location filename="src/main-window.cpp" line="1110"/>
+        <source>No response from XpressNET!</source>
+        <translation>XpressNET: žádná odpověď!</translation>
+    </message>
+    <message>
+        <location filename="src/main-window.cpp" line="1112"/>
+        <source>Loco stopped!</source>
+        <translation>Lokomotiva zastavena!</translation>
+    </message>
+    <message>
+        <location filename="src/main-window.cpp" line="1114"/>
+        <source>No suitable power step for this speed!</source>
+        <translation>Pro kalibrovanou rychlost neexistuje žádný výkonostní stupeň! Lokomotiva nedosahuje požadované rychlosti. Zvětšte Vmax (#5) nebo Uref (#57).</translation>
+    </message>
+    <message>
+        <location filename="src/main-window.cpp" line="1116"/>
+        <source>Unable to reach target speed due to low precision (try decreasing Vmax?)</source>
+        <translation>Nelze dosáhnout kalibrované rychlosti z důvodu nízkého rozlišení výkonnostních stupňů. Zkuste snížit Vmax (#5).</translation>
+    </message>
+    <message>
+        <location filename="src/main-window.cpp" line="1118"/>
+        <source>WSM read speed error!</source>
+        <translation>Chyba měření rychlosti měřicím vozdem WSM!</translation>
+    </message>
+    <message>
         <location filename="src/main-window.cpp" line="1151"/>
         <location filename="src/main-window.cpp" line="1752"/>
         <source>Not connected to XpressNET!</source>
@@ -738,6 +780,11 @@
         <source>Vmax and/or Uref have been changed, so all the measured data must be erased and calibrated again.
 Continue?</source>
         <translation>Vmax a/nebo Uref byly změněny, takže je třeba smazat všechny naměřené údaje a provést kalibraci od začátku znovu. Pokračovat?</translation>
+    </message>
+    <message>
+        <location filename="src/main-window.cpp" line="1213"/>
+        <source>Calibration manually interrupted!</source>
+        <translation>Kalibrace přerušena uživatelem!</translation>
     </message>
     <message>
         <location filename="src/main-window.cpp" line="1227"/>

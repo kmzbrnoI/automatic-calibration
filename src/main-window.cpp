@@ -673,7 +673,7 @@ void MainWindow::a_xn_disconnect(bool) {
 		if (cm.inProgress())
 			b_calib_stop_handle();
 	} catch (const Xn::QStrException &e) {
-		show_error("XN disconnect error:\n" + e.str());
+		show_error(tr("XN disconnect error:\n") + e.str());
 	}
 }
 
@@ -1103,19 +1103,19 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step, const QString& note
 	widget_set_color(*ui.l_calib_state, Qt::red);
 
 	if (ce == Cm::CmError::Exception)
-		log("Exception!", LOGC_ERROR);
+		log(tr("Exception!"), LOGC_ERROR);
 	else if (ce == Cm::CmError::LargeDiffusion)
-		log("Loco speed too diffused!", LOGC_ERROR);
+		log(tr("Loco speed too diffused!"), LOGC_ERROR);
 	else if (ce == Cm::CmError::XnNoResponse)
-		log("No response from XpressNET!", LOGC_ERROR);
+		log(tr("No response from XpressNET!"), LOGC_ERROR);
 	else if (ce == Cm::CmError::LocoStopped)
-		log("Loco stopped!", LOGC_ERROR);
+		log(tr("Loco stopped!"), LOGC_ERROR);
 	else if (ce == Cm::CmError::NoStep)
-		log("No suitable power step for this speed!", LOGC_ERROR);
+		log(tr("No suitable power step for this speed!"), LOGC_ERROR);
 	else if (ce == Cm::CmError::Oscilation)
-		log("Unable to reach target speed due to low precision (try decreasing Vmax?)", LOGC_ERROR);
+		log(tr("Unable to reach target speed due to low precision (try decreasing Vmax?)"), LOGC_ERROR);
 	else if (ce == Cm::CmError::WsmError)
-		log("WSM read speed error!", LOGC_ERROR);
+		log(tr("WSM read speed error!"), LOGC_ERROR);
 
 	if (note != "")
 		log(note, LOGC_ERROR);
@@ -1210,7 +1210,7 @@ void MainWindow::b_calib_stop_handle() {
 		return;
 
 	cm.stop();
-	log("Calibration manually interrupted!", LOGC_WARN);
+	log(tr("Calibration manually interrupted!"), LOGC_WARN);
 	widget_set_color(*ui.l_calib_state, Qt::red);
 	cm_done_gui();
 }
