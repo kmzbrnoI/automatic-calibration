@@ -73,6 +73,15 @@ $ make
 
 You may use [this script](https://serverfault.com/questions/61659/can-you-get-any-program-in-linux-to-print-a-stack-trace-if-it-segfaults) to debug segfaults.
 
+### Language support
+
+Following app languages are supported:
+
+1. english - default
+2. czech - `auto_calib_cs_CZ.ts`
+
+To generate `auto_calib_cs_CZ.ts`, run `lupdate auto-calib.pro`.
+
 ## Connecting to WSM
 
  * Windows: pair it with HC-05 module, serial port should be added
