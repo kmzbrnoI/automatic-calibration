@@ -148,7 +148,7 @@ $ clang-format *.cpp *.h
 
 ## Authors
 
- * Jan Horacek ([jan.horacek@kmz-brno.cz](mailto:jan.horacek@kmz-brno.cz))
+ * Jan Malina (ex Horacek) ([jan.malina@kmz-brno.cz](mailto:jan.malina@kmz-brno.cz))
 
 ## License
 
