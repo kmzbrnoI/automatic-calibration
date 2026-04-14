@@ -1635,7 +1635,7 @@ void MainWindow::b_verify_reset_handle() {
 		return;
 
 	try {
-		log("Verification reset");
+		log(tr("Verification reset"));
 		this->verif_reset();
 	} catch (const QStrException& e) {
 		QMessageBox::critical(this, tr("Error!"), e.str(), QMessageBox::Ok);

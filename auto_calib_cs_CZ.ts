@@ -102,7 +102,7 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="src/main-window.cpp" line="1814"/>
+        <location filename="src/main-window.cpp" line="1815"/>
         <source>Automatic Calibration</source>
         <translation>Automatická kalibrace</translation>
     </message>
@@ -161,7 +161,7 @@
     <message>
         <location filename="form/main-window.ui" line="290"/>
         <source>Calibration Graph</source>
-        <translation>Kalibrační graf</translation>
+        <translation>Rychlostní tabulka</translation>
     </message>
     <message>
         <location filename="form/main-window.ui" line="305"/>
@@ -176,7 +176,7 @@
     <message>
         <location filename="form/main-window.ui" line="337"/>
         <source>Verify all steps</source>
-        <translation>Zkontrolovat všechny kroky</translation>
+        <translation>Zkontrolovat rychlostní tabulku</translation>
     </message>
     <message>
         <location filename="form/main-window.ui" line="382"/>
@@ -494,12 +494,12 @@
         <location filename="src/main-window.cpp" line="424"/>
         <location filename="src/main-window.cpp" line="431"/>
         <location filename="src/main-window.cpp" line="437"/>
-        <location filename="src/main-window.cpp" line="1608"/>
-        <location filename="src/main-window.cpp" line="1610"/>
-        <location filename="src/main-window.cpp" line="1619"/>
-        <location filename="src/main-window.cpp" line="1621"/>
-        <location filename="src/main-window.cpp" line="1640"/>
-        <location filename="src/main-window.cpp" line="1642"/>
+        <location filename="src/main-window.cpp" line="1609"/>
+        <location filename="src/main-window.cpp" line="1611"/>
+        <location filename="src/main-window.cpp" line="1620"/>
+        <location filename="src/main-window.cpp" line="1622"/>
+        <location filename="src/main-window.cpp" line="1641"/>
+        <location filename="src/main-window.cpp" line="1643"/>
         <source>Error!</source>
         <translation>Chyba!</translation>
     </message>
@@ -554,8 +554,8 @@
         <location filename="src/main-window.cpp" line="563"/>
         <location filename="src/main-window.cpp" line="1266"/>
         <location filename="src/main-window.cpp" line="1288"/>
-        <location filename="src/main-window.cpp" line="1765"/>
-        <location filename="src/main-window.cpp" line="1772"/>
+        <location filename="src/main-window.cpp" line="1766"/>
+        <location filename="src/main-window.cpp" line="1773"/>
         <source>Unable to read CV </source>
         <translation>Nelze vyčíst CV </translation>
     </message>
@@ -563,7 +563,7 @@
         <location filename="src/main-window.cpp" line="576"/>
         <location filename="src/main-window.cpp" line="1262"/>
         <location filename="src/main-window.cpp" line="1284"/>
-        <location filename="src/main-window.cpp" line="1777"/>
+        <location filename="src/main-window.cpp" line="1778"/>
         <source>Read CV </source>
         <translation>Vyčteno CV </translation>
     </message>
@@ -601,177 +601,177 @@
 </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="846"/>
+        <location filename="src/main-window.cpp" line="844"/>
         <source>Connecting to WSM...</source>
         <translation>Připojování k měřicímu vozu WSM...</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="855"/>
+        <location filename="src/main-window.cpp" line="853"/>
         <source>Connected to WSM</source>
         <translation>Připojeno k měřicímu vozu WSM</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="859"/>
+        <location filename="src/main-window.cpp" line="857"/>
         <source>WSM connect error while opening serial port &apos;</source>
         <translation>Chyba při otevírání sériového portu měřicího vozu WSM: &apos;</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="875"/>
+        <location filename="src/main-window.cpp" line="873"/>
         <source>Disconnected from WSM</source>
         <translation>Odpojeno od měřicího vozu WSM</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="897"/>
+        <location filename="src/main-window.cpp" line="895"/>
         <source>WSM serial port error: </source>
         <translation>Chyba sériového porty měřicího vozu WSM: </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="909"/>
+        <location filename="src/main-window.cpp" line="907"/>
         <source>Battery level critical, device is shutting down!</source>
         <translation>Napětí baterie měřicího vozu WSM kritické! Měřicí vůz se vypíná!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="916"/>
+        <location filename="src/main-window.cpp" line="914"/>
         <source>WSM error, disconnecting...</source>
         <translation>Chyba měřicího vozu WSM, odpojování...</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="921"/>
+        <location filename="src/main-window.cpp" line="919"/>
         <source>WSM receive timeout!</source>
         <translation>Timeout přijímání dat z měřicího vozu WSM!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="926"/>
+        <location filename="src/main-window.cpp" line="924"/>
         <source>WSM speed receive restored</source>
         <translation>Obnoveno přijímání rychlosti z měřicího vozu WSM</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="930"/>
+        <location filename="src/main-window.cpp" line="928"/>
         <source>WSM long term done: sp=</source>
         <translation>Dokončeno měření rychlosti: rychlost=</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="931"/>
+        <location filename="src/main-window.cpp" line="929"/>
         <source>, diff=</source>
         <translation>, rozdíl=</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="993"/>
+        <location filename="src/main-window.cpp" line="991"/>
         <source>Write this step to decoder</source>
         <translation>Zapsat do dekodéru</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1004"/>
+        <location filename="src/main-window.cpp" line="1002"/>
         <source>Read value of this step from decoder</source>
         <translation>Přečíst z dekodéru</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1029"/>
-        <location filename="src/main-window.cpp" line="1719"/>
+        <location filename="src/main-window.cpp" line="1027"/>
+        <location filename="src/main-window.cpp" line="1720"/>
         <source>Step=</source>
         <translation>Krok=</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1030"/>
-        <location filename="src/main-window.cpp" line="1720"/>
+        <location filename="src/main-window.cpp" line="1028"/>
+        <location filename="src/main-window.cpp" line="1721"/>
         <source> read=</source>
         <translation> přečteno=</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1030"/>
-        <location filename="src/main-window.cpp" line="1720"/>
+        <location filename="src/main-window.cpp" line="1028"/>
+        <location filename="src/main-window.cpp" line="1721"/>
         <source> slider=</source>
         <translation> posuvník=</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1034"/>
-        <location filename="src/main-window.cpp" line="1040"/>
-        <location filename="src/main-window.cpp" line="1696"/>
-        <location filename="src/main-window.cpp" line="1710"/>
+        <location filename="src/main-window.cpp" line="1032"/>
+        <location filename="src/main-window.cpp" line="1038"/>
+        <location filename="src/main-window.cpp" line="1697"/>
+        <location filename="src/main-window.cpp" line="1711"/>
         <source>Unable to read step </source>
         <translation>Nelze přečíst krok </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1050"/>
+        <location filename="src/main-window.cpp" line="1048"/>
         <source>Setting power of step </source>
         <translation>Nastavuji rychlostní krok </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1050"/>
+        <location filename="src/main-window.cpp" line="1048"/>
         <source> manually.</source>
         <translation> ručně.</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1060"/>
+        <location filename="src/main-window.cpp" line="1058"/>
         <source>Command not executed</source>
         <translation>Příkaz nevykonán</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1060"/>
+        <location filename="src/main-window.cpp" line="1058"/>
         <source>Command not executed: either not connected to XpressNet or DCC address not set!</source>
         <translation>Příkaz nevykonán: buď nepřipojeno k XpressNETu nebo nenastavena adresa lokomotivy!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1106"/>
+        <location filename="src/main-window.cpp" line="1104"/>
         <source>Exception!</source>
         <translation>Vnitřní chyba (výjimka)!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1108"/>
+        <location filename="src/main-window.cpp" line="1106"/>
         <source>Loco speed too diffused!</source>
         <translation>Rychlost lokomotivy není stabilní!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1110"/>
+        <location filename="src/main-window.cpp" line="1108"/>
         <source>No response from XpressNET!</source>
         <translation>XpressNET: žádná odpověď!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1112"/>
+        <location filename="src/main-window.cpp" line="1110"/>
         <source>Loco stopped!</source>
         <translation>Lokomotiva zastavena!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1114"/>
+        <location filename="src/main-window.cpp" line="1112"/>
         <source>No suitable power step for this speed!</source>
         <translation>Pro kalibrovanou rychlost neexistuje žádný výkonostní stupeň! Lokomotiva nedosahuje požadované rychlosti. Zvětšte Vmax (#5) nebo Uref (#57).</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1116"/>
+        <location filename="src/main-window.cpp" line="1114"/>
         <source>Unable to reach target speed due to low precision (try decreasing Vmax?)</source>
         <translation>Nelze dosáhnout kalibrované rychlosti z důvodu nízkého rozlišení výkonnostních stupňů. Zkuste snížit Vmax (#5).</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1118"/>
+        <location filename="src/main-window.cpp" line="1116"/>
         <source>WSM read speed error!</source>
         <translation>Chyba měření rychlosti měřicím vozdem WSM!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1151"/>
-        <location filename="src/main-window.cpp" line="1752"/>
+        <location filename="src/main-window.cpp" line="1149"/>
+        <location filename="src/main-window.cpp" line="1753"/>
         <source>Not connected to XpressNET!</source>
         <translation>Nepřipojeno k XpressNETu!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1156"/>
+        <location filename="src/main-window.cpp" line="1154"/>
         <source>Not connected to WSM!</source>
         <translation>Nepřipojeno k měřicímu vozu WSM!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1161"/>
+        <location filename="src/main-window.cpp" line="1159"/>
         <source>No data from WSM!</source>
         <translation>Z měřicího vozu WSM nepřicházejí žádná data!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1166"/>
+        <location filename="src/main-window.cpp" line="1164"/>
         <source>Set loco address first!</source>
         <translation>Nejdříve nastavte adresu lokomotivy!</translation>
     </message>
     <message>
         <location filename="src/main-window.cpp" line="1180"/>
         <location filename="src/main-window.cpp" line="1227"/>
-        <location filename="src/main-window.cpp" line="1596"/>
-        <location filename="src/main-window.cpp" line="1629"/>
+        <location filename="src/main-window.cpp" line="1597"/>
+        <location filename="src/main-window.cpp" line="1630"/>
         <source>Question</source>
         <translation>Dotaz</translation>
     </message>
@@ -840,179 +840,184 @@ Continue?</source>
         <translation>Chyba měření vzdálenosti!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1540"/>
+        <location filename="src/main-window.cpp" line="1541"/>
         <source>XN config load: </source>
         <translation>Načítání konfigurace XpressNETu: </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1564"/>
+        <location filename="src/main-window.cpp" line="1565"/>
         <source>Loaded config from </source>
         <translation>Úspěšně načtena konfigurace aplikace ze souboru </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1569"/>
+        <location filename="src/main-window.cpp" line="1570"/>
         <source>Saved config to </source>
         <translation>Uložena konfigurace do </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1580"/>
+        <location filename="src/main-window.cpp" line="1581"/>
         <source>Loaded steps-to-speed mapping from </source>
         <translation>Načteno mapování rychlostních kroků na rychlosti ze souboru </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1583"/>
+        <location filename="src/main-window.cpp" line="1584"/>
         <source>Unable to load steps-to-speed file </source>
         <translation>Nelze načíst mapování rychlostí na rychlostní kroky ze souboru </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1597"/>
+        <location filename="src/main-window.cpp" line="1598"/>
         <source>Verification has altready started, do you want to continue with it?</source>
         <translation>Kontrola již byla zahájena, chcete v ní pokračovat?</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1605"/>
+        <location filename="src/main-window.cpp" line="1606"/>
         <source>Steps verification start</source>
         <translation>Začíná kontrola rychlostních stupňů</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1610"/>
-        <location filename="src/main-window.cpp" line="1621"/>
-        <location filename="src/main-window.cpp" line="1642"/>
+        <location filename="src/main-window.cpp" line="1611"/>
+        <location filename="src/main-window.cpp" line="1622"/>
+        <location filename="src/main-window.cpp" line="1643"/>
         <source>Unknown exception!</source>
         <translation>Neznámá výjimka!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1617"/>
+        <location filename="src/main-window.cpp" line="1618"/>
         <source>Steps verification manually stopped</source>
         <translation>Kontrola přerušena uživatelem</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1630"/>
+        <location filename="src/main-window.cpp" line="1631"/>
         <source>Really reset verification?</source>
         <translation>Opravdu vyresetovat kontrolu?</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1683"/>
+        <location filename="src/main-window.cpp" line="1638"/>
+        <source>Verification reset</source>
+        <translation>Proveden reset kontroly rychlostní tabulky</translation>
+    </message>
+    <message>
+        <location filename="src/main-window.cpp" line="1684"/>
         <source>Steps verification finished.</source>
         <translation>Kontrola rychlostních kroků dokončena.</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1721"/>
+        <location filename="src/main-window.cpp" line="1722"/>
         <source> match.</source>
         <translation> sedí.</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1721"/>
+        <location filename="src/main-window.cpp" line="1722"/>
         <source> mismatch!</source>
         <translation> nesedí!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1735"/>
+        <location filename="src/main-window.cpp" line="1736"/>
         <source>verif_next: unknown exception!</source>
         <translation>verif_next: neznámá výjimka!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1741"/>
+        <location filename="src/main-window.cpp" line="1742"/>
         <source>verif_read_error: step out of range!</source>
         <translation>verif_read_error: rychlostní krok mimo rozsah!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1762"/>
+        <location filename="src/main-window.cpp" line="1763"/>
         <source>Different CV read!</source>
         <translation>Přečteno jiné CV!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1765"/>
-        <location filename="src/main-window.cpp" line="1792"/>
+        <location filename="src/main-window.cpp" line="1766"/>
+        <location filename="src/main-window.cpp" line="1793"/>
         <source>: no response from command station!</source>
         <translation>: centrála neodpověděla!</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1777"/>
+        <location filename="src/main-window.cpp" line="1778"/>
         <source> value=</source>
         <translation> hodnota=</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1781"/>
+        <location filename="src/main-window.cpp" line="1782"/>
         <source>Speed table already enabled.</source>
         <translation>Rychlostní tabulka již aktivní.</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1784"/>
+        <location filename="src/main-window.cpp" line="1785"/>
         <source>Enable speed table: write value </source>
         <translation>Aktivuji rychlostní tabulku: zapisuji hodnotu </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1789"/>
+        <location filename="src/main-window.cpp" line="1790"/>
         <source> succesfully written</source>
         <translation> úspěšně zapsáno</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1792"/>
+        <location filename="src/main-window.cpp" line="1793"/>
         <source>Unable to write CV </source>
         <translation>Nelze zapsat CV </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1800"/>
+        <location filename="src/main-window.cpp" line="1801"/>
         <source>direction: </source>
         <translation>směr: </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1800"/>
+        <location filename="src/main-window.cpp" line="1801"/>
         <source>reversed</source>
         <translation>otočený</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1800"/>
+        <location filename="src/main-window.cpp" line="1801"/>
         <source>normal</source>
         <translation>normální</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1801"/>
+        <location filename="src/main-window.cpp" line="1802"/>
         <source>, speed steps: </source>
         <translation>, rychlostní kroky: </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1802"/>
+        <location filename="src/main-window.cpp" line="1803"/>
         <source>, analog: </source>
         <translation>, analog: </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1802"/>
         <location filename="src/main-window.cpp" line="1803"/>
         <location filename="src/main-window.cpp" line="1804"/>
+        <location filename="src/main-window.cpp" line="1805"/>
         <source>on</source>
         <translation>zapnuto</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1802"/>
         <location filename="src/main-window.cpp" line="1803"/>
         <location filename="src/main-window.cpp" line="1804"/>
+        <location filename="src/main-window.cpp" line="1805"/>
         <source>off</source>
         <translation>vypnuto</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1803"/>
+        <location filename="src/main-window.cpp" line="1804"/>
         <source>, RailCom: </source>
         <translation>, RailCom: </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1804"/>
+        <location filename="src/main-window.cpp" line="1805"/>
         <source>, speed table: </source>
         <translation>, rychlostní tabulka: </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1805"/>
+        <location filename="src/main-window.cpp" line="1806"/>
         <source>, address: </source>
         <translation>, adresa: </translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1805"/>
+        <location filename="src/main-window.cpp" line="1806"/>
         <source>extended</source>
         <translation>dlouhá</translation>
     </message>
     <message>
-        <location filename="src/main-window.cpp" line="1805"/>
+        <location filename="src/main-window.cpp" line="1806"/>
         <source>primary</source>
         <translation>krátká</translation>
     </message>
