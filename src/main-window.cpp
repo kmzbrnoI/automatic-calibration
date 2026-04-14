@@ -1495,8 +1495,25 @@ void MainWindow::cr_error(Cr::CrError, unsigned, const QString& message) {
 }
 
 void MainWindow::b_decel_measure_handle() {
-	if (!wsm.connected() || !wsm.isSpeedOk() || !xn.connected())
+	if (!xn.connected()) {
+		show_error(tr("Not connected to XpressNET!"));
 		return;
+	}
+
+	if (!wsm.connected()) {
+		show_error(tr("Not connected to WSM!"));
+		return;
+	}
+
+	if (!wsm.isSpeedOk()) {
+		show_error(tr("No data from WSM!"));
+		return;
+	}
+
+	if (ui.sb_loco->isEnabled()) {
+		show_error(tr("Set loco address first!"));
+		return;
+	}
 
 	ui.b_decel_measure->setEnabled(false);
 	cr.measure(ui.sb_loco->value(), 15, static_cast<Xn::Direction>(ui.rb_forward->isChecked()), 40);
