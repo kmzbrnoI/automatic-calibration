@@ -704,8 +704,6 @@ void MainWindow::a_dcc_stop(bool) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::log(const QString &message, const QColor &color) {
-	if (ui.lv_log->count() > 200)
-		ui.lv_log->clear();
 	ui.lv_log->insertItem(0, QTime::currentTime().toString("hh:mm:ss") + ": " + message);
 	ui.lv_log->item(0)->setBackground(color);
 
@@ -1167,6 +1165,8 @@ void MainWindow::b_calib_start_handle() {
 		return;
 	}
 
+	ui.lv_log->clear();
+
 	bool changed = false;
 	changed |= ((ui.chb_vmax->isChecked() != (cm.init_cvs.find(CV_VMAX) != cm.init_cvs.end())) ||
 		((cm.init_cvs.find(CV_VMAX) != cm.init_cvs.end()) && (static_cast<int>(cm.init_cvs[CV_VMAX]) != ui.sb_vmax->value())));
@@ -1503,6 +1503,7 @@ void MainWindow::b_decel_measure_handle() {
 }
 
 void MainWindow::reset() {
+	ui.lv_log->clear();
 	m_pm.clear();
 	cm.reset();
 	for (size_t i = 0; i < STEPS_CNT; i++) {
