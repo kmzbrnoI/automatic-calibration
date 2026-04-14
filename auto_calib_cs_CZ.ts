@@ -212,7 +212,7 @@
         <location filename="form/main-window.ui" line="593"/>
         <location filename="form/main-window.ui" line="727"/>
         <source>Set</source>
-        <translation>Použít</translation>
+        <translation>Převzít</translation>
     </message>
     <message>
         <location filename="form/main-window.ui" line="606"/>
@@ -526,7 +526,7 @@
     <message>
         <location filename="src/main-window.cpp" line="510"/>
         <source>Acquired loco </source>
-        <translation>Převzala adresa </translation>
+        <translation>Převzata adresa </translation>
     </message>
     <message>
         <location filename="src/main-window.cpp" line="514"/>
@@ -536,7 +536,7 @@
     <message>
         <location filename="src/main-window.cpp" line="546"/>
         <source>Released loco </source>
-        <translation>Adresa uvolněna: </translation>
+        <translation>Uvolněna adresa </translation>
     </message>
     <message>
         <location filename="src/main-window.cpp" line="550"/>
@@ -648,7 +648,7 @@
     <message>
         <location filename="src/main-window.cpp" line="930"/>
         <source>WSM long term done: sp=</source>
-        <translation>Dokončeno dlouhodobé měření rychlosti měřicím vozem WSM: rychlost=</translation>
+        <translation>Dokončeno měření rychlosti: rychlost=</translation>
     </message>
     <message>
         <location filename="src/main-window.cpp" line="931"/>
