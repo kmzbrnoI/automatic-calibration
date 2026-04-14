@@ -1515,8 +1515,16 @@ void MainWindow::b_decel_measure_handle() {
 		return;
 	}
 
+	constexpr unsigned DECEL_SPEED_KMH = 40;
+
+	unsigned step40 = m_ssm.step(DECEL_SPEED_KMH);
+	if (step40 < 1) {
+		show_error(tr("Speed step for 40 km/h is not defined in speed mapping!"));
+		return;
+	}
+
 	ui.b_decel_measure->setEnabled(false);
-	cr.measure(ui.sb_loco->value(), 15, static_cast<Xn::Direction>(ui.rb_forward->isChecked()), 40);
+	cr.measure(ui.sb_loco->value(), step40, static_cast<Xn::Direction>(ui.rb_forward->isChecked()), DECEL_SPEED_KMH);
 }
 
 void MainWindow::reset() {

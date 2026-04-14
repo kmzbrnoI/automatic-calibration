@@ -55,12 +55,12 @@ void StepsToSpeedMap::save(const QString &filename) {
 void StepsToSpeedMap::clear() {
 	for(auto &item : m_map)
 		item = EMPTY_VALUE;
-    emit onClear();
+	emit onClear();
 }
 
 void StepsToSpeedMap::addOrUpdate(const unsigned step, const unsigned speed) {
 	m_map[step] = speed;
-    emit onAddOrUpdate(step, speed);
+	emit onAddOrUpdate(step, speed);
 }
 
 unsigned const *StepsToSpeedMap::operator[](const int index) const { return at(index); }
@@ -104,5 +104,13 @@ unsigned StepsToSpeedMap::maxSpeedInFile() const {
 			return m_map[i];
 	return SPEED_MAX;
 }
+
+unsigned StepsToSpeedMap::step(unsigned speed) const {
+	for (size_t i = 0; i < STEPS_CNT; i++)
+		if (nullptr != at(i) && speed == *at(i))
+			return i+1;
+	return 0;
+}
+
 
 } // namespace Ssm

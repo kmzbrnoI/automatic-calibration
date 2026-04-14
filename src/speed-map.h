@@ -46,6 +46,7 @@ public:
 
 	unsigned const *at(int index) const;
 	unsigned const *operator[](int index) const;
+	unsigned step(unsigned speed) const;
 
 private:
 	unsigned m_max_speed = SPEED_MAX;
