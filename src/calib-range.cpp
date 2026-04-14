@@ -18,22 +18,24 @@ void CalibRange::measure(const unsigned loco_addr, const unsigned step, Xn::Dire
 }
 
 void CalibRange::loco_go() {
+	emit onLocoSpeedChanged(m_step);
 	m_xn.setSpeed(Xn::LocoAddr(m_loco_addr), m_step, m_dir,
 	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_ok(s, d); }),
 	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_err(s, d); }));
 }
 
 void CalibRange::loco_stop() {
+	emit onLocoSpeedChanged(0);
 	m_xn.setSpeed(Xn::LocoAddr(m_loco_addr), 0, m_dir, nullptr,
 	              std::make_unique<Xn::Cb>([this](void *s, void *d) { xn_speed_err(s, d); }));
 }
 
 void CalibRange::wsm_dist_read(double, uint32_t dist_raw) {
 	// Once the distance in read, stop the loco and record distance
-    QObject::disconnect(&m_wsm, SIGNAL(distanceRead(double,uint32_t)), this,
-                        SLOT(wsm_dist_read(double,uint32_t)));
-    QObject::connect(&m_wsm, SIGNAL(speedRead(double,uint16_t)), this,
-                     SLOT(wsm_speed_read(double,uint16_t)));
+	QObject::disconnect(&m_wsm, SIGNAL(distanceRead(double,uint32_t)), this,
+	                    SLOT(wsm_dist_read(double,uint32_t)));
+	QObject::connect(&m_wsm, SIGNAL(speedRead(double,uint16_t)), this,
+	                 SLOT(wsm_speed_read(double,uint16_t)));
 
 	loco_stop();
 	m_start_dist = dist_raw;
@@ -73,10 +75,10 @@ void CalibRange::wsm_lt_read(double speed, double diffusion) {
 	}
 
 	// Speed ok -> stop & measure distance
-    QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double,double)), this,
-                        SLOT(wsm_lt_read(double,double)));
-    QObject::connect(&m_wsm, SIGNAL(distanceRead(double,uint32_t)), this,
-                     SLOT(wsm_dist_read(double,uint32_t)));
+	QObject::disconnect(&m_wsm, SIGNAL(longTermMeasureDone(double,double)), this,
+	                    SLOT(wsm_lt_read(double,double)));
+	QObject::connect(&m_wsm, SIGNAL(distanceRead(double,uint32_t)), this,
+	                 SLOT(wsm_dist_read(double,uint32_t)));
 }
 
 void CalibRange::start_lt() {
@@ -93,8 +95,8 @@ void CalibRange::start_lt() {
 
 void CalibRange::xn_speed_ok(void *, void *) {
 	// Insert 'waiting of mark' here when neccessarry
-    QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double,double)), this,
-                     SLOT(wsm_lt_read(double,double)));
+	QObject::connect(&m_wsm, SIGNAL(longTermMeasureDone(double,double)), this,
+	                 SLOT(wsm_lt_read(double,double)));
 	QObject::connect(&m_wsm, SIGNAL(speedReceiveTimeout()), this, SLOT(wsm_error()));
 	m_speed_err_count = 0;
 	start_lt();

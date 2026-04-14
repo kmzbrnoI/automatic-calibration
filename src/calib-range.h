@@ -75,6 +75,7 @@ private slots:
 signals:
 	void on_error(Cr::CrError, unsigned step, const QString&);
 	void measured(double distance);
+	void onLocoSpeedChanged(unsigned step);
 };
 
 } // namespace Cr

@@ -174,6 +174,8 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(&cr, SIGNAL(on_error(Cr::CrError,uint,QString)), this,
 	                 SLOT(cr_error(Cr::CrError,uint,QString)));
 	QObject::connect(&cr, SIGNAL(measured(double)), this, SLOT(cr_measured(double)));
+	QObject::connect(&cr, SIGNAL(onLocoSpeedChanged(uint)),
+	                 this, SLOT(cm_locoSpeedChanged(uint)));
 
 	w_pg.setAttribute(Qt::WA_QuitOnClose, false);
 
