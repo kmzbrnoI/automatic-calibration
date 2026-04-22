@@ -56,3 +56,11 @@ void Settings::cfgToQString(std::map<QString, QVariant> &cfg, const QString &sec
 	else
 		cfg[section] = target;
 }
+
+void Settings::cfgToBool(std::map<QString, QVariant> &cfg, const QString &section,
+                         bool &target) {
+	if (cfg.find(section) != cfg.end())
+		target = cfg[section].toBool();
+	else
+		cfg[section] = target;
+}

@@ -10,6 +10,9 @@
 using Config = std::map<QString, std::map<QString, QVariant>>;
 
 const Config DEFAULTS {
+	{"Global", {
+		{"language", "en"},
+	}},
 	{"WSM", {
 		{"scale", 120},
 		{"wheelDiameter", 8.0},
@@ -31,9 +34,6 @@ const Config DEFAULTS {
 	{"Logging", {
 		{"file", ""},
 	}},
-	{"Global", {
-		{"language", "en"},
-	}},
 };
 
 class Settings {
@@ -52,6 +52,8 @@ public:
 	                        double &target);
 	static void cfgToQString(std::map<QString, QVariant> &cfg, const QString &section,
 	                         QString &target);
+	static void cfgToBool(std::map<QString, QVariant> &cfg, const QString &section,
+	                      bool &target);
 
 private:
 };

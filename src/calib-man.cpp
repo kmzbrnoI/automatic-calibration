@@ -468,20 +468,21 @@ void CalibMan::initCVs() {
 		QString::number(CV_CONFIG_BIT_SPEED_TABLE) + " = " + QString::number(CV_CONFIG_SPEED_TABLE_VALUE),
 		LogLevel::Info);
 
-	m_xn.pomWriteBit(
-		Xn::LocoAddr(m_locoAddr),
-		CV_BASIC_CONFIG,
-		CV_CONFIG_BIT_SPEED_TABLE,
-		CV_CONFIG_SPEED_TABLE_VALUE,
-		std::make_unique<Xn::Cb>([this](void *s, void *d) { initSTWritten(s, d); }),
-		std::make_unique<Xn::Cb>([this](void *s, void *d) {
-			// Intentionally do not call initCVsError
-			// Digikeijs DR5000 cannot write bits in POM mode -> worksround
-			log(tr("Unable to activate speed curve! Ensure curve is enabled by service mode programming!"), LogLevel::Error);
-			log(tr("Continuing..."), LogLevel::Warning);
-			initSTWritten(s, d);
-		})
-	);
+	if (activate_speed_table) {
+		m_xn.pomWriteBit(
+			Xn::LocoAddr(m_locoAddr),
+			CV_BASIC_CONFIG,
+			CV_CONFIG_BIT_SPEED_TABLE,
+			CV_CONFIG_SPEED_TABLE_VALUE,
+			std::make_unique<Xn::Cb>([this](void *s, void *d) { initSTWritten(s, d); }),
+			std::make_unique<Xn::Cb>([this](void *s, void *d) {
+				log(tr("Unable to activate speed curve using POM!"), LogLevel::Error);
+				initCVsError(s, d);
+			})
+		);
+	} else {
+		initSTWritten(nullptr, nullptr);
+	}
 }
 
 void CalibMan::initSTWritten(void *, void *) {

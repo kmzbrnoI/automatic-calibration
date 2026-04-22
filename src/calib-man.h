@@ -79,6 +79,7 @@ enum class LogLevel {
 };
 
 constexpr bool CV_CONFIG_SPEED_TABLE_VALUE = true;
+constexpr bool DEFAULT_ACTIVATE_SPEED_TABLE = true;
 
 class CalibMan : public QObject {
 	Q_OBJECT
@@ -95,6 +96,8 @@ public:
 		{CV_DECEL, 0},
 		{CV_MEDIUM_SPEED, 60},
 	};
+
+	bool activate_speed_table = DEFAULT_ACTIVATE_SPEED_TABLE;
 
 	CalibMan(Xn::XpressNet &xn, Pm::PowerToSpeedMap &pm, Wsm::Wsm &wsm, Ssm::StepsToSpeedMap &ssm,
 	         QObject *parent = nullptr);

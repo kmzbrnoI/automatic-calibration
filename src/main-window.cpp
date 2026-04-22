@@ -1588,6 +1588,7 @@ void MainWindow::a_config_load(bool) {
 	Settings::cfgToUnsigned(calcfg, "overviewStart", cm.co.overview_start);
 	Settings::cfgToUnsigned(calcfg, "overviewMinSpeed", cm.co.min_speed);
 	Settings::cfgToUnsigned(calcfg, "rangeStopMinTimes", cr.stop_min);
+	Settings::cfgToBool(calcfg, "activateSpeedTable", cm.activate_speed_table);
 
 	log(tr("Loaded config from ") + this->config_fn);
 }
