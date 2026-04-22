@@ -1111,9 +1111,9 @@ void MainWindow::cm_stepError(Cm::CmError ce, unsigned step, const QString& note
 	else if (ce == Cm::CmError::LocoStopped)
 		log(tr("Loco stopped!"), LOGC_ERROR);
 	else if (ce == Cm::CmError::NoStep)
-		log(tr("No suitable power step for this speed!"), LOGC_ERROR);
+		log(tr("No suitable power step for this speed! Engine cannot reach desired speed. Increase Vmax (#5) or Uref (#57)."), LOGC_ERROR);
 	else if (ce == Cm::CmError::Oscilation)
-		log(tr("Unable to reach target speed due to low precision (try decreasing Vmax?)"), LOGC_ERROR);
+		log(tr("Unable to reach target speed due to low precision. Try decreasing Vmax (#5)."), LOGC_ERROR);
 	else if (ce == Cm::CmError::WsmError)
 		log(tr("WSM read speed error!"), LOGC_ERROR);
 
