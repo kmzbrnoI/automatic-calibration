@@ -934,8 +934,6 @@ void MainWindow::mc_longTermMeasureDone(double speed, double diffusion) {
 ///////////////////////////////////////////////////////////////////////////////
 
 void MainWindow::a_power_graph(bool) {
-	w_pg.move(ui.centralwidget->pos().x() + ui.centralwidget->size().width(),
-	          ui.centralwidget->pos().y() - ui.mb_main->size().height());
 	w_pg.show();
 }
 
