@@ -207,9 +207,8 @@
     </message>
     <message>
         <location filename="form/main-window.ui" line="593"/>
-        <location filename="form/main-window.ui" line="727"/>
         <source>Set</source>
-        <translation>Převzít</translation>
+        <translation>Nastavit</translation>
     </message>
     <message>
         <location filename="form/main-window.ui" line="606"/>
@@ -235,6 +234,11 @@
         <location filename="form/main-window.ui" line="674"/>
         <source>Loco address:</source>
         <translation>Adresa loko:</translation>
+    </message>
+    <message>
+        <location filename="form/main-window.ui" line="727"/>
+        <source>Acquire</source>
+        <translation>Převzít</translation>
     </message>
     <message>
         <location filename="form/main-window.ui" line="740"/>

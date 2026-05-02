@@ -724,7 +724,7 @@
               </sizepolicy>
              </property>
              <property name="text">
-              <string>Set</string>
+              <string>Acquire</string>
              </property>
             </widget>
            </item>
